@@ -3,8 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Header } from "@/components/layout/header";
-import { Footer } from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -85,11 +83,8 @@ export default function CaregiverRequestsPage() {
   const respondedRequests = requests.filter(r => r.status !== "pending");
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
-      <Header />
-      <main className="flex-1">
-        <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-foreground">Booking Requests</h1>
               <p className="mt-1 text-muted-foreground">
@@ -245,9 +240,6 @@ export default function CaregiverRequestsPage() {
               )}
             </TabsContent>
           </Tabs>
-        </div>
-      </main>
-      <Footer />
 
       {/* Confirmation Dialog */}
       <Dialog open={!!selectedRequest} onOpenChange={() => setSelectedRequest(null)}>
