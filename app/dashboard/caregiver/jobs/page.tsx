@@ -107,7 +107,7 @@ const jobListings = [
     id: "job-4",
     title: "Full-Time Dementia Care",
     family: "Williams Family",
-    location: "Palo Alto, CA",
+    location: "Redmond, WA",
     distance: "12.4 miles",
     schedule: "Mon-Fri • 7 AM - 3 PM",
     rate: "$42-50/hr",

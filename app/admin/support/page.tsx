@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -629,19 +630,25 @@ export default function SupportTicketsPage() {
                       </div>
                     </div>
 
-                    <Button variant="outline" className="w-full" size="sm">
-                      <ExternalLink className="h-4 w-4 mr-2" />
-                      View User Profile
+                    <Button variant="outline" className="w-full" size="sm" asChild>
+                      <Link href={`/admin/users?id=${selectedTicket.user.id}&type=${selectedTicket.user.type}`}>
+                        <ExternalLink className="h-4 w-4 mr-2" />
+                        View User Profile
+                      </Link>
                     </Button>
                   </div>
                 </div>
               </CardContent>
             </>
           ) : (
-            <div className="flex flex-col items-center justify-center h-[600px] text-center">
-              <Ticket className="h-12 w-12 text-muted-foreground/30 mb-3" />
-              <p className="font-medium text-muted-foreground">Select a ticket</p>
-              <p className="text-sm text-muted-foreground">Choose a ticket from the list to view details</p>
+            <div className="flex flex-col items-center justify-center h-[600px] text-center px-4">
+              <div className="h-20 w-20 rounded-full bg-muted flex items-center justify-center mb-4">
+                <Ticket className="h-10 w-10 text-muted-foreground" />
+              </div>
+              <h3 className="font-semibold text-lg mb-2">Select a support ticket</h3>
+              <p className="text-sm text-muted-foreground max-w-[280px]">
+                Choose a ticket from the queue to view details and respond to the customer.
+              </p>
             </div>
           )}
         </Card>

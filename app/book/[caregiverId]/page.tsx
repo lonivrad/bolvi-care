@@ -71,23 +71,7 @@ export default function BookingPage({ params }: { params: Promise<{ caregiverId:
   const { role } = useAuthStore();
   const caregiver = caregivers.find((c) => c.id === caregiverId) || caregivers[0];
 
-  // Show auth prompt if user is not logged in or not a family user
-  if (!role || role !== 'family') {
-    return (
-      <div className="flex min-h-screen flex-col bg-muted/30">
-        <Header />
-        <main className="flex-1">
-          <AuthPrompt
-            title="Sign in as a family to book a caregiver"
-            description={`Create a family account or sign in to book ${caregiver.name}`}
-            action="booking"
-          />
-        </main>
-        <Footer />
-      </div>
-    );
-  }
-
+  // All hooks must be called before any conditional returns (Rules of Hooks)
   const [currentStep, setCurrentStep] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [bookingData, setBookingData] = useState({
@@ -112,6 +96,23 @@ export default function BookingPage({ params }: { params: Promise<{ caregiverId:
     cardLast4: "4242",
     agreedToTerms: false,
   });
+
+  // Show auth prompt if user is not logged in or not a family user
+  if (!role || role !== 'family') {
+    return (
+      <div className="flex min-h-screen flex-col bg-muted/30">
+        <Header />
+        <main className="flex-1">
+          <AuthPrompt
+            title="Sign in as a family to book a caregiver"
+            description={`Create a family account or sign in to book ${caregiver.name}`}
+            action="booking"
+          />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   const conditions = [
     "Alzheimer's/Dementia",

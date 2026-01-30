@@ -30,7 +30,16 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
+import { FileText, ImageIcon, Upload, X, File } from "lucide-react";
 
 // Quick reply suggestions
 const quickReplies = [
@@ -129,6 +138,9 @@ export default function MessagesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [showMobileChat, setShowMobileChat] = useState(false);
   const [showQuickReplies, setShowQuickReplies] = useState(false);
+  const [showAttachmentDialog, setShowAttachmentDialog] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Scroll to bottom when new messages arrive
@@ -174,6 +186,36 @@ export default function MessagesPage() {
       description: `Calling ${selectedConversation?.name}`,
       variant: "info",
     });
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+    }
+  };
+
+  const handleSendAttachment = () => {
+    if (selectedFile) {
+      const isImage = selectedFile.type.startsWith('image/');
+      setMessages([
+        ...messages,
+        {
+          id: String(messages.length + 1),
+          senderId: "me",
+          text: isImage ? `📷 ${selectedFile.name}` : `📎 ${selectedFile.name}`,
+          timestamp: "Just now",
+          read: false,
+        },
+      ]);
+      toast({
+        title: "File sent",
+        description: `${selectedFile.name} has been sent successfully`,
+        variant: "success",
+      });
+      setSelectedFile(null);
+      setShowAttachmentDialog(false);
+    }
   };
 
   const filteredConversations = mockConversations.filter((c) =>
@@ -400,11 +442,7 @@ export default function MessagesPage() {
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() => toast({
-                        title: "Attachment",
-                        description: "File attachments coming soon",
-                        variant: "info",
-                      })}
+                      onClick={() => setShowAttachmentDialog(true)}
                     >
                       <Paperclip className="h-5 w-5" />
                     </Button>
@@ -444,6 +482,106 @@ export default function MessagesPage() {
           </div>
         </div>
       </main>
+
+      {/* Attachment Dialog */}
+      <Dialog open={showAttachmentDialog} onOpenChange={setShowAttachmentDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Send Attachment</DialogTitle>
+            <DialogDescription>
+              Share a file or image with {selectedConversation?.name}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            {/* Hidden file input */}
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileSelect}
+              className="hidden"
+              accept="image/*,.pdf,.doc,.docx,.txt"
+            />
+
+            {selectedFile ? (
+              <div className="flex items-center gap-3 p-4 rounded-lg border bg-muted/50">
+                <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center">
+                  {selectedFile.type.startsWith('image/') ? (
+                    <ImageIcon className="h-6 w-6 text-primary" />
+                  ) : (
+                    <FileText className="h-6 w-6 text-primary" />
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-sm truncate">{selectedFile.name}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {(selectedFile.size / 1024).toFixed(1)} KB
+                  </p>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setSelectedFile(null)}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            ) : (
+              <div
+                onClick={() => fileInputRef.current?.click()}
+                className="border-2 border-dashed rounded-lg p-8 text-center cursor-pointer hover:border-primary/50 hover:bg-muted/50 transition-colors"
+              >
+                <Upload className="h-10 w-10 mx-auto text-muted-foreground mb-3" />
+                <p className="font-medium">Click to upload</p>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Images, PDFs, and documents up to 10MB
+                </p>
+              </div>
+            )}
+
+            {/* Quick options */}
+            <div className="grid grid-cols-2 gap-2">
+              <Button
+                variant="outline"
+                className="h-auto py-3"
+                onClick={() => {
+                  if (fileInputRef.current) {
+                    fileInputRef.current.accept = "image/*";
+                    fileInputRef.current.click();
+                  }
+                }}
+              >
+                <ImageIcon className="h-4 w-4 mr-2" />
+                Photo
+              </Button>
+              <Button
+                variant="outline"
+                className="h-auto py-3"
+                onClick={() => {
+                  if (fileInputRef.current) {
+                    fileInputRef.current.accept = ".pdf,.doc,.docx,.txt";
+                    fileInputRef.current.click();
+                  }
+                }}
+              >
+                <File className="h-4 w-4 mr-2" />
+                Document
+              </Button>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => {
+              setSelectedFile(null);
+              setShowAttachmentDialog(false);
+            }}>
+              Cancel
+            </Button>
+            <Button onClick={handleSendAttachment} disabled={!selectedFile}>
+              <Send className="h-4 w-4 mr-2" />
+              Send
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

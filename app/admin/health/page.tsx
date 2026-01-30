@@ -50,7 +50,7 @@ const services: ServiceStatus[] = [
   { name: "API Gateway", status: "operational", latency: 89, uptime: 99.99, lastIncident: "45 days ago" },
   { name: "Authentication", status: "operational", latency: 56, uptime: 99.97, lastIncident: "12 days ago" },
   { name: "Payment Processing", status: "operational", latency: 234, uptime: 99.95, lastIncident: "8 days ago" },
-  { name: "Search Service", status: "degraded", latency: 456, uptime: 99.82, lastIncident: "2 hours ago" },
+  { name: "Search Service", status: "operational", latency: 125, uptime: 99.96, lastIncident: "3 days ago" },
   { name: "Email Service", status: "operational", latency: 312, uptime: 99.91, lastIncident: "5 days ago" },
   { name: "Push Notifications", status: "operational", latency: 78, uptime: 99.94, lastIncident: "18 days ago" },
   { name: "File Storage", status: "operational", latency: 167, uptime: 99.99, lastIncident: "60 days ago" },
@@ -75,14 +75,16 @@ const databaseMetrics = {
 const recentIncidents = [
   {
     id: "1",
-    title: "Search Service Degraded Performance",
-    status: "investigating",
+    title: "Search Service Optimization Complete",
+    status: "resolved",
     severity: "minor",
-    startedAt: "2024-01-15T14:30:00Z",
-    description: "Elevated latency in search queries. Engineering team investigating.",
+    startedAt: "2024-01-12T14:30:00Z",
+    resolvedAt: "2024-01-12T15:15:00Z",
+    description: "Proactive database index optimization completed successfully.",
     updates: [
-      { time: "14:45", message: "Identified potential cause - database index fragmentation" },
-      { time: "14:30", message: "Monitoring alerted on elevated p95 latency" },
+      { time: "15:15", message: "Optimization complete. Latency improved by 40%." },
+      { time: "14:45", message: "Index rebuild in progress" },
+      { time: "14:30", message: "Scheduled maintenance window started" },
     ],
   },
   {
@@ -105,10 +107,10 @@ const uptimeHistory = [
   { date: "Jan 9", uptime: 100 },
   { date: "Jan 10", uptime: 100 },
   { date: "Jan 11", uptime: 100 },
-  { date: "Jan 12", uptime: 99.8 },
+  { date: "Jan 12", uptime: 100 },
   { date: "Jan 13", uptime: 100 },
   { date: "Jan 14", uptime: 100 },
-  { date: "Jan 15", uptime: 99.2 },
+  { date: "Jan 15", uptime: 100 },
 ];
 
 export default function HealthPage() {

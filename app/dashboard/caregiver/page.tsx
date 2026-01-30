@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { OnboardingChecklist } from "@/components/onboarding/onboarding-checklist";
+import { VisitChecklistCompact } from "@/components/caregiver/visit-checklist";
 
 export default function CaregiverDashboard() {
   const { caregiverUser } = useAuthStore();
@@ -192,8 +193,10 @@ export default function CaregiverDashboard() {
                       </div>
                       <div className="flex flex-col items-end gap-2">
                         <span className="font-semibold text-foreground">${visit.totalCost}</span>
-                        <Button size="sm" variant={index === 0 ? "default" : "outline"}>
-                          {index === 0 ? "Start Visit" : "View"}
+                        <Button size="sm" variant={index === 0 ? "default" : "outline"} asChild>
+                          <Link href={`/dashboard/caregiver/visits/${visit.id}`}>
+                            {index === 0 ? "Start Visit" : "View"}
+                          </Link>
                         </Button>
                       </div>
                     </div>
@@ -202,6 +205,17 @@ export default function CaregiverDashboard() {
               )}
             </CardContent>
           </Card>
+
+          {/* Visit Checklist Prompt - shows when there's an active visit */}
+          {todaysVisits.length > 0 && (
+            <VisitChecklistCompact
+              visitId={todaysVisits[0].id}
+              clientName={todaysVisits[0].recipientName}
+              onStartChecklist={() => {
+                // Navigate to visit checklist
+              }}
+            />
+          )}
 
           {/* Recent Activity */}
           <Card>

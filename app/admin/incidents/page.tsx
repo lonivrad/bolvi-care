@@ -115,7 +115,7 @@ const mockIncidents: Incident[] = [
       date: "2024-01-15",
       service: "Daily Living Assistance",
     },
-    location: "123 Main St, San Francisco, CA",
+    location: "123 Main St, Seattle, WA",
     assignedTo: {
       name: "Sarah Admin",
       avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop",
@@ -201,7 +201,7 @@ const mockIncidents: Incident[] = [
       { name: "Linda Thompson", type: "caregiver", role: "Caregiver on duty" },
       { name: "William Davis", type: "care_recipient", role: "Care recipient" },
     ],
-    location: "456 Oak Ave, San Francisco, CA",
+    location: "456 Oak Ave, Bellevue, WA",
     timeline: [
       {
         id: "1",

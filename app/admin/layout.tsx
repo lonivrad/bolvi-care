@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuthStore } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -109,6 +109,12 @@ const adminNavSections: NavSection[] = [
     ],
   },
   {
+    title: "Quality",
+    items: [
+      { label: "Quality Assurance", href: "/admin/quality", icon: Shield },
+    ],
+  },
+  {
     title: "System",
     items: [
       { label: "Platform Health", href: "/admin/health", icon: Zap },
@@ -121,6 +127,32 @@ const adminNavSections: NavSection[] = [
 // Flatten for quick access
 const allNavItems = adminNavSections.flatMap((s) => s.items);
 
+// Searchable items for global search
+const searchableItems = [
+  // Users
+  { type: "user", label: "Sarah Johnson", description: "Family Account", href: "/admin/users?id=u-1", icon: User },
+  { type: "user", label: "Maria Rodriguez", description: "Caregiver Account", href: "/admin/users?id=u-2", icon: Heart },
+  { type: "user", label: "David Kim", description: "Caregiver Account", href: "/admin/users?id=u-3", icon: Heart },
+  { type: "user", label: "James Lee", description: "Caregiver Account", href: "/admin/users?id=u-4", icon: Heart },
+  { type: "user", label: "Emily Thompson", description: "Caregiver Account", href: "/admin/users?id=u-5", icon: Heart },
+  { type: "user", label: "Michael Chen", description: "Family Account", href: "/admin/users?id=u-6", icon: User },
+  { type: "user", label: "Jennifer Williams", description: "Family Account", href: "/admin/users?id=u-7", icon: User },
+  // Bookings
+  { type: "booking", label: "BK-2024-1234", description: "Johnson Family - Maria Rodriguez", href: "/admin/bookings?id=BK-2024-1234", icon: BookOpen },
+  { type: "booking", label: "BK-2024-1235", description: "Smith Family - Sarah Thompson", href: "/admin/bookings?id=BK-2024-1235", icon: BookOpen },
+  { type: "booking", label: "BK-2024-1236", description: "Garcia Family - Emily Watson", href: "/admin/bookings?id=BK-2024-1236", icon: BookOpen },
+  // Disputes
+  { type: "dispute", label: "Billing Discrepancy", description: "Johnson Family vs Maria Rodriguez", href: "/admin/disputes", icon: AlertTriangle },
+  { type: "dispute", label: "Service Quality Concern", description: "Smith Family vs David Kim", href: "/admin/disputes", icon: AlertTriangle },
+  { type: "dispute", label: "Cancellation Fee Dispute", description: "Garcia Family vs Sarah Thompson", href: "/admin/disputes", icon: AlertTriangle },
+  // Tickets
+  { type: "ticket", label: "TKT-001", description: "Unable to process payment", href: "/admin/support", icon: Ticket },
+  { type: "ticket", label: "TKT-002", description: "Account verification pending", href: "/admin/support", icon: Ticket },
+  { type: "ticket", label: "TKT-003", description: "Caregiver didn't show up", href: "/admin/support", icon: Ticket },
+  // Pages
+  ...allNavItems.map(item => ({ type: "page", label: item.label, description: "Admin Page", href: item.href, icon: item.icon })),
+];
+
 export default function AdminLayout({
   children,
 }: {
@@ -131,6 +163,28 @@ export default function AdminLayout({
   const { role, setRole } = useAuthStore();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchFocused, setSearchFocused] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
+
+  // Filter search results
+  const searchResults = searchQuery.length > 0
+    ? searchableItems.filter(item =>
+        item.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.description.toLowerCase().includes(searchQuery.toLowerCase())
+      ).slice(0, 8)
+    : [];
+
+  // Close search on click outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setSearchFocused(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     if (role !== "admin") {
@@ -176,13 +230,69 @@ export default function AdminLayout({
             </div>
 
             {/* Center - Search */}
-            <div className="hidden md:flex flex-1 max-w-md mx-4">
+            <div className="hidden md:flex flex-1 max-w-md mx-4" ref={searchRef}>
               <div className="relative w-full">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Search users, bookings, disputes..."
                   className="pl-9 bg-muted/50"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onFocus={() => setSearchFocused(true)}
                 />
+                {/* Search Results Dropdown */}
+                {searchFocused && searchQuery.length > 0 && (
+                  <div className="absolute top-full left-0 right-0 mt-1 bg-background border border-border rounded-lg shadow-lg z-50 overflow-hidden">
+                    {searchResults.length > 0 ? (
+                      <div className="py-1">
+                        {searchResults.map((item, index) => {
+                          const Icon = item.icon;
+                          return (
+                            <Link
+                              key={`${item.type}-${index}`}
+                              href={item.href}
+                              onClick={() => {
+                                setSearchQuery("");
+                                setSearchFocused(false);
+                              }}
+                              className="flex items-center gap-3 px-3 py-2 hover:bg-muted transition-colors"
+                            >
+                              <div className={cn(
+                                "h-8 w-8 rounded-full flex items-center justify-center",
+                                item.type === "user" && "bg-blue-100 dark:bg-blue-900/30",
+                                item.type === "booking" && "bg-purple-100 dark:bg-purple-900/30",
+                                item.type === "dispute" && "bg-amber-100 dark:bg-amber-900/30",
+                                item.type === "ticket" && "bg-pink-100 dark:bg-pink-900/30",
+                                item.type === "page" && "bg-muted"
+                              )}>
+                                <Icon className={cn(
+                                  "h-4 w-4",
+                                  item.type === "user" && "text-blue-600 dark:text-blue-400",
+                                  item.type === "booking" && "text-purple-600 dark:text-purple-400",
+                                  item.type === "dispute" && "text-amber-600 dark:text-amber-400",
+                                  item.type === "ticket" && "text-pink-600 dark:text-pink-400",
+                                  item.type === "page" && "text-muted-foreground"
+                                )} />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-medium truncate">{item.label}</p>
+                                <p className="text-xs text-muted-foreground truncate">{item.description}</p>
+                              </div>
+                              <Badge variant="outline" className="text-[10px] shrink-0">
+                                {item.type}
+                              </Badge>
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <div className="px-4 py-8 text-center">
+                        <Search className="h-8 w-8 mx-auto text-muted-foreground/50 mb-2" />
+                        <p className="text-sm text-muted-foreground">No results found for &quot;{searchQuery}&quot;</p>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
 

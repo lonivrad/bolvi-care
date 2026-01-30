@@ -247,9 +247,20 @@ export default function AdminBookingsPage() {
         <CardContent>
           <div className="space-y-4">
             {filteredBookings.length === 0 ? (
-              <div className="text-center py-12 text-muted-foreground">
-                <Calendar className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>No bookings found matching your criteria</p>
+              <div className="flex flex-col items-center justify-center py-16 text-center">
+                <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                  <Calendar className="h-8 w-8 text-primary" />
+                </div>
+                <h3 className="font-semibold text-lg mb-1">No bookings found</h3>
+                <p className="text-muted-foreground text-sm max-w-sm">
+                  No bookings match your current filters. Try adjusting your search criteria or date range.
+                </p>
+                <Button variant="outline" className="mt-4" onClick={() => {
+                  setSearchQuery("");
+                  setStatusFilter("all");
+                }}>
+                  Clear filters
+                </Button>
               </div>
             ) : (
               filteredBookings.map((booking) => (

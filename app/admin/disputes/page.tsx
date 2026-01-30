@@ -15,6 +15,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   AlertTriangle,
   Clock,
@@ -24,6 +32,10 @@ import {
   User,
   Heart,
   Calendar,
+  Search,
+  FileText,
+  Phone,
+  Mail,
 } from "lucide-react";
 
 const disputes = [
@@ -140,16 +152,41 @@ const disputes = [
 ];
 
 export default function AdminDisputesPage() {
-  const [, setSelectedDispute] = useState<
-    (typeof disputes)[0] | null
-  >(null);
+  const [disputesList, setDisputesList] = useState(disputes);
   const [resolution, setResolution] = useState("");
+  const [investigationNotes, setInvestigationNotes] = useState("");
+  const [investigationPriority, setInvestigationPriority] = useState("medium");
+  const [investigationDialogOpen, setInvestigationDialogOpen] = useState(false);
+  const [selectedDisputeId, setSelectedDisputeId] = useState<string | null>(null);
 
-  const openCount = disputes.filter((d) => d.status === "open").length;
-  const investigatingCount = disputes.filter(
+  const handleStartInvestigation = (disputeId: string) => {
+    setSelectedDisputeId(disputeId);
+    setInvestigationDialogOpen(true);
+  };
+
+  const confirmStartInvestigation = () => {
+    if (selectedDisputeId) {
+      setDisputesList((prev) =>
+        prev.map((d) =>
+          d.id === selectedDisputeId
+            ? { ...d, status: "investigating", lastUpdate: new Date().toISOString(), priority: investigationPriority }
+            : d
+        )
+      );
+      setInvestigationDialogOpen(false);
+      setInvestigationNotes("");
+      setInvestigationPriority("medium");
+      setSelectedDisputeId(null);
+    }
+  };
+
+  const selectedDispute = disputesList.find((d) => d.id === selectedDisputeId);
+
+  const openCount = disputesList.filter((d) => d.status === "open").length;
+  const investigatingCount = disputesList.filter(
     (d) => d.status === "investigating"
   ).length;
-  const resolvedCount = disputes.filter((d) => d.status === "resolved").length;
+  const resolvedCount = disputesList.filter((d) => d.status === "resolved").length;
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -351,8 +388,12 @@ export default function AdminDisputesPage() {
               </DialogContent>
             </Dialog>
             {dispute.status === "open" && (
-              <Button variant="outline" className="flex-1">
-                <Clock className="mr-2 h-4 w-4" />
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => handleStartInvestigation(dispute.id)}
+              >
+                <Search className="mr-2 h-4 w-4" />
                 Start Investigation
               </Button>
             )}
@@ -413,7 +454,7 @@ export default function AdminDisputesPage() {
               </span>
             </div>
             <p className="mt-2 text-2xl font-bold">
-              ${disputes.reduce((sum, d) => sum + d.amount, 0).toFixed(2)}
+              ${disputesList.reduce((sum, d) => sum + d.amount, 0).toFixed(2)}
             </p>
           </CardContent>
         </Card>
@@ -430,7 +471,7 @@ export default function AdminDisputesPage() {
         </TabsList>
 
         <TabsContent value="open" className="mt-6 space-y-4">
-          {disputes
+          {disputesList
             .filter((d) => d.status === "open")
             .map((d) => (
               <DisputeCard key={d.id} dispute={d} />
@@ -438,7 +479,7 @@ export default function AdminDisputesPage() {
         </TabsContent>
 
         <TabsContent value="investigating" className="mt-6 space-y-4">
-          {disputes
+          {disputesList
             .filter((d) => d.status === "investigating")
             .map((d) => (
               <DisputeCard key={d.id} dispute={d} />
@@ -446,7 +487,7 @@ export default function AdminDisputesPage() {
         </TabsContent>
 
         <TabsContent value="resolved" className="mt-6 space-y-4">
-          {disputes
+          {disputesList
             .filter((d) => d.status === "resolved")
             .map((d) => (
               <DisputeCard key={d.id} dispute={d} />
@@ -454,11 +495,108 @@ export default function AdminDisputesPage() {
         </TabsContent>
 
         <TabsContent value="all" className="mt-6 space-y-4">
-          {disputes.map((d) => (
+          {disputesList.map((d) => (
             <DisputeCard key={d.id} dispute={d} />
           ))}
         </TabsContent>
       </Tabs>
+
+      {/* Investigation Dialog */}
+      <Dialog open={investigationDialogOpen} onOpenChange={setInvestigationDialogOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Search className="h-5 w-5 text-primary" />
+              Start Investigation
+            </DialogTitle>
+            <DialogDescription>
+              Begin a formal investigation into this dispute. Both parties will be notified.
+            </DialogDescription>
+          </DialogHeader>
+
+          {selectedDispute && (
+            <div className="space-y-4">
+              {/* Dispute Summary */}
+              <div className="rounded-lg border border-border bg-muted/50 p-4">
+                <h4 className="font-medium text-foreground">{selectedDispute.title}</h4>
+                <p className="text-sm text-muted-foreground mt-1">{selectedDispute.description}</p>
+                <div className="flex gap-4 mt-3 text-xs text-muted-foreground">
+                  <span>{selectedDispute.family.name}</span>
+                  <span>vs</span>
+                  <span>{selectedDispute.caregiver.name}</span>
+                </div>
+              </div>
+
+              {/* Investigation Steps */}
+              <div className="space-y-3">
+                <Label className="text-sm font-medium">Investigation Checklist</Label>
+                <div className="space-y-2 rounded-lg border border-border p-3">
+                  <div className="flex items-center gap-2 text-sm">
+                    <FileText className="h-4 w-4 text-muted-foreground" />
+                    <span>Review booking details and transaction history</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm">
+                    <MessageSquare className="h-4 w-4 text-muted-foreground" />
+                    <span>Examine message history between parties</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm">
+                    <Phone className="h-4 w-4 text-muted-foreground" />
+                    <span>Contact family for additional details</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm">
+                    <Mail className="h-4 w-4 text-muted-foreground" />
+                    <span>Request caregiver's statement</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Priority Selection */}
+              <div className="space-y-2">
+                <Label htmlFor="priority">Investigation Priority</Label>
+                <Select value={investigationPriority} onValueChange={setInvestigationPriority}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select priority" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="high">High - Urgent attention required</SelectItem>
+                    <SelectItem value="medium">Medium - Standard timeline</SelectItem>
+                    <SelectItem value="low">Low - Review when available</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Initial Notes */}
+              <div className="space-y-2">
+                <Label htmlFor="notes">Initial Investigation Notes (Optional)</Label>
+                <Textarea
+                  id="notes"
+                  placeholder="Add any initial observations or action items..."
+                  value={investigationNotes}
+                  onChange={(e) => setInvestigationNotes(e.target.value)}
+                  rows={3}
+                />
+              </div>
+
+              {/* Notification Info */}
+              <div className="rounded-lg bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 p-3">
+                <p className="text-sm text-blue-800 dark:text-blue-200">
+                  <strong>Note:</strong> Both parties will receive an email notification that an investigation has been started. Expected resolution time is 3-5 business days.
+                </p>
+              </div>
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setInvestigationDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={confirmStartInvestigation}>
+              <Search className="mr-2 h-4 w-4" />
+              Begin Investigation
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

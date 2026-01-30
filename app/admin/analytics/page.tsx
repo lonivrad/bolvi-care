@@ -106,11 +106,11 @@ const topServices = [
 ];
 
 const geoData = [
-  { region: "San Francisco", users: 3420, revenue: 245000, growth: 12.5 },
-  { region: "Los Angeles", users: 2890, revenue: 198000, growth: 18.2 },
-  { region: "San Diego", users: 1650, revenue: 112000, growth: 8.7 },
-  { region: "Sacramento", users: 1240, revenue: 86000, growth: 15.3 },
-  { region: "Oakland", users: 980, revenue: 72000, growth: 22.1 },
+  { region: "Seattle", users: 3420, revenue: 245000, growth: 12.5 },
+  { region: "Bellevue", users: 2890, revenue: 198000, growth: 18.2 },
+  { region: "Tacoma", users: 1650, revenue: 112000, growth: 8.7 },
+  { region: "Spokane", users: 1240, revenue: 86000, growth: 15.3 },
+  { region: "Vancouver", users: 980, revenue: 72000, growth: 22.1 },
 ];
 
 const deviceData = [
@@ -129,9 +129,21 @@ const retentionData = {
 export default function AnalyticsPage() {
   const [dateRange, setDateRange] = useState("30d");
   const [activeTab, setActiveTab] = useState("overview");
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [showExportToast, setShowExportToast] = useState(false);
 
   const getConversionRate = (current: number, previous: number) => {
     return ((current / previous) * 100).toFixed(1);
+  };
+
+  const handleRefresh = () => {
+    setIsRefreshing(true);
+    setTimeout(() => setIsRefreshing(false), 1000);
+  };
+
+  const handleExport = () => {
+    setShowExportToast(true);
+    setTimeout(() => setShowExportToast(false), 3000);
   };
 
   return (
@@ -154,13 +166,26 @@ export default function AnalyticsPage() {
               <SelectItem value="12m">Last 12 months</SelectItem>
             </SelectContent>
           </Select>
-          <Button variant="outline" size="icon">
-            <RefreshCw className="h-4 w-4" />
+          <Button variant="outline" size="icon" onClick={handleRefresh} disabled={isRefreshing}>
+            <RefreshCw className={cn("h-4 w-4", isRefreshing && "animate-spin")} />
           </Button>
-          <Button variant="outline">
+          <Button variant="outline" onClick={handleExport}>
             <Download className="mr-2 h-4 w-4" />
             Export
           </Button>
+
+          {/* Export Toast Notification */}
+          {showExportToast && (
+            <div className="fixed bottom-4 right-4 z-50 bg-background border border-border rounded-lg shadow-lg p-4 flex items-center gap-3 animate-in slide-in-from-bottom-5">
+              <div className="h-8 w-8 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                <Download className="h-4 w-4 text-green-600 dark:text-green-400" />
+              </div>
+              <div>
+                <p className="font-medium text-sm">Export Started</p>
+                <p className="text-xs text-muted-foreground">Analytics report downloading...</p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

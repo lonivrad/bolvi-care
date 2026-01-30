@@ -32,6 +32,7 @@ import {
   Eye,
   Download,
   Filter,
+  Activity,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -182,12 +183,85 @@ const activityTypes = [
   { value: "moderation", label: "Moderation" },
 ];
 
+// Additional activities for load more
+const moreActivities = [
+  {
+    id: "act-013",
+    type: "user_signup",
+    title: "New family registered",
+    description: "Anderson Family completed registration",
+    user: { name: "Anderson Family", photo: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop" },
+    timestamp: "3 hours ago",
+    icon: UserPlus,
+    color: "text-green-500",
+    bgColor: "bg-green-100 dark:bg-green-900/30",
+  },
+  {
+    id: "act-014",
+    type: "payout_processed",
+    title: "Payout processed",
+    description: "James Lee - $523.00 transferred",
+    user: { name: "James Lee", photo: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100&h=100&fit=crop" },
+    timestamp: "4 hours ago",
+    icon: DollarSign,
+    color: "text-green-500",
+    bgColor: "bg-green-100 dark:bg-green-900/30",
+  },
+  {
+    id: "act-015",
+    type: "verification_approved",
+    title: "Background check approved",
+    description: "Sarah Williams - All checks passed",
+    user: { name: "Sarah Williams", photo: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop" },
+    timestamp: "4 hours ago",
+    icon: Shield,
+    color: "text-emerald-500",
+    bgColor: "bg-emerald-100 dark:bg-emerald-900/30",
+  },
+  {
+    id: "act-016",
+    type: "booking_completed",
+    title: "Booking completed",
+    description: "Martinez Family → David Kim - 6 hour visit",
+    user: { name: "David Kim", photo: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&h=100&fit=crop" },
+    timestamp: "5 hours ago",
+    icon: CheckCircle,
+    color: "text-blue-500",
+    bgColor: "bg-blue-100 dark:bg-blue-900/30",
+  },
+  {
+    id: "act-017",
+    type: "review_posted",
+    title: "4-star review posted",
+    description: "Thompson Family rated Michael Brown",
+    user: { name: "Thompson Family", photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop" },
+    timestamp: "5 hours ago",
+    icon: Star,
+    color: "text-amber-500",
+    bgColor: "bg-amber-100 dark:bg-amber-900/30",
+  },
+  {
+    id: "act-018",
+    type: "booking_created",
+    title: "New booking created",
+    description: "Wilson Family booked with Emily Chen",
+    user: { name: "Wilson Family", photo: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop" },
+    timestamp: "6 hours ago",
+    icon: Calendar,
+    color: "text-primary",
+    bgColor: "bg-primary/10",
+  },
+];
+
+const allActivities = [...activities, ...moreActivities];
+
 export default function AdminActivityPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
   const [isLive, setIsLive] = useState(true);
+  const [visibleCount, setVisibleCount] = useState(12);
 
-  const filteredActivities = activities.filter((activity) => {
+  const filteredActivities = allActivities.filter((activity) => {
     const matchesSearch =
       activity.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       activity.description.toLowerCase().includes(searchQuery.toLowerCase());
@@ -305,12 +379,17 @@ export default function AdminActivityPage() {
         <CardContent>
           <div className="space-y-1">
             {filteredActivities.length === 0 ? (
-              <div className="text-center py-12 text-muted-foreground">
-                <Search className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>No activities found matching your criteria</p>
+              <div className="flex flex-col items-center justify-center py-16 text-center">
+                <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                  <Activity className="h-8 w-8 text-primary" />
+                </div>
+                <h3 className="font-semibold text-lg mb-1">No activities found</h3>
+                <p className="text-muted-foreground text-sm max-w-sm">
+                  No activity matches your current filters. Try selecting a different category or time range.
+                </p>
               </div>
             ) : (
-              filteredActivities.map((activity, index) => {
+              filteredActivities.slice(0, visibleCount).map((activity, index) => {
                 const Icon = activity.icon;
                 return (
                   <div
@@ -354,9 +433,21 @@ export default function AdminActivityPage() {
           </div>
 
           {/* Load More */}
-          <div className="mt-6 text-center">
-            <Button variant="outline">Load More</Button>
-          </div>
+          {visibleCount < filteredActivities.length && (
+            <div className="mt-6 text-center">
+              <Button
+                variant="outline"
+                onClick={() => setVisibleCount((prev) => Math.min(prev + 6, filteredActivities.length))}
+              >
+                Load More ({filteredActivities.length - visibleCount} remaining)
+              </Button>
+            </div>
+          )}
+          {visibleCount >= filteredActivities.length && filteredActivities.length > 12 && (
+            <div className="mt-6 text-center text-sm text-muted-foreground">
+              All activities loaded
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

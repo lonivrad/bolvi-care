@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -11,6 +12,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   DollarSign,
   TrendingUp,
@@ -25,6 +33,10 @@ import {
   CheckCircle,
   Clock,
   AlertCircle,
+  User,
+  Heart,
+  MapPin,
+  ExternalLink,
 } from "lucide-react";
 
 const financialStats = [
@@ -62,7 +74,33 @@ const financialStats = [
   },
 ];
 
-const recentTransactions = [
+interface Transaction {
+  id: string;
+  type: "booking" | "payout" | "refund";
+  description: string;
+  caregiver: string;
+  amount: number;
+  fee: number;
+  status: "completed" | "pending" | "processing";
+  date: string;
+  // Extended details for booking transactions
+  bookingDetails?: {
+    bookingId: string;
+    family: string;
+    familyEmail: string;
+    caregiverEmail: string;
+    careRecipient: string;
+    services: string[];
+    duration: number;
+    hourlyRate: number;
+    location: string;
+    startTime: string;
+    endTime: string;
+    notes?: string;
+  };
+}
+
+const recentTransactions: Transaction[] = [
   {
     id: "t-1",
     type: "booking",
@@ -72,6 +110,20 @@ const recentTransactions = [
     fee: 24.5,
     status: "completed",
     date: "2024-03-01T14:30:00",
+    bookingDetails: {
+      bookingId: "BK-2024-1234",
+      family: "Johnson Family",
+      familyEmail: "johnson@email.com",
+      caregiverEmail: "maria.r@email.com",
+      careRecipient: "Robert Johnson (Father)",
+      services: ["Personal Care", "Medication Management", "Companionship"],
+      duration: 5,
+      hourlyRate: 45,
+      location: "Seattle, WA 98101",
+      startTime: "2024-03-01T09:00:00",
+      endTime: "2024-03-01T14:00:00",
+      notes: "Requires assistance with mobility and medication schedule.",
+    },
   },
   {
     id: "t-2",
@@ -92,6 +144,19 @@ const recentTransactions = [
     fee: 18.0,
     status: "completed",
     date: "2024-03-01T10:15:00",
+    bookingDetails: {
+      bookingId: "BK-2024-1235",
+      family: "Smith Family",
+      familyEmail: "smith@email.com",
+      caregiverEmail: "sarah.t@email.com",
+      careRecipient: "Eleanor Smith (Mother)",
+      services: ["Companionship", "Light Housekeeping"],
+      duration: 4,
+      hourlyRate: 40,
+      location: "Bellevue, WA 98004",
+      startTime: "2024-03-01T08:00:00",
+      endTime: "2024-03-01T12:00:00",
+    },
   },
   {
     id: "t-4",
@@ -112,6 +177,20 @@ const recentTransactions = [
     fee: 32.0,
     status: "pending",
     date: "2024-02-29T14:20:00",
+    bookingDetails: {
+      bookingId: "BK-2024-1236",
+      family: "Garcia Family",
+      familyEmail: "garcia@email.com",
+      caregiverEmail: "emily.w@email.com",
+      careRecipient: "Manuel Garcia (Father)",
+      services: ["Personal Care", "Meal Preparation", "Transportation"],
+      duration: 8,
+      hourlyRate: 38,
+      location: "Tacoma, WA 98402",
+      startTime: "2024-02-29T08:00:00",
+      endTime: "2024-02-29T16:00:00",
+      notes: "Needs transportation to doctor's appointment at 2pm.",
+    },
   },
   {
     id: "t-6",
@@ -165,10 +244,25 @@ const pendingPayouts = [
 ];
 
 export default function AdminFinancialsPage() {
+  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+  const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
+
+  const handleViewDetails = (transaction: Transaction) => {
+    setSelectedTransaction(transaction);
+    setDetailsDialogOpen(true);
+  };
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+    });
+  };
+
+  const formatTime = (dateString: string) => {
+    return new Date(dateString).toLocaleTimeString("en-US", {
       hour: "numeric",
       minute: "2-digit",
     });
@@ -265,15 +359,24 @@ export default function AdminFinancialsPage() {
                   </thead>
                   <tbody className="divide-y divide-border">
                     {recentTransactions.map((transaction) => (
-                      <tr key={transaction.id}>
+                      <tr
+                        key={transaction.id}
+                        className={transaction.bookingDetails ? "cursor-pointer hover:bg-muted/50 transition-colors" : ""}
+                        onClick={() => transaction.bookingDetails && handleViewDetails(transaction)}
+                      >
                         <td className="py-4">
-                          <div>
-                            <p className="font-medium text-foreground">
-                              {transaction.description}
-                            </p>
-                            <p className="text-sm text-muted-foreground">
-                              {transaction.id}
-                            </p>
+                          <div className="flex items-center gap-2">
+                            <div>
+                              <p className="font-medium text-foreground">
+                                {transaction.description}
+                              </p>
+                              <p className="text-sm text-muted-foreground">
+                                {transaction.id}
+                              </p>
+                            </div>
+                            {transaction.bookingDetails && (
+                              <ExternalLink className="h-3 w-3 text-muted-foreground" />
+                            )}
                           </div>
                         </td>
                         <td className="py-4 text-sm">
@@ -611,6 +714,153 @@ export default function AdminFinancialsPage() {
           </div>
         </TabsContent>
       </Tabs>
+
+      {/* Transaction Details Dialog */}
+      <Dialog open={detailsDialogOpen} onOpenChange={setDetailsDialogOpen}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <CreditCard className="h-5 w-5 text-primary" />
+              Transaction Details
+            </DialogTitle>
+            <DialogDescription>
+              {selectedTransaction?.bookingDetails?.bookingId} • {selectedTransaction && formatDate(selectedTransaction.date)}
+            </DialogDescription>
+          </DialogHeader>
+
+          {selectedTransaction?.bookingDetails && (
+            <div className="space-y-6">
+              {/* Amount Summary */}
+              <div className="rounded-lg border border-border bg-muted/50 p-4">
+                <div className="grid grid-cols-3 gap-4 text-center">
+                  <div>
+                    <p className="text-sm text-muted-foreground">Total Amount</p>
+                    <p className="text-xl font-bold text-accent">
+                      ${selectedTransaction.amount.toFixed(2)}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Platform Fee</p>
+                    <p className="text-xl font-bold text-primary">
+                      ${selectedTransaction.fee.toFixed(2)}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Caregiver Payout</p>
+                    <p className="text-xl font-bold text-foreground">
+                      ${(selectedTransaction.amount - selectedTransaction.fee).toFixed(2)}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Booking Info */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-3">
+                  <div>
+                    <p className="text-xs font-medium text-muted-foreground mb-1">FAMILY</p>
+                    <div className="flex items-center gap-2">
+                      <User className="h-4 w-4 text-muted-foreground" />
+                      <div>
+                        <p className="font-medium text-sm">{selectedTransaction.bookingDetails.family}</p>
+                        <p className="text-xs text-muted-foreground">{selectedTransaction.bookingDetails.familyEmail}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium text-muted-foreground mb-1">CARE RECIPIENT</p>
+                    <p className="text-sm">{selectedTransaction.bookingDetails.careRecipient}</p>
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <div>
+                    <p className="text-xs font-medium text-muted-foreground mb-1">CAREGIVER</p>
+                    <div className="flex items-center gap-2">
+                      <Heart className="h-4 w-4 text-muted-foreground" />
+                      <div>
+                        <p className="font-medium text-sm">{selectedTransaction.caregiver}</p>
+                        <p className="text-xs text-muted-foreground">{selectedTransaction.bookingDetails.caregiverEmail}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium text-muted-foreground mb-1">LOCATION</p>
+                    <div className="flex items-center gap-1">
+                      <MapPin className="h-3 w-3 text-muted-foreground" />
+                      <p className="text-sm">{selectedTransaction.bookingDetails.location}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Services */}
+              <div>
+                <p className="text-xs font-medium text-muted-foreground mb-2">SERVICES RENDERED</p>
+                <div className="flex flex-wrap gap-2">
+                  {selectedTransaction.bookingDetails.services.map((service) => (
+                    <Badge key={service} variant="secondary">
+                      {service}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+
+              {/* Time & Rate */}
+              <div className="grid grid-cols-2 gap-4 rounded-lg border border-border p-4">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">Start Time</span>
+                    <span className="text-sm font-medium">{formatTime(selectedTransaction.bookingDetails.startTime)}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">End Time</span>
+                    <span className="text-sm font-medium">{formatTime(selectedTransaction.bookingDetails.endTime)}</span>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">Duration</span>
+                    <span className="text-sm font-medium">{selectedTransaction.bookingDetails.duration} hours</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">Hourly Rate</span>
+                    <span className="text-sm font-medium">${selectedTransaction.bookingDetails.hourlyRate}/hr</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Notes */}
+              {selectedTransaction.bookingDetails.notes && (
+                <div>
+                  <p className="text-xs font-medium text-muted-foreground mb-2">BOOKING NOTES</p>
+                  <p className="text-sm text-muted-foreground rounded-lg border border-border bg-muted/50 p-3">
+                    {selectedTransaction.bookingDetails.notes}
+                  </p>
+                </div>
+              )}
+
+              {/* Status */}
+              <div className="flex items-center justify-between pt-4 border-t">
+                <span className="text-sm text-muted-foreground">Transaction Status</span>
+                <Badge
+                  variant={
+                    selectedTransaction.status === "completed"
+                      ? "default"
+                      : selectedTransaction.status === "processing"
+                      ? "secondary"
+                      : "outline"
+                  }
+                >
+                  {selectedTransaction.status === "completed" && <CheckCircle className="h-3 w-3 mr-1" />}
+                  {selectedTransaction.status === "processing" && <Clock className="h-3 w-3 mr-1" />}
+                  {selectedTransaction.status === "pending" && <AlertCircle className="h-3 w-3 mr-1" />}
+                  {selectedTransaction.status.charAt(0).toUpperCase() + selectedTransaction.status.slice(1)}
+                </Badge>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
