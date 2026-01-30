@@ -53,28 +53,10 @@ const stats = [
 
 const team = [
   {
-    name: "Sarah Chen",
-    role: "CEO & Co-Founder",
-    bio: "Former healthcare executive with 15 years of experience in elder care services.",
-    photo: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop",
-  },
-  {
-    name: "Michael Rodriguez",
-    role: "CTO & Co-Founder",
-    bio: "Tech entrepreneur passionate about using technology to improve healthcare access.",
-    photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop",
-  },
-  {
-    name: "Dr. Emily Watson",
-    role: "Chief Medical Officer",
-    bio: "Board-certified geriatrician dedicated to advancing elder care standards.",
-    photo: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop",
-  },
-  {
-    name: "James Kim",
-    role: "Head of Caregiver Success",
-    bio: "Former nurse with a passion for supporting and empowering caregivers.",
-    photo: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop",
+    name: "Loni Radchishina",
+    role: "Founder & CEO",
+    bio: "ER nurse, first-generation immigrant, and graduate student at Johns Hopkins and UPenn. Building the care system she wished existed.",
+    photo: "/founder-loni.jpg",
   },
 ];
 
@@ -88,49 +70,58 @@ export default function AboutPage() {
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-3xl mx-auto">
               <h1 className="text-4xl font-bold text-foreground sm:text-5xl">
-                Reimagining Elder Care for Modern Families
+                Reimagining Family Support for Modern Life
               </h1>
               <p className="mt-6 text-lg text-muted-foreground">
                 Bolvi Care was founded with a simple mission: to make finding trusted,
-                compassionate care for aging loved ones as easy and transparent as possible.
+                compassionate support for your loved ones as easy and transparent as possible.
               </p>
             </div>
           </div>
         </section>
 
-        {/* Our Story */}
+        {/* Founder's Story */}
         <section className="py-16 lg:py-24">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
               <div>
-                <h2 className="text-3xl font-bold text-foreground">Our Story</h2>
+                <h2 className="text-3xl font-bold text-foreground">Founder&apos;s Story</h2>
                 <div className="mt-6 space-y-4 text-muted-foreground">
                   <p>
-                    Bolvi Care was born from a personal experience. When our founder Sarah&apos;s
-                    grandmother needed care, the family struggled to find trustworthy help.
-                    Agencies were expensive and impersonal, while finding independent caregivers
-                    felt risky and overwhelming.
+                    I immigrated from Ukraine at a young age and was the first in my family to go to college.
+                    Before becoming a nurse, I spent two years working in a nursing home, where I saw firsthand
+                    how fragmented and outdated most care models are for older adults.
                   </p>
                   <p>
-                    We knew there had to be a better way. In 2022, we launched Bolvi Care to
-                    connect families directly with verified, background-checked caregivers—all
-                    with transparent pricing and genuine reviews from other families.
+                    Later, working in the ER, I repeatedly watched the same pattern play out: patients coming in
+                    not because of a true medical emergency, but because basic support had failed. A missed ride.
+                    No one to check in. A family overwhelmed and out of options.
                   </p>
                   <p>
-                    Today, we&apos;re proud to serve thousands of families across the Seattle/Puget
-                    Sound area, with plans to expand nationwide. Our platform has delivered
-                    over 500,000 hours of compassionate care, and we&apos;re just getting started.
+                    I realized the healthcare system is incredible at treating crises, but terrible at preventing them.
+                  </p>
+                  <p>
+                    I was accepted into nursing school at 17, graduated at 19, and have worked in the ER since I was 20.
+                    Today, I&apos;m completing two graduate degrees: an MBA at Johns Hopkins Carey and a Master&apos;s in
+                    Computer Science at the University of Pennsylvania, while still working clinically in Seattle.
+                  </p>
+                  <p>
+                    I&apos;m building Bolvi Care because I&apos;ve lived on both sides of the problem: as a nurse seeing
+                    the downstream cost of missed care, and as a builder designing the system that prevents it.
+                    This isn&apos;t a theoretical startup for me. It&apos;s a product shaped by real patients, real families,
+                    and real gaps I&apos;ve watched unfold in real time.
                   </p>
                 </div>
                 <div className="mt-8 flex items-center gap-4">
                   <MapPin className="h-5 w-5 text-primary" />
                   <span className="text-foreground">Proudly headquartered in Seattle, WA</span>
                 </div>
+                <p className="mt-4 text-sm text-muted-foreground italic">— Loni Radchishina, Founder & CEO</p>
               </div>
               <div className="relative">
                 <Image
-                  src="https://images.unsplash.com/photo-1516733725897-1aa73b87c8e8?w=600&h=400&fit=crop"
-                  alt="Caregiver with elderly person"
+                  src="/founder-loni.jpg"
+                  alt="Loni Radchishina, Founder of Bolvi Care"
                   width={600}
                   height={400}
                   className="rounded-2xl object-cover"
@@ -182,29 +173,29 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Our Team */}
+        {/* Meet the Founder */}
         <section className="bg-muted/50 py-16 lg:py-24">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-foreground">Meet Our Team</h2>
+              <h2 className="text-3xl font-bold text-foreground">Meet the Founder</h2>
               <p className="mt-4 text-lg text-muted-foreground">
-                Passionate leaders dedicated to transforming elder care
+                Building the care system that should have existed all along
               </p>
             </div>
-            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+            <div className="flex justify-center">
               {team.map((member) => (
-                <Card key={member.name}>
+                <Card key={member.name} className="max-w-md">
                   <CardContent className="pt-6 text-center">
                     <Image
                       src={member.photo}
                       alt={member.name}
-                      width={120}
-                      height={120}
+                      width={160}
+                      height={160}
                       className="mx-auto rounded-full object-cover"
                     />
-                    <h3 className="mt-4 font-semibold text-foreground">{member.name}</h3>
+                    <h3 className="mt-4 text-xl font-semibold text-foreground">{member.name}</h3>
                     <p className="text-sm text-primary">{member.role}</p>
-                    <p className="mt-2 text-sm text-muted-foreground">{member.bio}</p>
+                    <p className="mt-3 text-muted-foreground">{member.bio}</p>
                   </CardContent>
                 </Card>
               ))}
@@ -220,7 +211,7 @@ export default function AboutPage() {
                 <h2 className="text-3xl font-bold text-foreground">Why Families Choose Bolvi Care</h2>
                 <div className="mt-8 space-y-4">
                   {[
-                    "100% background-checked and verified caregivers",
+                    "100% fully vetted and verified caregivers",
                     "Transparent pricing with no hidden fees",
                     "Real reviews from real families",
                     "Flexible scheduling to fit your needs",

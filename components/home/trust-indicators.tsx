@@ -3,8 +3,8 @@ import { Shield, BadgeCheck, FileCheck, Fingerprint, Stethoscope, Clock } from "
 const trustFeatures = [
   {
     icon: Fingerprint,
-    title: "Background Checked",
-    description: "FBI + state criminal background checks on every caregiver",
+    title: "Fully Vetted",
+    description: "Every caregiver is fully vetted before joining our platform",
   },
   {
     icon: BadgeCheck,

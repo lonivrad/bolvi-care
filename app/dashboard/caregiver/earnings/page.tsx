@@ -2,8 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Header } from "@/components/layout/header";
-import { Footer } from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -23,8 +21,10 @@ import {
   Download,
   ArrowUpRight,
   Wallet,
+  Calculator,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { EarningsCalculator } from "@/components/earnings/earnings-calculator";
 
 const earningsData = {
   available: 1245,
@@ -54,28 +54,40 @@ const weeklyData = [
 
 export default function EarningsPage() {
   const [period, setPeriod] = useState("week");
+  const [activeTab, setActiveTab] = useState("overview");
   const maxAmount = Math.max(...weeklyData.map((d) => d.amount));
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
-      <Header />
-      <main className="flex-1">
-        <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-foreground">Earnings</h1>
-              <p className="mt-1 text-muted-foreground">
-                Track your income and manage payouts
-              </p>
-            </div>
-            <Button>
-              <Wallet className="mr-2 h-4 w-4" />
-              Request Payout
-            </Button>
-          </div>
+    <div className="space-y-8">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">Earnings</h1>
+          <p className="mt-1 text-muted-foreground">
+            Track your income, manage payouts, and plan your earnings
+          </p>
+        </div>
+        <Button>
+          <Wallet className="mr-2 h-4 w-4" />
+          Request Payout
+        </Button>
+      </div>
+
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <TabsList className="grid w-full grid-cols-2 lg:w-[400px]">
+          <TabsTrigger value="overview">
+            <DollarSign className="mr-2 h-4 w-4" />
+            Overview
+          </TabsTrigger>
+          <TabsTrigger value="calculator">
+            <Calculator className="mr-2 h-4 w-4" />
+            Earnings Calculator
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="overview" className="space-y-6">
 
           {/* Balance Cards */}
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <Card className="border-primary bg-primary/5">
               <CardContent className="pt-6">
                 <div className="flex items-center justify-between">
@@ -121,7 +133,7 @@ export default function EarningsPage() {
           </div>
 
           {/* Chart */}
-          <Card className="mt-8">
+          <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>Earnings Overview</CardTitle>
               <Select value={period} onValueChange={setPeriod}>
@@ -156,7 +168,7 @@ export default function EarningsPage() {
           </Card>
 
           {/* Transactions */}
-          <Card className="mt-8">
+          <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>Transaction History</CardTitle>
               <Button variant="outline" size="sm">
@@ -219,9 +231,12 @@ export default function EarningsPage() {
               </div>
             </CardContent>
           </Card>
-        </div>
-      </main>
-      <Footer />
+        </TabsContent>
+
+        <TabsContent value="calculator">
+          <EarningsCalculator />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

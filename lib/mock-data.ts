@@ -148,12 +148,12 @@ export interface CaregiverUser {
   memberSince: string;
 }
 
-// Sample Caregivers
+// Sample Caregivers - Using professional, friendly headshots
 export const caregivers: Caregiver[] = [
   {
     id: 'cg-1',
     name: 'Maria Rodriguez',
-    photo: 'https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=400&h=400&fit=crop',
+    photo: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop&crop=face',
     hourlyRate: 35,
     rating: 4.9,
     reviewCount: 127,
@@ -174,7 +174,7 @@ export const caregivers: Caregiver[] = [
   {
     id: 'cg-2',
     name: 'James Williams',
-    photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop',
+    photo: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop&crop=face',
     hourlyRate: 40,
     rating: 4.8,
     reviewCount: 89,
@@ -194,7 +194,7 @@ export const caregivers: Caregiver[] = [
   {
     id: 'cg-3',
     name: 'Sarah Chen',
-    photo: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=400&fit=crop',
+    photo: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=400&h=400&fit=crop&crop=face',
     hourlyRate: 45,
     rating: 5.0,
     reviewCount: 156,
@@ -215,7 +215,7 @@ export const caregivers: Caregiver[] = [
   {
     id: 'cg-4',
     name: 'Emily Thompson',
-    photo: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop',
+    photo: 'https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=400&h=400&fit=crop&crop=face',
     hourlyRate: 30,
     rating: 4.7,
     reviewCount: 45,
@@ -236,7 +236,7 @@ export const caregivers: Caregiver[] = [
   {
     id: 'cg-5',
     name: 'Michael Johnson',
-    photo: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop',
+    photo: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face',
     hourlyRate: 38,
     rating: 4.9,
     reviewCount: 112,
@@ -256,7 +256,7 @@ export const caregivers: Caregiver[] = [
   {
     id: 'cg-6',
     name: 'Linda Martinez',
-    photo: 'https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=400&h=400&fit=crop',
+    photo: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=400&fit=crop&crop=face',
     hourlyRate: 42,
     rating: 4.8,
     reviewCount: 93,
@@ -276,7 +276,7 @@ export const caregivers: Caregiver[] = [
   {
     id: 'cg-7',
     name: 'David Kim',
-    photo: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop',
+    photo: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=400&fit=crop&crop=face',
     hourlyRate: 32,
     rating: 4.6,
     reviewCount: 67,
@@ -296,7 +296,7 @@ export const caregivers: Caregiver[] = [
   {
     id: 'cg-8',
     name: 'Patricia Adams',
-    photo: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=400&fit=crop',
+    photo: 'https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=400&h=400&fit=crop&crop=face',
     hourlyRate: 55,
     rating: 5.0,
     reviewCount: 203,
@@ -317,7 +317,7 @@ export const caregivers: Caregiver[] = [
   {
     id: 'cg-9',
     name: 'Robert Taylor',
-    photo: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=400&fit=crop',
+    photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face',
     hourlyRate: 28,
     rating: 4.5,
     reviewCount: 34,
@@ -338,7 +338,7 @@ export const caregivers: Caregiver[] = [
   {
     id: 'cg-10',
     name: 'Jennifer Wong',
-    photo: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop',
+    photo: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face',
     hourlyRate: 48,
     rating: 4.9,
     reviewCount: 178,
@@ -358,13 +358,13 @@ export const caregivers: Caregiver[] = [
   },
 ];
 
-// Sample Reviews
+// Sample Reviews - Using consistent, professional family member photos
 export const reviews: Review[] = [
   {
     id: 'r-1',
     caregiverId: 'cg-1',
     authorName: 'Sarah M.',
-    authorPhoto: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop',
+    authorPhoto: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face',
     rating: 5,
     date: '2024-01-15',
     content: 'Maria is absolutely wonderful with my mother. She has a special way of connecting with dementia patients and always leaves mom in great spirits. Highly recommend!',
@@ -375,7 +375,7 @@ export const reviews: Review[] = [
     id: 'r-2',
     caregiverId: 'cg-1',
     authorName: 'John D.',
-    authorPhoto: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop',
+    authorPhoto: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face',
     rating: 5,
     date: '2024-01-10',
     content: 'We\'ve been using Maria\'s services for 6 months now and couldn\'t be happier. She\'s reliable, punctual, and genuinely cares about our father\'s wellbeing. The visit reports are detailed and give us peace of mind.',
@@ -385,7 +385,7 @@ export const reviews: Review[] = [
     id: 'r-3',
     caregiverId: 'cg-1',
     authorName: 'Lisa K.',
-    authorPhoto: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop',
+    authorPhoto: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=face',
     rating: 4.5,
     date: '2024-01-05',
     content: 'Maria is professional and caring. My dad can be difficult but she handles situations with grace. The only reason for 4.5 stars is scheduling flexibility, but otherwise excellent!',
@@ -396,7 +396,7 @@ export const reviews: Review[] = [
     id: 'r-4',
     caregiverId: 'cg-2',
     authorName: 'Margaret H.',
-    authorPhoto: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop',
+    authorPhoto: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop&crop=face',
     rating: 5,
     date: '2024-01-18',
     content: 'James is incredibly strong and helpful with mobility. My husband needs assistance transferring and James makes him feel safe and dignified. True professional.',
@@ -406,7 +406,7 @@ export const reviews: Review[] = [
     id: 'r-5',
     caregiverId: 'cg-3',
     authorName: 'Robert L.',
-    authorPhoto: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop',
+    authorPhoto: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100&h=100&fit=crop&crop=face',
     rating: 5,
     date: '2024-01-20',
     content: 'Sarah was a blessing during my mother\'s final months. Her nursing background was invaluable, and her compassion made an impossible time bearable for our whole family.',
@@ -420,13 +420,13 @@ export const sampleFamilyUser: FamilyUser = {
   id: 'f-1',
   name: 'Sarah Johnson',
   email: 'sarah.johnson@email.com',
-  photo: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop',
+  photo: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop&crop=face',
   phone: '(206) 555-0123',
   careRecipients: [
     {
       id: 'cr-1',
       name: 'Eleanor Johnson',
-      photo: 'https://images.unsplash.com/photo-1581579186913-45ac3e6efe93?w=200&h=200&fit=crop',
+      photo: 'https://images.unsplash.com/photo-1566616213894-2d4e1baee5d8?w=200&h=200&fit=crop&crop=face',
       age: 82,
       relationship: 'Mother',
       conditions: ['Mild Dementia', 'Arthritis', 'Diabetes Type 2'],
@@ -440,7 +440,7 @@ export const sampleFamilyUser: FamilyUser = {
     {
       id: 'cr-2',
       name: 'Robert Johnson',
-      photo: 'https://images.unsplash.com/photo-1559963110-71b394e7494d?w=200&h=200&fit=crop',
+      photo: 'https://images.unsplash.com/photo-1559718062-361155fad299?w=200&h=200&fit=crop&crop=face',
       age: 85,
       relationship: 'Father',
       conditions: ['Post-Stroke', 'High Blood Pressure'],
@@ -461,7 +461,7 @@ export const sampleCaregiverUser: CaregiverUser = {
   id: 'cg-1',
   name: 'Maria Rodriguez',
   email: 'maria.rodriguez@email.com',
-  photo: 'https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=200&h=200&fit=crop',
+  photo: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&h=200&fit=crop&crop=face',
   phone: '(206) 555-0456',
   profile: caregivers[0],
   earnings: {
@@ -486,7 +486,7 @@ export const bookings: Booking[] = [
     id: 'b-1',
     caregiverId: 'cg-1',
     caregiverName: 'Maria Rodriguez',
-    caregiverPhoto: 'https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=100&h=100&fit=crop',
+    caregiverPhoto: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop&crop=face',
     recipientId: 'cr-1',
     recipientName: 'Eleanor Johnson',
     date: '2024-01-25',
@@ -502,7 +502,7 @@ export const bookings: Booking[] = [
     id: 'b-2',
     caregiverId: 'cg-2',
     caregiverName: 'James Williams',
-    caregiverPhoto: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop',
+    caregiverPhoto: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100&h=100&fit=crop&crop=face',
     recipientId: 'cr-2',
     recipientName: 'Robert Johnson',
     date: '2024-01-26',
@@ -518,7 +518,7 @@ export const bookings: Booking[] = [
     id: 'b-3',
     caregiverId: 'cg-1',
     caregiverName: 'Maria Rodriguez',
-    caregiverPhoto: 'https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=100&h=100&fit=crop',
+    caregiverPhoto: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop&crop=face',
     recipientId: 'cr-1',
     recipientName: 'Eleanor Johnson',
     date: '2024-01-20',
@@ -533,7 +533,7 @@ export const bookings: Booking[] = [
     id: 'b-4',
     caregiverId: 'cg-3',
     caregiverName: 'Sarah Chen',
-    caregiverPhoto: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop',
+    caregiverPhoto: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=100&h=100&fit=crop&crop=face',
     recipientId: 'cr-1',
     recipientName: 'Eleanor Johnson',
     date: '2024-01-18',
@@ -548,7 +548,7 @@ export const bookings: Booking[] = [
     id: 'b-5',
     caregiverId: 'cg-5',
     caregiverName: 'Michael Johnson',
-    caregiverPhoto: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop',
+    caregiverPhoto: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face',
     recipientId: 'cr-2',
     recipientName: 'Robert Johnson',
     date: '2024-01-15',
@@ -567,7 +567,7 @@ export const messageThreads: MessageThread[] = [
     id: 'mt-1',
     participantId: 'cg-1',
     participantName: 'Maria Rodriguez',
-    participantPhoto: 'https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=100&h=100&fit=crop',
+    participantPhoto: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop&crop=face',
     participantRole: 'caregiver',
     lastMessage: 'I\'ll be there at 9am tomorrow. See you then!',
     lastMessageTime: '2024-01-24T15:30:00',
@@ -577,7 +577,7 @@ export const messageThreads: MessageThread[] = [
     id: 'mt-2',
     participantId: 'cg-2',
     participantName: 'James Williams',
-    participantPhoto: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop',
+    participantPhoto: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100&h=100&fit=crop&crop=face',
     participantRole: 'caregiver',
     lastMessage: 'How is your father doing today?',
     lastMessageTime: '2024-01-24T10:15:00',
@@ -587,7 +587,7 @@ export const messageThreads: MessageThread[] = [
     id: 'mt-3',
     participantId: 'cg-3',
     participantName: 'Sarah Chen',
-    participantPhoto: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop',
+    participantPhoto: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=100&h=100&fit=crop&crop=face',
     participantRole: 'caregiver',
     lastMessage: 'The visit went well. Eleanor was in good spirits!',
     lastMessageTime: '2024-01-18T16:45:00',
@@ -601,7 +601,7 @@ export const messages: Message[] = [
     threadId: 'mt-1',
     senderId: 'f-1',
     senderName: 'Sarah Johnson',
-    senderPhoto: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop',
+    senderPhoto: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face',
     content: 'Hi Maria! Just wanted to confirm our appointment for tomorrow.',
     timestamp: '2024-01-24T14:00:00',
     isRead: true,
@@ -611,7 +611,7 @@ export const messages: Message[] = [
     threadId: 'mt-1',
     senderId: 'cg-1',
     senderName: 'Maria Rodriguez',
-    senderPhoto: 'https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=100&h=100&fit=crop',
+    senderPhoto: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop&crop=face',
     content: 'Hi Sarah! Yes, I have you down for 9am to 1pm tomorrow. Is there anything specific you\'d like me to focus on?',
     timestamp: '2024-01-24T14:30:00',
     isRead: true,
@@ -621,7 +621,7 @@ export const messages: Message[] = [
     threadId: 'mt-1',
     senderId: 'f-1',
     senderName: 'Sarah Johnson',
-    senderPhoto: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop',
+    senderPhoto: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face',
     content: 'Mom has been a bit restless lately. Maybe some gardening if the weather is nice?',
     timestamp: '2024-01-24T15:00:00',
     isRead: true,
@@ -631,7 +631,7 @@ export const messages: Message[] = [
     threadId: 'mt-1',
     senderId: 'cg-1',
     senderName: 'Maria Rodriguez',
-    senderPhoto: 'https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=100&h=100&fit=crop',
+    senderPhoto: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop&crop=face',
     content: 'I\'ll be there at 9am tomorrow. See you then!',
     timestamp: '2024-01-24T15:30:00',
     isRead: true,
@@ -727,14 +727,14 @@ export const mockUsers: MockUser[] = [
     email: 'sarah@example.com',
     name: 'Sarah Johnson',
     role: 'family',
-    photo: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop',
+    photo: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop&crop=face',
   },
   {
     id: 'cg-1',
     email: 'maria@caregiver.com',
     name: 'Maria Rodriguez',
     role: 'caregiver',
-    photo: 'https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=200&h=200&fit=crop',
+    photo: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&h=200&fit=crop&crop=face',
   },
 ];
 
@@ -769,7 +769,7 @@ export const testimonials = [
     quote: 'Finding care for my mother used to be so stressful. This platform made it easy to find someone we trust completely. Maria has become like family.',
     author: 'Sarah Johnson',
     role: 'Daughter & Primary Caregiver',
-    photo: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop',
+    photo: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face',
     rating: 5,
   },
   {
@@ -777,7 +777,7 @@ export const testimonials = [
     quote: 'The transparency and detailed visit reports give me peace of mind even though I live 500 miles away from my parents. I can see exactly how each visit went.',
     author: 'Michael Chen',
     role: 'Long-distance Family Caregiver',
-    photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop',
+    photo: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face',
     rating: 5,
   },
   {
@@ -785,7 +785,7 @@ export const testimonials = [
     quote: 'As a caregiver, this platform has transformed my business. I set my own rates, choose my clients, and the booking system is seamless.',
     author: 'Maria Rodriguez',
     role: 'Professional Caregiver',
-    photo: 'https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=100&h=100&fit=crop',
+    photo: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop&crop=face',
     rating: 5,
   },
   {
@@ -793,7 +793,7 @@ export const testimonials = [
     quote: 'After a bad experience with an agency, we were hesitant to try again. The verified caregivers and background checks here made all the difference.',
     author: 'Jennifer Williams',
     role: 'Family Coordinator',
-    photo: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop',
+    photo: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=face',
     rating: 5,
   },
 ];

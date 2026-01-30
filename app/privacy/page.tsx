@@ -25,7 +25,7 @@ export default function PrivacyPage() {
               <p className="text-muted-foreground leading-relaxed">
                 At Bolvi Care, we take your privacy seriously. This Privacy Policy explains how we collect,
                 use, disclose, and safeguard your information when you use our platform connecting families
-                with caregivers for elder care services.
+                with caregivers for at-home support services.
               </p>
             </CardContent>
           </Card>

@@ -34,7 +34,9 @@ import {
   Phone,
   FileText,
   Activity,
+  Shield,
 } from "lucide-react";
+import { EmergencyInfo } from "@/components/emergency/emergency-info";
 
 const careRecipients = [
   {
@@ -86,12 +88,14 @@ const careRecipients = [
 
 export default function CareRecipientsPage() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [selectedRecipient, setSelectedRecipient] = useState<string | null>(null);
+  const [showEmergencyInfo, setShowEmergencyInfo] = useState(false);
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Care Recipients</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">Care Recipients</h1>
           <p className="text-muted-foreground">
             Manage profiles for your loved ones receiving care
           </p>
@@ -216,10 +220,23 @@ export default function CareRecipientsPage() {
                         {recipient.mobilityLevel}
                       </Badge>
                     </div>
-                    <Button variant="outline" size="sm" className="mt-3">
-                      <Edit className="mr-2 h-3 w-3" />
-                      Edit Profile
-                    </Button>
+                    <div className="mt-3 flex gap-2">
+                      <Button variant="outline" size="sm">
+                        <Edit className="mr-2 h-3 w-3" />
+                        Edit Profile
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setSelectedRecipient(recipient.id);
+                          setShowEmergencyInfo(true);
+                        }}
+                      >
+                        <Shield className="mr-2 h-3 w-3" />
+                        Emergency Info
+                      </Button>
+                    </div>
                   </div>
                 </div>
 
@@ -327,6 +344,26 @@ export default function CareRecipientsPage() {
           </Card>
         ))}
       </div>
+
+      {/* Emergency Info Section */}
+      {showEmergencyInfo && (
+        <div className="mt-8">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold text-foreground">
+              Emergency Information
+              {selectedRecipient && (
+                <span className="text-muted-foreground font-normal text-base ml-2">
+                  for {careRecipients.find(r => r.id === selectedRecipient)?.name}
+                </span>
+              )}
+            </h2>
+            <Button variant="ghost" size="sm" onClick={() => setShowEmergencyInfo(false)}>
+              Hide
+            </Button>
+          </div>
+          <EmergencyInfo />
+        </div>
+      )}
     </div>
   );
 }

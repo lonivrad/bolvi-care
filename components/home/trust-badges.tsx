@@ -3,8 +3,8 @@ import { Shield, Clock, CreditCard, FileCheck } from "lucide-react";
 const badges = [
   {
     icon: Shield,
-    title: "100% Background Checked",
-    description: "FBI & state criminal checks on every caregiver",
+    title: "100% Fully Vetted",
+    description: "Every caregiver is fully vetted before joining",
   },
   {
     icon: FileCheck,

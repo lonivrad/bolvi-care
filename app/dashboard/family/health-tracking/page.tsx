@@ -31,7 +31,9 @@ import {
   Download,
   Share,
   Pill,
+  BookOpen,
 } from "lucide-react";
+import { CareJournal } from "@/components/care/care-journal";
 
 // Mock health data
 const vitalSignsHistory = [
@@ -274,12 +276,16 @@ export default function HealthTrackingPage() {
 
       {/* Main Content Tabs */}
       <Tabs defaultValue="vitals" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="vitals">Vital Signs</TabsTrigger>
           <TabsTrigger value="mood">Mood & Wellness</TabsTrigger>
           <TabsTrigger value="medications">Medications</TabsTrigger>
           <TabsTrigger value="sleep">Sleep</TabsTrigger>
           <TabsTrigger value="nutrition">Nutrition</TabsTrigger>
+          <TabsTrigger value="journal">
+            <BookOpen className="mr-1 h-4 w-4 hidden sm:inline" />
+            Care Journal
+          </TabsTrigger>
         </TabsList>
 
         {/* Vital Signs Tab */}
@@ -521,6 +527,11 @@ export default function HealthTrackingPage() {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* Care Journal Tab */}
+        <TabsContent value="journal">
+          <CareJournal />
         </TabsContent>
       </Tabs>
     </div>

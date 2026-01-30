@@ -1,10 +1,8 @@
 "use client";
 
-import { Header } from "@/components/layout/header";
-import { Footer } from "@/components/layout/footer";
+import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -16,15 +14,12 @@ import {
   Calendar,
   Clock,
   DollarSign,
-  TrendingUp,
-  TrendingDown,
-  Heart,
   Star,
-  Activity,
   Download,
   ArrowUpRight,
   ArrowDownRight,
 } from "lucide-react";
+import { MetricsDashboard } from "@/components/analytics/metrics-dashboard";
 
 const stats = [
   {
@@ -127,13 +122,11 @@ export default function FamilyAnalyticsPage() {
   const maxSpending = Math.max(...monthlySpending.map((m) => m.amount));
 
   return (
-    <>
-      <Header />
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-6">
-        <div className="flex items-center justify-between">
+    <div className="space-y-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Care Analytics</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">Care Analytics</h1>
+          <p className="text-muted-foreground mt-1">
             Insights into your care spending and activity
           </p>
         </div>
@@ -157,29 +150,31 @@ export default function FamilyAnalyticsPage() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat) => {
           const Icon = stat.icon;
           return (
             <Card key={stat.title}>
-              <CardContent className="pt-6">
+              <CardContent className="p-5">
                 <div className="flex items-center justify-between">
-                  <Icon className="h-5 w-5 text-muted-foreground" />
+                  <div className="rounded-xl bg-primary/10 p-2.5">
+                    <Icon className="h-5 w-5 text-primary" />
+                  </div>
                   <div
-                    className={`flex items-center text-sm ${
+                    className={`flex items-center gap-1 text-sm font-medium ${
                       stat.trend === "up" ? "text-green-600" : "text-red-600"
                     }`}
                   >
                     {stat.change}
                     {stat.trend === "up" ? (
-                      <ArrowUpRight className="ml-1 h-4 w-4" />
+                      <ArrowUpRight className="h-4 w-4" />
                     ) : (
-                      <ArrowDownRight className="ml-1 h-4 w-4" />
+                      <ArrowDownRight className="h-4 w-4" />
                     )}
                   </div>
                 </div>
-                <div className="mt-4">
-                  <p className="text-2xl font-bold">{stat.value}</p>
+                <div className="mt-3">
+                  <p className="text-2xl font-bold text-foreground">{stat.value}</p>
                   <p className="text-sm text-muted-foreground">{stat.title}</p>
                 </div>
               </CardContent>
@@ -203,7 +198,7 @@ export default function FamilyAnalyticsPage() {
                       ${(month.amount / 1000).toFixed(1)}k
                     </span>
                     <div
-                      className="w-full bg-primary rounded-t transition-all"
+                      className="w-full bg-gradient-to-t from-primary to-primary/70 rounded-t transition-all hover:from-primary/90 hover:to-primary/60"
                       style={{
                         height: `${(month.amount / maxSpending) * 140}px`,
                       }}
@@ -228,7 +223,7 @@ export default function FamilyAnalyticsPage() {
               {careByRecipient.map((recipient) => (
                 <div key={recipient.name}>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="font-medium">{recipient.name}</span>
+                    <span className="font-medium text-foreground">{recipient.name}</span>
                     <span className="text-muted-foreground">
                       {recipient.hours} hrs ({recipient.percentage}%)
                     </span>
@@ -243,8 +238,8 @@ export default function FamilyAnalyticsPage() {
               ))}
               <div className="pt-4 border-t border-border">
                 <div className="flex justify-between">
-                  <span className="font-medium">Total Hours</span>
-                  <span className="font-bold">
+                  <span className="font-medium text-foreground">Total Hours</span>
+                  <span className="font-bold text-foreground">
                     {careByRecipient.reduce((sum, r) => sum + r.hours, 0)} hrs
                   </span>
                 </div>
@@ -263,29 +258,31 @@ export default function FamilyAnalyticsPage() {
               {topCaregivers.map((caregiver, index) => (
                 <div
                   key={caregiver.name}
-                  className="flex items-center justify-between"
+                  className="flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors"
                 >
                   <div className="flex items-center gap-3">
                     <div className="relative">
-                      <img
+                      <Image
                         src={caregiver.photo}
                         alt={caregiver.name}
-                        className="h-10 w-10 rounded-full object-cover"
+                        width={40}
+                        height={40}
+                        className="rounded-full object-cover ring-2 ring-border"
                       />
                       <div className="absolute -top-1 -left-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
                         {index + 1}
                       </div>
                     </div>
                     <div>
-                      <p className="font-medium">{caregiver.name}</p>
+                      <p className="font-medium text-foreground">{caregiver.name}</p>
                       <p className="text-sm text-muted-foreground">
                         {caregiver.hours} hours
                       </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-1">
-                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                    <span className="font-medium">{caregiver.rating}</span>
+                    <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+                    <span className="font-semibold text-foreground">{caregiver.rating}</span>
                   </div>
                 </div>
               ))}
@@ -307,34 +304,34 @@ export default function FamilyAnalyticsPage() {
                 >
                   <div className="flex items-center gap-3">
                     <div
-                      className={`flex h-8 w-8 items-center justify-center rounded-full ${
+                      className={`flex h-9 w-9 items-center justify-center rounded-full ${
                         activity.type === "visit"
-                          ? "bg-blue-100"
+                          ? "bg-blue-100 dark:bg-blue-900/30"
                           : activity.type === "payment"
-                          ? "bg-green-100"
-                          : "bg-yellow-100"
+                          ? "bg-green-100 dark:bg-green-900/30"
+                          : "bg-amber-100 dark:bg-amber-900/30"
                       }`}
                     >
                       {activity.type === "visit" ? (
-                        <Calendar className="h-4 w-4 text-blue-600" />
+                        <Calendar className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                       ) : activity.type === "payment" ? (
-                        <DollarSign className="h-4 w-4 text-green-600" />
+                        <DollarSign className="h-4 w-4 text-green-600 dark:text-green-400" />
                       ) : (
-                        <Star className="h-4 w-4 text-yellow-600" />
+                        <Star className="h-4 w-4 text-amber-600 dark:text-amber-400" />
                       )}
                     </div>
                     <div>
-                      <p className="text-sm font-medium">{activity.description}</p>
+                      <p className="text-sm font-medium text-foreground">{activity.description}</p>
                       <p className="text-xs text-muted-foreground">{activity.date}</p>
                     </div>
                   </div>
                   {activity.amount && (
-                    <span className="font-medium">{activity.amount}</span>
+                    <span className="font-semibold text-foreground">{activity.amount}</span>
                   )}
                   {activity.rating && (
                     <div className="flex items-center gap-1">
-                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                      <span>{activity.rating}</span>
+                      <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+                      <span className="font-semibold">{activity.rating}</span>
                     </div>
                   )}
                 </div>
@@ -343,8 +340,9 @@ export default function FamilyAnalyticsPage() {
           </CardContent>
         </Card>
       </div>
-      </main>
-      <Footer />
-    </>
+
+      {/* Full Metrics Dashboard */}
+      <MetricsDashboard />
+    </div>
   );
 }

@@ -205,7 +205,7 @@ const localResources = [
     services: ["Support Groups", "Education", "Resources"],
   },
   {
-    name: "Elder Care Solutions",
+    name: "Family Support Solutions",
     type: "Care Management",
     address: "1501 4th Ave, Seattle",
     phone: "(206) 555-0789",

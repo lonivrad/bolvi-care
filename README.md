@@ -1,6 +1,6 @@
-# Bolvi Care - Elder Care Marketplace
+# Bolvi Care - Home Care Marketplace
 
-A modern marketplace platform connecting families with trusted, vetted caregivers for their elderly loved ones.
+A modern marketplace platform connecting families with trusted, vetted caregivers for compassionate at-home support.
 
 ![Next.js](https://img.shields.io/badge/Next.js-16.1-black?style=flat-square&logo=next.js)
 ![React](https://img.shields.io/badge/React-19.2-blue?style=flat-square&logo=react)
@@ -9,7 +9,7 @@ A modern marketplace platform connecting families with trusted, vetted caregiver
 
 ## Overview
 
-Bolvi Care revolutionizes how families find trusted care for their elderly loved ones by providing:
+Bolvi Care revolutionizes how families find trusted support for their loved ones by providing:
 
 - **For Families**: Easy search and booking of verified caregivers with transparent pricing
 - **For Caregivers**: Flexible work opportunities with fair compensation

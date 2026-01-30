@@ -58,7 +58,7 @@ export function CaregiverCard({ caregiver, variant = "grid", onFavorite, isFavor
                   <h3 className="text-xl font-semibold text-foreground">{caregiver.name}</h3>
                   <div className="mt-1 flex items-center gap-3 text-sm text-muted-foreground">
                     <span className="flex items-center gap-1">
-                      <Star className="h-4 w-4 fill-secondary text-secondary" />
+                      <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
                       {caregiver.rating} ({caregiver.reviewCount})
                     </span>
                     <span className="flex items-center gap-1">
@@ -130,7 +130,7 @@ export function CaregiverCard({ caregiver, variant = "grid", onFavorite, isFavor
                 {caregiver.isNew && <Badge variant="secondary" className="text-xs">New</Badge>}
               </div>
               <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
-                <Star className="h-4 w-4 fill-secondary text-secondary" />
+                <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
                 {caregiver.rating} ({caregiver.reviewCount})
                 <span className="text-border">•</span>
                 <MapPin className="h-3 w-3" />
@@ -215,7 +215,7 @@ export function CaregiverCard({ caregiver, variant = "grid", onFavorite, isFavor
           <div>
             <h3 className="font-semibold text-foreground">{caregiver.name}</h3>
             <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
-              <Star className="h-4 w-4 fill-secondary text-secondary" />
+              <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
               <span>{caregiver.rating}</span>
               <span className="text-muted-foreground/50">({caregiver.reviewCount})</span>
               <span className="text-border">•</span>

@@ -21,6 +21,10 @@ import {
   CreditCard,
   Wallet,
   PiggyBank,
+  FileText,
+  CheckCircle,
+  Clock,
+  AlertCircle,
 } from "lucide-react";
 
 const financialStats = [
@@ -238,6 +242,7 @@ export default function AdminFinancialsPage() {
           <TabsTrigger value="transactions">Transactions</TabsTrigger>
           <TabsTrigger value="payouts">Pending Payouts</TabsTrigger>
           <TabsTrigger value="revenue">Revenue Breakdown</TabsTrigger>
+          <TabsTrigger value="taxes">Tax Documents</TabsTrigger>
         </TabsList>
 
         <TabsContent value="transactions" className="mt-6">
@@ -474,6 +479,132 @@ export default function AdminFinancialsPage() {
                       </div>
                     </div>
                   ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="taxes" className="mt-6">
+          <div className="grid gap-6 lg:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="h-5 w-5" />
+                  1099 Form Status
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between rounded-lg border p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="rounded-full bg-green-100 p-2 dark:bg-green-900/30">
+                        <CheckCircle className="h-4 w-4 text-green-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium">1099-NEC Forms Generated</p>
+                        <p className="text-sm text-muted-foreground">Tax Year 2023</p>
+                      </div>
+                    </div>
+                    <Badge variant="secondary">342 Forms</Badge>
+                  </div>
+                  <div className="flex items-center justify-between rounded-lg border p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="rounded-full bg-amber-100 p-2 dark:bg-amber-900/30">
+                        <Clock className="h-4 w-4 text-amber-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium">Pending Tax ID Verification</p>
+                        <p className="text-sm text-muted-foreground">Caregivers needing W-9</p>
+                      </div>
+                    </div>
+                    <Badge variant="outline">12 Pending</Badge>
+                  </div>
+                  <div className="flex items-center justify-between rounded-lg border p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="rounded-full bg-blue-100 p-2 dark:bg-blue-900/30">
+                        <FileText className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium">1099 Threshold Met</p>
+                        <p className="text-sm text-muted-foreground">Caregivers earning $600+</p>
+                      </div>
+                    </div>
+                    <Badge>287 Caregivers</Badge>
+                  </div>
+                </div>
+                <Button className="w-full mt-4" variant="outline">
+                  <Download className="mr-2 h-4 w-4" />
+                  Export All 1099 Forms
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Tax Reporting Summary</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {[
+                    { label: "Total Caregiver Earnings (2023)", value: "$2,847,320", icon: DollarSign },
+                    { label: "Platform Fees Collected", value: "$426,098", icon: PiggyBank },
+                    { label: "Total 1099 Reportable", value: "$2,421,222", icon: FileText },
+                    { label: "Caregivers Below $600 Threshold", value: "55", icon: AlertCircle },
+                  ].map((item) => (
+                    <div key={item.label} className="flex items-center justify-between rounded-lg border p-3">
+                      <div className="flex items-center gap-3">
+                        <item.icon className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-sm">{item.label}</span>
+                      </div>
+                      <span className="font-semibold">{item.value}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="lg:col-span-2">
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle>Recent Tax Document Activity</CardTitle>
+                <Button variant="outline" size="sm">
+                  View All
+                </Button>
+              </CardHeader>
+              <CardContent>
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b text-left text-sm text-muted-foreground">
+                        <th className="pb-3 font-medium">Caregiver</th>
+                        <th className="pb-3 font-medium">Document</th>
+                        <th className="pb-3 font-medium">Amount</th>
+                        <th className="pb-3 font-medium">Status</th>
+                        <th className="pb-3 font-medium">Date</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y">
+                      {[
+                        { name: "Maria Rodriguez", doc: "1099-NEC", amount: "$18,450", status: "sent", date: "Jan 31, 2024" },
+                        { name: "David Kim", doc: "1099-NEC", amount: "$12,320", status: "sent", date: "Jan 31, 2024" },
+                        { name: "Sarah Thompson", doc: "W-9", amount: "—", status: "pending", date: "Feb 15, 2024" },
+                        { name: "James Lee", doc: "1099-NEC", amount: "$8,750", status: "sent", date: "Jan 31, 2024" },
+                        { name: "Emily Watson", doc: "1099-NEC", amount: "$15,890", status: "downloaded", date: "Feb 2, 2024" },
+                      ].map((item) => (
+                        <tr key={item.name}>
+                          <td className="py-3 font-medium">{item.name}</td>
+                          <td className="py-3 text-sm">{item.doc}</td>
+                          <td className="py-3 text-sm">{item.amount}</td>
+                          <td className="py-3">
+                            <Badge variant={item.status === "sent" || item.status === "downloaded" ? "default" : "secondary"}>
+                              {item.status.charAt(0).toUpperCase() + item.status.slice(1)}
+                            </Badge>
+                          </td>
+                          <td className="py-3 text-sm text-muted-foreground">{item.date}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </CardContent>
             </Card>

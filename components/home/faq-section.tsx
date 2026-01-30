@@ -10,7 +10,7 @@ import {
 const faqs = [
   {
     question: "How are caregivers vetted?",
-    answer: "All caregivers undergo comprehensive FBI and state criminal background checks, professional reference verification, credential authentication, and in-person interviews. We also verify COVID-19 vaccination status and relevant certifications like CPR and First Aid.",
+    answer: "All caregivers are fully vetted through professional reference verification, credential authentication, and in-person interviews. We also verify COVID-19 vaccination status and relevant certifications like CPR and First Aid.",
   },
   {
     question: "What services do caregivers provide?",

@@ -31,7 +31,7 @@ const steps = [
     icon: UserCheck,
     title: "Review & Connect",
     description: "Review detailed caregiver profiles including certifications, experience, and reviews. Message caregivers directly to discuss your needs.",
-    details: ["Detailed profiles", "Direct messaging", "Video introductions", "Background check info"],
+    details: ["Detailed profiles", "Direct messaging", "Video introductions", "Verification info"],
   },
   {
     number: "03",
@@ -50,7 +50,7 @@ const steps = [
 ];
 
 const benefits = [
-  { icon: Shield, title: "Verified Caregivers", desc: "All caregivers undergo thorough background checks and verification" },
+  { icon: Shield, title: "Verified Caregivers", desc: "All caregivers are fully vetted and verified before joining" },
   { icon: Clock, title: "Flexible Scheduling", desc: "Book care when you need it, from a few hours to full-time support" },
   { icon: DollarSign, title: "Transparent Pricing", desc: "Clear hourly rates with no hidden fees or surprise charges" },
   { icon: Star, title: "Quality Guarantee", desc: "Not satisfied? We'll find you a new caregiver at no extra cost" },
@@ -69,7 +69,7 @@ export default function HowItWorksPage() {
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-pretty text-lg text-muted-foreground">
               Our platform connects families with trusted, verified caregivers in just a few steps. 
-              Here's how we make elder care accessible and stress-free.
+              Here's how we make finding support accessible and stress-free.
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Button size="lg" asChild>
@@ -157,7 +157,7 @@ export default function HowItWorksPage() {
           <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
             <h2 className="text-3xl font-bold text-foreground">Ready to Get Started?</h2>
             <p className="mt-4 text-muted-foreground">
-              Join thousands of families who trust us for their elder care needs
+              Join thousands of families who trust us for their everyday care needs
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Button size="lg" asChild>

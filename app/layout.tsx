@@ -3,6 +3,7 @@ import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { SkipLinks } from "@/components/ui/skip-link";
 import { ToastProvider } from "@/components/ui/toast";
+import { ClientProviders } from "@/components/navigation/client-providers";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -17,7 +18,7 @@ const playfair = Playfair_Display({
 export const metadata: Metadata = {
   title: "Bolvi Care - Trusted Care for Your Loved Ones",
   description: "Connect with verified, independent caregivers for flexible, compassionate support—without the agency markups. Find trusted care for seniors today.",
-  keywords: ["elder care", "senior care", "caregiver", "home care", "companion care", "dementia care"],
+  keywords: ["home care", "caregiver", "family support", "companion care", "at-home support", "everyday care"],
   openGraph: {
     title: "Bolvi Care - Trusted Care for Your Loved Ones",
     description: "Connect with verified, independent caregivers for flexible, compassionate support.",
@@ -62,7 +63,9 @@ export default function RootLayout({
               { href: "#footer", label: "Skip to footer" },
             ]}
           />
-          {children}
+          <ClientProviders>
+            {children}
+          </ClientProviders>
         </ToastProvider>
       </body>
     </html>

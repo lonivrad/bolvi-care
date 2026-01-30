@@ -476,6 +476,7 @@ export interface Payment {
   amount: Currency;
   platformFee: Currency;
   payeeAmount: Currency;
+  taxWithheld?: Currency;
   status: PaymentStatus;
   method: PaymentMethodType;
   transactionId?: string;
@@ -506,6 +507,244 @@ export interface PayoutInfo {
   payoutSchedule: 'weekly' | 'biweekly' | 'monthly';
   minimumPayout: Currency;
 }
+
+// ============================================================================
+// TAX & COMPLIANCE
+// ============================================================================
+
+export type WorkerClassification = 'independent_contractor' | 'employee';
+
+export interface TaxInfo {
+  id: UUID;
+  userId: UUID;
+  classification: WorkerClassification;
+  taxId?: string; // SSN or EIN (stored encrypted, only last 4 shown)
+  taxIdLast4?: string;
+  businessName?: string;
+  businessType?: BusinessType;
+  w9Submitted: boolean;
+  w9SubmittedAt?: ISODateTime;
+  w9DocumentUrl?: URL;
+  state: USState;
+  withholdingElection?: WithholdingElection;
+  createdAt: ISODateTime;
+  updatedAt: ISODateTime;
+}
+
+export type BusinessType =
+  | 'individual_sole_proprietor'
+  | 'single_member_llc'
+  | 'c_corporation'
+  | 's_corporation'
+  | 'partnership'
+  | 'trust_estate'
+  | 'llc_c_corp'
+  | 'llc_s_corp'
+  | 'llc_partnership';
+
+export interface WithholdingElection {
+  federalWithholding: boolean;
+  federalWithholdingPercent?: number;
+  stateWithholding: boolean;
+  stateWithholdingPercent?: number;
+  additionalWithholding?: Currency;
+}
+
+export interface TaxDocument {
+  id: UUID;
+  userId: UUID;
+  type: TaxDocumentType;
+  taxYear: number;
+  status: TaxDocumentStatus;
+  totalEarnings: Currency;
+  totalWithheld?: Currency;
+  documentUrl?: URL;
+  generatedAt?: ISODateTime;
+  sentAt?: ISODateTime;
+  downloadedAt?: ISODateTime;
+  createdAt: ISODateTime;
+}
+
+export type TaxDocumentType = '1099-NEC' | '1099-K' | 'W-2' | 'annual_summary';
+export type TaxDocumentStatus = 'pending' | 'generated' | 'sent' | 'corrected';
+
+export interface QuarterlyTaxEstimate {
+  id: UUID;
+  userId: UUID;
+  taxYear: number;
+  quarter: 1 | 2 | 3 | 4;
+  earnings: Currency;
+  estimatedTax: Currency;
+  federalEstimate: Currency;
+  stateEstimate: Currency;
+  selfEmploymentTax: Currency;
+  dueDate: ISODate;
+  calculatedAt: ISODateTime;
+}
+
+export interface StateTaxInfo {
+  state: USState;
+  hasStateTax: boolean;
+  standardRate?: number;
+  brackets?: TaxBracket[];
+  selfEmploymentRate?: number;
+  additionalLocalTax?: boolean;
+  filingRequirements: string;
+  quarterlyDueDates: ISODate[];
+}
+
+export interface TaxBracket {
+  min: Currency;
+  max?: Currency;
+  rate: number;
+}
+
+// US States
+export type USState =
+  | 'AL' | 'AK' | 'AZ' | 'AR' | 'CA' | 'CO' | 'CT' | 'DE' | 'FL' | 'GA'
+  | 'HI' | 'ID' | 'IL' | 'IN' | 'IA' | 'KS' | 'KY' | 'LA' | 'ME' | 'MD'
+  | 'MA' | 'MI' | 'MN' | 'MS' | 'MO' | 'MT' | 'NE' | 'NV' | 'NH' | 'NJ'
+  | 'NM' | 'NY' | 'NC' | 'ND' | 'OH' | 'OK' | 'OR' | 'PA' | 'RI' | 'SC'
+  | 'SD' | 'TN' | 'TX' | 'UT' | 'VT' | 'VA' | 'WA' | 'WV' | 'WI' | 'WY'
+  | 'DC' | 'PR';
+
+// ============================================================================
+// STATE LICENSING & COMPLIANCE
+// ============================================================================
+
+export interface StateLicenseRequirement {
+  state: USState;
+  requiresLicense: boolean;
+  licenseTypes: LicenseType[];
+  minimumAge: number;
+  backgroundCheckRequired: boolean;
+  backgroundCheckRenewalMonths?: number;
+  trainingRequirements: TrainingRequirement[];
+  supervisedHoursRequired?: number;
+  continuingEducationHours?: number;
+  continuingEducationPeriodMonths?: number;
+  registryUrl?: URL;
+  applicationUrl?: URL;
+  notes?: string;
+}
+
+export interface LicenseType {
+  code: string;
+  name: string;
+  description: string;
+  scope: CareSpecialty[];
+  renewalPeriodMonths: number;
+  cost: Currency;
+  requirements: string[];
+}
+
+export interface TrainingRequirement {
+  name: string;
+  hours: number;
+  topics: string[];
+  mustBeCompletedBefore: 'hire' | 'first_shift' | 'within_30_days' | 'within_90_days';
+  renewalRequired: boolean;
+  renewalPeriodMonths?: number;
+}
+
+export interface CaregiverLicense {
+  id: UUID;
+  caregiverId: UUID;
+  state: USState;
+  licenseType: string;
+  licenseNumber: string;
+  issuedDate: ISODate;
+  expiryDate: ISODate;
+  status: LicenseStatus;
+  verificationUrl?: URL;
+  documentUrl?: URL;
+  verifiedAt?: ISODateTime;
+  verifiedBy?: UUID;
+  notes?: string;
+}
+
+export type LicenseStatus = 'active' | 'expired' | 'suspended' | 'revoked' | 'pending_verification';
+
+// ============================================================================
+// INSURANCE & LIABILITY
+// ============================================================================
+
+export interface InsuranceCoverage {
+  type: InsuranceType;
+  provider: string;
+  policyNumber: string;
+  coverageAmount: Currency;
+  deductible: Currency;
+  effectiveDate: ISODate;
+  expirationDate: ISODate;
+  description: string;
+}
+
+export type InsuranceType =
+  | 'general_liability'
+  | 'professional_liability'
+  | 'workers_comp'
+  | 'bonding'
+  | 'auto';
+
+export interface PlatformInsurance {
+  generalLiability: InsuranceCoverage;
+  professionalLiability: InsuranceCoverage;
+  workersComp?: InsuranceCoverage;
+  bondingCoverage: InsuranceCoverage;
+  additionalInsured: boolean;
+  certificateUrl?: URL;
+}
+
+// ============================================================================
+// INCIDENT REPORTING
+// ============================================================================
+
+export interface Incident {
+  id: UUID;
+  bookingId?: UUID;
+  visitId?: UUID;
+  reportedBy: UUID;
+  reporterRole: UserRole;
+  caregiverId: UUID;
+  careRecipientId: UUID;
+  familyId: UUID;
+  type: IncidentType;
+  severity: IncidentSeverity;
+  description: string;
+  immediateActions: string;
+  witnesses?: string;
+  injuryOccurred: boolean;
+  injuryDescription?: string;
+  medicalAttentionRequired: boolean;
+  emergencyServicesContacted: boolean;
+  photos?: URL[];
+  status: IncidentStatus;
+  resolution?: string;
+  followUpRequired: boolean;
+  followUpNotes?: string;
+  reportedAt: ISODateTime;
+  occurredAt: ISODateTime;
+  resolvedAt?: ISODateTime;
+  createdAt: ISODateTime;
+  updatedAt: ISODateTime;
+}
+
+export type IncidentType =
+  | 'fall'
+  | 'medication_error'
+  | 'injury'
+  | 'behavioral'
+  | 'property_damage'
+  | 'abuse_allegation'
+  | 'neglect_allegation'
+  | 'theft_allegation'
+  | 'health_emergency'
+  | 'elopement'
+  | 'other';
+
+export type IncidentSeverity = 'minor' | 'moderate' | 'major' | 'critical';
+export type IncidentStatus = 'reported' | 'investigating' | 'resolved' | 'escalated';
 
 export interface Payout {
   id: UUID;

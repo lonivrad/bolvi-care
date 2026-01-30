@@ -25,10 +25,12 @@ import {
   Car,
   Languages,
   Briefcase,
+  Sparkles,
 } from "lucide-react";
 import { caregivers, reviews } from "@/lib/mock-data";
 import { BackButton } from "@/components/ui/back-button";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
+import { VerificationBadge } from "@/components/trust/verification-badge";
 
 export default function CaregiverProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -118,7 +120,7 @@ export default function CaregiverProfilePage({ params }: { params: Promise<{ id:
                       <div className="mt-4 flex flex-wrap gap-2">
                         {caregiver.badges.includes('Background Check') && (
                           <Badge variant="secondary" className="bg-green-100 text-green-700">
-                            <Shield className="mr-1 h-3 w-3" /> Background Checked
+                            <Shield className="mr-1 h-3 w-3" /> Fully Vetted
                           </Badge>
                         )}
                         {caregiver.certifications.slice(0, 2).map((cert) => (
@@ -132,11 +134,75 @@ export default function CaregiverProfilePage({ params }: { params: Promise<{ id:
                 </CardContent>
               </Card>
 
+              {/* Match Score Card */}
+              <Card className="overflow-hidden border-2 border-green-200 dark:border-green-800">
+                <div className="bg-gradient-to-r from-green-500 to-emerald-500 text-white text-center py-2 text-sm font-medium">
+                  <Sparkles className="h-4 w-4 inline mr-1" />
+                  Highly Recommended Match
+                </div>
+                <CardContent className="p-5">
+                  <div className="flex items-center justify-between flex-wrap gap-4">
+                    <div className="flex items-center gap-4">
+                      <div className="relative w-16 h-16">
+                        <svg className="w-16 h-16 transform -rotate-90">
+                          <circle
+                            cx="32"
+                            cy="32"
+                            r="28"
+                            stroke="currentColor"
+                            strokeWidth="5"
+                            fill="none"
+                            className="text-muted"
+                          />
+                          <circle
+                            cx="32"
+                            cy="32"
+                            r="28"
+                            stroke="currentColor"
+                            strokeWidth="5"
+                            fill="none"
+                            strokeDasharray={2 * Math.PI * 28}
+                            strokeDashoffset={2 * Math.PI * 28 - (87 / 100) * 2 * Math.PI * 28}
+                            strokeLinecap="round"
+                            className="text-green-500"
+                          />
+                        </svg>
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <span className="text-lg font-bold">87%</span>
+                        </div>
+                      </div>
+                      <div>
+                        <p className="font-semibold text-foreground">Match Score</p>
+                        <p className="text-sm text-muted-foreground">Based on your care preferences</p>
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <Badge variant="outline" className="bg-green-50 dark:bg-green-950 text-green-700 dark:text-green-300">
+                        <CheckCircle className="h-3 w-3 mr-1" />
+                        {caregiver.yearsExperience}+ yrs experience
+                      </Badge>
+                      <Badge variant="outline" className="bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300">
+                        <Star className="h-3 w-3 mr-1" />
+                        {caregiver.rating} rating
+                      </Badge>
+                      <Badge variant="outline" className="bg-purple-50 dark:bg-purple-950 text-purple-700 dark:text-purple-300">
+                        <MapPin className="h-3 w-3 mr-1" />
+                        Nearby
+                      </Badge>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
               {/* Tabs */}
               <Tabs defaultValue="about" className="w-full">
-                <TabsList className="grid w-full grid-cols-4">
+                <TabsList className="grid w-full grid-cols-5">
                   <TabsTrigger value="about">About</TabsTrigger>
                   <TabsTrigger value="services">Services</TabsTrigger>
+                  <TabsTrigger value="trust">
+                    <Shield className="mr-1 h-4 w-4 hidden sm:inline" />
+                    Trust
+                  </TabsTrigger>
                   <TabsTrigger value="reviews">Reviews</TabsTrigger>
                   <TabsTrigger value="availability">Availability</TabsTrigger>
                 </TabsList>
@@ -230,6 +296,10 @@ export default function CaregiverProfilePage({ params }: { params: Promise<{ id:
                       </div>
                     </CardContent>
                   </Card>
+                </TabsContent>
+
+                <TabsContent value="trust" className="mt-4">
+                  <VerificationBadge showActions={false} />
                 </TabsContent>
 
                 <TabsContent value="reviews" className="mt-4 space-y-6">

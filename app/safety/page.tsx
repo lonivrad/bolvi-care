@@ -26,8 +26,8 @@ const safetyMeasures = [
   },
   {
     icon: FileCheck,
-    title: "Background Checks",
-    description: "Comprehensive criminal background checks, including county, state, and federal databases, plus sex offender registry checks.",
+    title: "Fully Vetted",
+    description: "All caregivers are fully vetted through comprehensive verification processes before joining our platform.",
   },
   {
     icon: BadgeCheck,

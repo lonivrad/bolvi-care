@@ -28,9 +28,12 @@ import {
   Shield,
   HelpCircle,
   Briefcase,
+  Search,
+  Command,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { CommandPalette } from "@/components/navigation/command-palette";
 
 const publicNavItems = [
   { label: "Find Care", href: "/caregivers" },
@@ -63,6 +66,7 @@ const adminNavItems = [
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [commandOpen, setCommandOpen] = useState(false);
   const { role, setRole, familyUser, caregiverUser } = useAuthStore();
   const unreadNotifications = useNotificationsStore((s) => s.getUnreadCount());
   const unreadMessages = useMessagesStore((s) => s.getTotalUnread());
@@ -100,6 +104,28 @@ export function Header() {
 
         {/* Right side */}
         <div className="flex items-center gap-2">
+          {/* Search / Command Palette Trigger */}
+          <Button
+            variant="outline"
+            className="hidden sm:flex items-center gap-2 text-muted-foreground h-9 px-3"
+            onClick={() => setCommandOpen(true)}
+          >
+            <Search className="h-4 w-4" />
+            <span className="text-sm">Search...</span>
+            <kbd className="pointer-events-none hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:inline-flex">
+              <span className="text-xs">⌘</span>K
+            </kbd>
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="sm:hidden"
+            onClick={() => setCommandOpen(true)}
+          >
+            <Search className="h-5 w-5" />
+            <span className="sr-only">Search</span>
+          </Button>
+
           {/* Theme Toggle */}
           <ThemeToggle />
 
@@ -278,6 +304,9 @@ export function Header() {
           </nav>
         </div>
       )}
+
+      {/* Command Palette */}
+      <CommandPalette open={commandOpen} onOpenChange={setCommandOpen} />
     </header>
   );
 }

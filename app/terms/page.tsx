@@ -53,7 +53,7 @@ export default function TermsPage() {
             <Card>
               <CardContent className="pt-6 space-y-4">
                 <p className="text-muted-foreground leading-relaxed">
-                  Bolvi Care is a marketplace platform that connects families seeking elder care services
+                  Bolvi Care is a marketplace platform that connects families seeking at-home support services
                   with independent caregivers. We provide:
                 </p>
                 <ul className="list-disc list-inside text-muted-foreground space-y-2">

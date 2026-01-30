@@ -63,7 +63,7 @@ export function Footer() {
               <span className="font-serif text-xl font-semibold">Bolvi Care</span>
             </Link>
             <p className="mt-4 text-sm text-muted-foreground">
-              Connecting families with trusted, verified caregivers for compassionate elder care.
+              Connecting families with trusted, verified caregivers for compassionate at-home support.
             </p>
             <div className="mt-6 space-y-2 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
@@ -142,7 +142,7 @@ export function Footer() {
             <svg className="h-5 w-5 text-accent" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
             </svg>
-            <span>100% Background Checked</span>
+            <span>100% Fully Vetted</span>
           </div>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <svg className="h-5 w-5 text-accent" fill="currentColor" viewBox="0 0 20 20">
