@@ -338,16 +338,17 @@ export function OnboardingChecklist({
                   )}
                 </div>
                 {!item.completed && item.href && (
-                  <Link href={item.href}>
-                    <Button
-                      size="sm"
-                      variant={isNext ? "default" : "ghost"}
-                      className="shrink-0"
-                    >
+                  <Button
+                    size="sm"
+                    variant={isNext ? "default" : "ghost"}
+                    className="shrink-0"
+                    asChild
+                  >
+                    <Link href={item.href}>
                       {item.action}
                       <ChevronRight className="ml-1 h-4 w-4" />
-                    </Button>
-                  </Link>
+                    </Link>
+                  </Button>
                 )}
                 {item.completed && (
                   <span className="text-xs text-green-600 dark:text-green-400 font-medium">
