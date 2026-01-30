@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -25,17 +26,18 @@ import {
   Star,
   Clock,
   ExternalLink,
+  Loader2,
 } from "lucide-react";
 
-// Mock community data
+// Mock community data - use local placeholder images to avoid loading issues
 const initialStories = [
   {
     id: 1,
     family: "The Johnson Family",
     caregiver: "Maria Rodriguez",
     title: "Finding Peace of Mind After Mom's Diagnosis",
-    excerpt: "When Mom was diagnosed with early-stage Alzheimer's, we were overwhelmed. Maria has been our angel...",
-    image: "https://images.unsplash.com/photo-1581579438747-104c53d7fbc4?w=600&h=400&fit=crop",
+    excerpt: "When Mom was diagnosed with early-stage Alzheimer's, we were overwhelmed. Maria has been our angel, bringing expertise and compassion to every visit. She understands the small things that matter most.",
+    image: "/images/story-dementia-care.jpg",
     likes: 234,
     comments: 45,
     date: "2 weeks ago",
@@ -48,8 +50,8 @@ const initialStories = [
     family: "The Chen Family",
     caregiver: "David Kim",
     title: "Dad's Recovery Journey After Hip Surgery",
-    excerpt: "David helped Dad regain his mobility and independence. The physical therapy support was incredible...",
-    image: "https://images.unsplash.com/photo-1566616213894-2d4e1baee5d8?w=600&h=400&fit=crop",
+    excerpt: "David helped Dad regain his mobility and independence. The physical therapy support was incredible and Dad is now walking on his own again.",
+    image: "/images/story-recovery.jpg",
     likes: 189,
     comments: 32,
     date: "1 month ago",
@@ -62,11 +64,57 @@ const initialStories = [
     family: "The Martinez Family",
     caregiver: "Sarah Thompson",
     title: "Companionship That Changed Everything",
-    excerpt: "Grandma was isolated and depressed. Sarah brought joy back into her life with activities and genuine friendship...",
-    image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=600&h=400&fit=crop",
+    excerpt: "Grandma was isolated and depressed. Sarah brought joy back into her life with activities and genuine friendship that we treasure.",
+    image: "/images/story-companionship.jpg",
     likes: 156,
     comments: 28,
     date: "1 month ago",
+    featured: false,
+    liked: false,
+    bookmarked: false,
+  },
+];
+
+// Additional stories for "Load More"
+const moreStories = [
+  {
+    id: 4,
+    family: "The Williams Family",
+    caregiver: "James Mitchell",
+    title: "A New Chapter for Dad at 85",
+    excerpt: "After Mom passed, Dad needed someone to help him stay active and engaged. James has become like family to us all.",
+    image: "/images/story-senior-care.jpg",
+    likes: 127,
+    comments: 19,
+    date: "2 months ago",
+    featured: false,
+    liked: false,
+    bookmarked: false,
+  },
+  {
+    id: 5,
+    family: "The Garcia Family",
+    caregiver: "Lisa Chen",
+    title: "Managing Diabetes with Expert Care",
+    excerpt: "Lisa's background in chronic disease management transformed how we approach Dad's diabetes care at home.",
+    image: "/images/story-diabetes.jpg",
+    likes: 98,
+    comments: 14,
+    date: "2 months ago",
+    featured: false,
+    liked: false,
+    bookmarked: false,
+  },
+  {
+    id: 6,
+    family: "The Anderson Family",
+    caregiver: "Patricia Young",
+    title: "Finding Hope in Hospice Care",
+    excerpt: "Patricia brought dignity, peace, and comfort during our family's most difficult time. Her presence was a blessing.",
+    image: "/images/story-hospice.jpg",
+    likes: 203,
+    comments: 41,
+    date: "3 months ago",
     featured: false,
     liked: false,
     bookmarked: false,
@@ -219,6 +267,8 @@ export default function CommunityPage() {
   const [stories, setStories] = useState(initialStories);
   const [registeredEvents, setRegisteredEvents] = useState<number[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMoreStories, setHasMoreStories] = useState(true);
 
   const handleLike = (storyId: number) => {
     setStories(stories.map(story => {
@@ -315,6 +365,24 @@ export default function CommunityPage() {
     });
   };
 
+  const handleLoadMore = () => {
+    setLoadingMore(true);
+    // Simulate network delay for loading more stories
+    setTimeout(() => {
+      setStories(prev => [...prev, ...moreStories.map(story => ({
+        ...story,
+        id: story.id + prev.length, // Ensure unique IDs
+      }))]);
+      setLoadingMore(false);
+      setHasMoreStories(false);
+      toast({
+        title: "Stories loaded",
+        description: "3 more stories have been added.",
+        variant: "success",
+      });
+    }, 1000);
+  };
+
   const filteredTopics = selectedCategory
     ? forumTopics.filter(t => t.category === selectedCategory)
     : forumTopics;
@@ -356,12 +424,13 @@ export default function CommunityPage() {
               {stories.filter(s => s.featured).map(story => (
                 <Card key={story.id} className="overflow-hidden">
                   <div className="md:flex">
-                    <div className="md:w-1/2">
-                      <img
-                        src={story.image}
-                        alt={story.title}
-                        className="h-64 w-full object-cover md:h-full"
-                      />
+                    <div className="md:w-1/2 relative bg-gradient-to-br from-primary/20 to-primary/5">
+                      <div className="h-64 md:h-full w-full flex items-center justify-center">
+                        <div className="text-center p-8">
+                          <Heart className="h-16 w-16 text-primary/40 mx-auto" />
+                          <p className="mt-4 text-sm text-muted-foreground">Care Story</p>
+                        </div>
+                      </div>
                     </div>
                     <div className="p-6 md:w-1/2">
                       <Badge className="mb-2">Featured Story</Badge>
@@ -417,11 +486,12 @@ export default function CommunityPage() {
               <div className="grid gap-6 md:grid-cols-2">
                 {stories.filter(s => !s.featured).map(story => (
                   <Card key={story.id} className="overflow-hidden">
-                    <img
-                      src={story.image}
-                      alt={story.title}
-                      className="h-48 w-full object-cover"
-                    />
+                    <div className="h-48 w-full bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center">
+                      <div className="text-center">
+                        <Heart className="h-10 w-10 text-muted-foreground/30 mx-auto" />
+                        <p className="mt-2 text-xs text-muted-foreground">Care Story</p>
+                      </div>
+                    </div>
                     <CardContent className="pt-4">
                       <h3 className="text-lg font-bold text-foreground">
                         {story.title}
@@ -454,18 +524,29 @@ export default function CommunityPage() {
                 ))}
               </div>
 
-              <div className="text-center">
-                <Button
-                  variant="outline"
-                  onClick={() => toast({
-                    title: "Loading more...",
-                    description: "Additional stories will be loaded.",
-                    variant: "info",
-                  })}
-                >
-                  Load More Stories
-                </Button>
-              </div>
+              {hasMoreStories && (
+                <div className="text-center">
+                  <Button
+                    variant="outline"
+                    onClick={handleLoadMore}
+                    disabled={loadingMore}
+                  >
+                    {loadingMore ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Loading...
+                      </>
+                    ) : (
+                      "Load More Stories"
+                    )}
+                  </Button>
+                </div>
+              )}
+              {!hasMoreStories && (
+                <div className="text-center text-muted-foreground text-sm">
+                  You've reached the end of all stories
+                </div>
+              )}
             </div>
           </TabsContent>
 

@@ -60,6 +60,7 @@ const caregiverNavItems = [
 const adminNavItems = [
   { label: "Overview", href: "/admin" },
   { label: "Users", href: "/admin/users" },
+  { label: "Bookings", href: "/admin/bookings" },
   { label: "Verifications", href: "/admin/verifications" },
   { label: "Financials", href: "/admin/financials" },
 ];
