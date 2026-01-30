@@ -1,11 +1,28 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Search, MapPin, Calendar, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useCaregiversStore } from "@/lib/store";
 
 export function HeroSection() {
+  const router = useRouter();
+  const { setFilters } = useCaregiversStore();
+  const [zipCode, setZipCode] = useState("");
+  const [careDate, setCareDate] = useState("");
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Set location filter based on zip code input
+    if (zipCode) {
+      setFilters({ location: zipCode });
+    }
+    router.push("/caregivers");
+  };
+
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-primary/5 via-background to-background">
       {/* Background decoration */}
@@ -28,12 +45,12 @@ export function HeroSection() {
             </h1>
 
             <p className="mt-6 text-lg leading-relaxed text-muted-foreground text-pretty">
-              Connect with verified, independent caregivers for flexible, compassionate support—without the agency markups. 
+              Connect with verified, independent caregivers for flexible, compassionate support—without the agency markups.
               Real-time updates, transparent pricing, and peace of mind.
             </p>
 
             {/* Search box */}
-            <div className="mt-8 rounded-2xl border border-border bg-card p-4 shadow-lg">
+            <form onSubmit={handleSearch} className="mt-8 rounded-2xl border border-border bg-card p-4 shadow-lg">
               <div className="flex flex-col gap-3 sm:flex-row">
                 <div className="relative flex-1">
                   <MapPin className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
@@ -41,6 +58,9 @@ export function HeroSection() {
                     type="text"
                     placeholder="Enter your zip code"
                     className="h-12 pl-10"
+                    value={zipCode}
+                    onChange={(e) => setZipCode(e.target.value)}
+                    aria-label="Enter your zip code or city"
                   />
                 </div>
                 <div className="relative flex-1">
@@ -49,19 +69,20 @@ export function HeroSection() {
                     type="text"
                     placeholder="When do you need care?"
                     className="h-12 pl-10"
+                    value={careDate}
+                    onChange={(e) => setCareDate(e.target.value)}
+                    aria-label="When do you need care"
                   />
                 </div>
-                <Button size="lg" className="h-12 gap-2 px-6" asChild>
-                  <Link href="/caregivers">
-                    <Search className="h-5 w-5" />
-                    <span>Find Care</span>
-                  </Link>
+                <Button type="submit" size="lg" className="h-12 gap-2 px-6">
+                  <Search className="h-5 w-5" />
+                  <span>Find Care</span>
                 </Button>
               </div>
               <p className="mt-3 text-center text-sm text-muted-foreground">
                 500+ verified caregivers available in your area
               </p>
-            </div>
+            </form>
 
             {/* CTAs */}
             <div className="mt-8 flex flex-col gap-4 sm:flex-row">

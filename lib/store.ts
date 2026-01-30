@@ -27,6 +27,7 @@ interface AuthState {
 
 interface CaregiverFilters {
   search: string;
+  location: string;
   services: string[];
   minRate: number;
   maxRate: number;
@@ -77,6 +78,7 @@ interface UIState {
 
 const defaultFilters: CaregiverFilters = {
   search: '',
+  location: '',
   services: [],
   minRate: 20,
   maxRate: 70,
@@ -134,8 +136,16 @@ export const useCaregiversStore = create<CaregiversState>()((set, get) => ({
       );
     }
 
+    // Location filter
+    if (filters.location) {
+      const locationLower = filters.location.toLowerCase();
+      filtered = filtered.filter(cg =>
+        cg.location.toLowerCase().includes(locationLower)
+      );
+    }
+
     // Rate filter
-    filtered = filtered.filter(cg => 
+    filtered = filtered.filter(cg =>
       cg.hourlyRate >= filters.minRate && cg.hourlyRate <= filters.maxRate
     );
 

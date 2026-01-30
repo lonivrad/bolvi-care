@@ -88,28 +88,36 @@ export default function AboutPage() {
                 <h2 className="text-3xl font-bold text-foreground">Founder&apos;s Story</h2>
                 <div className="mt-6 space-y-4 text-muted-foreground">
                   <p>
-                    I immigrated from Ukraine at a young age and was the first in my family to go to college.
-                    Before becoming a nurse, I spent two years working in a nursing home, where I saw firsthand
-                    how fragmented and outdated most care models are for older adults.
+                    I immigrated from Ukraine as a child and was the first in my family to go to college. I learned
+                    early what it means to navigate systems that are difficult to access and how much depends on
+                    having the right support at the right time.
                   </p>
                   <p>
-                    Later, working in the ER, I repeatedly watched the same pattern play out: patients coming in
-                    not because of a true medical emergency, but because basic support had failed. A missed ride.
-                    No one to check in. A family overwhelmed and out of options.
+                    Before becoming a nurse, I spent two years working in a nursing home. I expected to see medical
+                    complexity. What I did not expect was how many problems had nothing to do with medicine. Most were
+                    logistical, human, and preventable. People did not need more treatment. They needed someone to
+                    check in, help with basic tasks, or simply show up.
                   </p>
                   <p>
-                    I realized the healthcare system is incredible at treating crises, but terrible at preventing them.
+                    That pattern became even clearer in the emergency room. I repeatedly saw patients come in not
+                    because of true medical emergencies, but because everyday support had failed. A missed ride. No
+                    one available to help at home. A family stretched too thin. By the time they reached us, the
+                    system was already reacting to a problem that could have been avoided.
                   </p>
                   <p>
-                    I was accepted into nursing school at 17, graduated at 19, and have worked in the ER since I was 20.
-                    Today, I&apos;m completing two graduate degrees: an MBA at Johns Hopkins Carey and a Master&apos;s in
-                    Computer Science at the University of Pennsylvania, while still working clinically in Seattle.
+                    I was accepted into nursing school at 17, graduated at 19, and have worked in the ER since I
+                    was 20. Today, I am completing an MBA at Johns Hopkins Carey and a Master&apos;s in Computer
+                    Science at the University of Pennsylvania, while continuing to work clinically in Seattle.
                   </p>
                   <p>
-                    I&apos;m building Bolvi Care because I&apos;ve lived on both sides of the problem: as a nurse seeing
-                    the downstream cost of missed care, and as a builder designing the system that prevents it.
-                    This isn&apos;t a theoretical startup for me. It&apos;s a product shaped by real patients, real families,
-                    and real gaps I&apos;ve watched unfold in real time.
+                    I am building Bolvi Care because I have lived the gap from both sides. As a nurse, I have seen
+                    the downstream cost of missed support. As a builder, I have the tools to design something better.
+                    Bolvi Care exists to make everyday at home support accessible before small problems turn into
+                    medical crises.
+                  </p>
+                  <p>
+                    This is not a hypothetical idea for me. It is the system I wish existed for the families I have
+                    treated and the one I am committed to building.
                   </p>
                 </div>
                 <div className="mt-8 flex items-center gap-4">

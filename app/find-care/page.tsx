@@ -71,7 +71,10 @@ export default function FindCarePage() {
                   <MapPin className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                   <Input
                     placeholder="Seattle, WA"
+                    value={filters.location}
+                    onChange={(e) => setFilters({ location: e.target.value })}
                     className="w-full pl-9 sm:w-48"
+                    aria-label="Filter by location"
                   />
                 </div>
 

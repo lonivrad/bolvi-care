@@ -3,8 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Header } from "@/components/layout/header";
-import { Footer } from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -13,7 +11,6 @@ import { useBookingsStore } from "@/lib/store";
 import {
   Calendar,
   Clock,
-  MapPin,
   MoreHorizontal,
   MessageSquare,
   X,
@@ -41,29 +38,26 @@ export default function BookingsPage() {
   const { bookings, cancelBooking } = useBookingsStore();
   const [activeTab, setActiveTab] = useState("all");
 
-  const filteredBookings = activeTab === "all" 
-    ? bookings 
+  const filteredBookings = activeTab === "all"
+    ? bookings
     : bookings.filter((b) => b.status === activeTab);
 
   const upcomingCount = bookings.filter((b) => b.status === "upcoming").length;
   const completedCount = bookings.filter((b) => b.status === "completed").length;
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
-      <Header />
-      <main className="flex-1">
-        <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-foreground">My Bookings</h1>
-              <p className="mt-1 text-muted-foreground">
-                Manage your care appointments
-              </p>
-            </div>
-            <Button asChild>
-              <Link href="/caregivers">Book New Visit</Link>
-            </Button>
-          </div>
+    <div className="space-y-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">My Bookings</h1>
+          <p className="mt-1 text-muted-foreground">
+            Manage your care appointments
+          </p>
+        </div>
+        <Button asChild>
+          <Link href="/caregivers">Book New Visit</Link>
+        </Button>
+      </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-8">
             <TabsList>
@@ -214,9 +208,6 @@ export default function BookingsPage() {
               )}
             </TabsContent>
           </Tabs>
-        </div>
-      </main>
-      <Footer />
     </div>
   );
 }
