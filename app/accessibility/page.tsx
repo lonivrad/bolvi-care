@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { Header } from "@/components/layout/header";
+import { Footer } from "@/components/layout/footer";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -79,8 +81,10 @@ export default function AccessibilityPage() {
   };
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8">
-      {/* Navigation */}
+    <>
+      <Header />
+      <main className="mx-auto max-w-4xl px-4 py-8">
+        {/* Navigation */}
       <div className="mb-6">
         <BackButton href="/settings" label="Back to Settings" variant="link" />
       </div>
@@ -469,6 +473,8 @@ export default function AccessibilityPage() {
           </CardContent>
         </Card>
       </div>
-    </div>
+      </main>
+      <Footer />
+    </>
   );
 }

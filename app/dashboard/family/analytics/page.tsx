@@ -1,5 +1,7 @@
 "use client";
 
+import { Header } from "@/components/layout/header";
+import { Footer } from "@/components/layout/footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -125,8 +127,10 @@ export default function FamilyAnalyticsPage() {
   const maxSpending = Math.max(...monthlySpending.map((m) => m.amount));
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <>
+      <Header />
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-6">
+        <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-foreground">Care Analytics</h1>
           <p className="text-muted-foreground">
@@ -339,6 +343,8 @@ export default function FamilyAnalyticsPage() {
           </CardContent>
         </Card>
       </div>
-    </div>
+      </main>
+      <Footer />
+    </>
   );
 }

@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { Header } from "@/components/layout/header";
+import { Footer } from "@/components/layout/footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -166,7 +168,9 @@ export default function NotificationsPage() {
   };
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8">
+    <>
+      <Header />
+      <main className="mx-auto max-w-4xl px-4 py-8">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-3xl font-bold text-foreground">Notifications</h1>
@@ -367,6 +371,8 @@ export default function NotificationsPage() {
           </Card>
         </TabsContent>
       </Tabs>
-    </div>
+      </main>
+      <Footer />
+    </>
   );
 }
