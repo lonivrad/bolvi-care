@@ -7,7 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useBookingsStore } from "@/lib/store";
+import { useToast } from "@/components/ui/toast";
 import {
   Calendar,
   Clock,
@@ -17,6 +20,7 @@ import {
   CheckCircle,
   AlertCircle,
   Loader2,
+  CalendarDays,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -24,6 +28,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 
 const statusConfig = {
@@ -35,8 +47,15 @@ const statusConfig = {
 };
 
 export default function BookingsPage() {
-  const { bookings, cancelBooking } = useBookingsStore();
+  const { bookings, cancelBooking, updateBooking } = useBookingsStore();
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("all");
+  const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+  const [rescheduleDialogOpen, setRescheduleDialogOpen] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState<string | null>(null);
+  const [newDate, setNewDate] = useState("");
+  const [newStartTime, setNewStartTime] = useState("");
+  const [newEndTime, setNewEndTime] = useState("");
 
   const filteredBookings = activeTab === "all"
     ? bookings
@@ -44,6 +63,56 @@ export default function BookingsPage() {
 
   const upcomingCount = bookings.filter((b) => b.status === "upcoming").length;
   const completedCount = bookings.filter((b) => b.status === "completed").length;
+
+  const handleCancelClick = (bookingId: string) => {
+    setSelectedBooking(bookingId);
+    setCancelDialogOpen(true);
+  };
+
+  const confirmCancel = () => {
+    if (selectedBooking) {
+      cancelBooking(selectedBooking);
+      toast({
+        title: "Booking cancelled",
+        description: "Your booking has been cancelled successfully. A refund will be processed within 3-5 business days.",
+        variant: "success",
+      });
+    }
+    setCancelDialogOpen(false);
+    setSelectedBooking(null);
+  };
+
+  const handleRescheduleClick = (bookingId: string) => {
+    const booking = bookings.find(b => b.id === bookingId);
+    if (booking) {
+      setSelectedBooking(bookingId);
+      setNewDate(booking.date);
+      setNewStartTime(booking.startTime);
+      setNewEndTime(booking.endTime);
+      setRescheduleDialogOpen(true);
+    }
+  };
+
+  const confirmReschedule = () => {
+    if (selectedBooking && newDate && newStartTime && newEndTime) {
+      updateBooking(selectedBooking, {
+        date: newDate,
+        startTime: newStartTime,
+        endTime: newEndTime,
+      });
+      toast({
+        title: "Booking rescheduled",
+        description: "Your booking has been rescheduled successfully. The caregiver has been notified.",
+        variant: "success",
+      });
+    }
+    setRescheduleDialogOpen(false);
+    setSelectedBooking(null);
+  };
+
+  const selectedBookingDetails = selectedBooking
+    ? bookings.find(b => b.id === selectedBooking)
+    : null;
 
   return (
     <div className="space-y-8">
@@ -166,11 +235,15 @@ export default function BookingsPage() {
                                         </Button>
                                       </DropdownMenuTrigger>
                                       <DropdownMenuContent align="end">
-                                        <DropdownMenuItem>Reschedule</DropdownMenuItem>
-                                        <DropdownMenuItem 
+                                        <DropdownMenuItem onClick={() => handleRescheduleClick(booking.id)}>
+                                          <CalendarDays className="mr-2 h-4 w-4" />
+                                          Reschedule
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem
                                           className="text-destructive"
-                                          onClick={() => cancelBooking(booking.id)}
+                                          onClick={() => handleCancelClick(booking.id)}
                                         >
+                                          <X className="mr-2 h-4 w-4" />
                                           Cancel Booking
                                         </DropdownMenuItem>
                                       </DropdownMenuContent>
@@ -208,6 +281,117 @@ export default function BookingsPage() {
               )}
             </TabsContent>
           </Tabs>
+
+      {/* Cancel Confirmation Dialog */}
+      <Dialog open={cancelDialogOpen} onOpenChange={setCancelDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Cancel Booking?</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to cancel your booking with{" "}
+              <span className="font-medium text-foreground">
+                {selectedBookingDetails?.caregiverName}
+              </span>
+              ?
+            </DialogDescription>
+          </DialogHeader>
+          {selectedBookingDetails && (
+            <div className="rounded-lg border bg-muted/50 p-4">
+              <div className="flex items-center gap-4">
+                <Image
+                  src={selectedBookingDetails.caregiverPhoto}
+                  alt={selectedBookingDetails.caregiverName}
+                  width={48}
+                  height={48}
+                  className="rounded-full"
+                />
+                <div>
+                  <p className="font-medium">{selectedBookingDetails.caregiverName}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {new Date(selectedBookingDetails.date).toLocaleDateString('en-US', {
+                      weekday: 'long',
+                      month: 'long',
+                      day: 'numeric',
+                    })}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {selectedBookingDetails.startTime} - {selectedBookingDetails.endTime}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+          <p className="text-sm text-muted-foreground">
+            Cancellations made at least 24 hours in advance are eligible for a full refund.
+          </p>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setCancelDialogOpen(false)}>
+              Keep Booking
+            </Button>
+            <Button variant="destructive" onClick={confirmCancel}>
+              Cancel Booking
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Reschedule Dialog */}
+      <Dialog open={rescheduleDialogOpen} onOpenChange={setRescheduleDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Reschedule Booking</DialogTitle>
+            <DialogDescription>
+              Choose a new date and time for your booking with{" "}
+              <span className="font-medium text-foreground">
+                {selectedBookingDetails?.caregiverName}
+              </span>
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="new-date">New Date</Label>
+              <Input
+                id="new-date"
+                type="date"
+                value={newDate}
+                onChange={(e) => setNewDate(e.target.value)}
+                min={new Date().toISOString().split('T')[0]}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="start-time">Start Time</Label>
+                <Input
+                  id="start-time"
+                  type="time"
+                  value={newStartTime}
+                  onChange={(e) => setNewStartTime(e.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="end-time">End Time</Label>
+                <Input
+                  id="end-time"
+                  type="time"
+                  value={newEndTime}
+                  onChange={(e) => setNewEndTime(e.target.value)}
+                />
+              </div>
+            </div>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            The caregiver will be notified of the schedule change.
+          </p>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setRescheduleDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={confirmReschedule}>
+              Confirm Reschedule
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
