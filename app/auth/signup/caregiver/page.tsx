@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Heart, Eye, EyeOff, ArrowLeft, ArrowRight, Check } from "lucide-react";
-import { useStore, useAuthStore } from "@/lib/store";
+import { useAuthStore } from "@/lib/store";
 
 const steps = ["Basic Info", "Experience", "Availability"];
 

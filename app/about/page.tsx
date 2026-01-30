@@ -106,7 +106,7 @@ export default function AboutPage() {
                 <h2 className="text-3xl font-bold text-foreground">Our Story</h2>
                 <div className="mt-6 space-y-4 text-muted-foreground">
                   <p>
-                    Bolvi Care was born from a personal experience. When our founder Sarah's
+                    Bolvi Care was born from a personal experience. When our founder Sarah&apos;s
                     grandmother needed care, the family struggled to find trustworthy help.
                     Agencies were expensive and impersonal, while finding independent caregivers
                     felt risky and overwhelming.
@@ -117,9 +117,9 @@ export default function AboutPage() {
                     with transparent pricing and genuine reviews from other families.
                   </p>
                   <p>
-                    Today, we're proud to serve thousands of families across the Seattle/Puget
+                    Today, we&apos;re proud to serve thousands of families across the Seattle/Puget
                     Sound area, with plans to expand nationwide. Our platform has delivered
-                    over 500,000 hours of compassionate care, and we're just getting started.
+                    over 500,000 hours of compassionate care, and we&apos;re just getting started.
                   </p>
                 </div>
                 <div className="mt-8 flex items-center gap-4">
@@ -268,8 +268,8 @@ export default function AboutPage() {
               Ready to Experience Better Care?
             </h2>
             <p className="mt-4 text-lg text-primary-foreground/80 max-w-2xl mx-auto">
-              Whether you're looking for care or you're a caregiver looking to make a
-              difference, we'd love to have you join the Bolvi Care family.
+              Whether you&apos;re looking for care or you&apos;re a caregiver looking to make a
+              difference, we&apos;d love to have you join the Bolvi Care family.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" variant="secondary" asChild>

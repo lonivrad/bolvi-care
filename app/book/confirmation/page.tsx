@@ -1,27 +1,26 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { CheckCircle, Calendar, MessageCircle, Home, Printer, Download } from "lucide-react";
+import { CheckCircle, Calendar, MessageCircle, Home, Printer } from "lucide-react";
+
+// Generate values outside component for hydration stability
+const generateBookingRef = () => `ECB-${Math.random().toString(36).substring(2, 10).toUpperCase()}`;
+const formatBookingDate = () => new Date().toLocaleDateString("en-US", {
+  weekday: "long",
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
+});
 
 export default function BookingConfirmationPage() {
-  const [bookingRef, setBookingRef] = useState("");
-  const [bookingDate, setBookingDate] = useState("");
-
-  useEffect(() => {
-    // Generate stable booking reference on client
-    setBookingRef(`ECB-${Date.now().toString().slice(-8)}`);
-    setBookingDate(new Date().toLocaleDateString("en-US", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }));
-  }, []);
+  // Use useMemo with empty deps for stable client-side values
+  const bookingRef = useMemo(() => generateBookingRef(), []);
+  const bookingDate = useMemo(() => formatBookingDate(), []);
 
   const handlePrint = () => {
     window.print();

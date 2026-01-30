@@ -158,8 +158,8 @@ export default function ContactPage() {
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-foreground">Get in Touch</h1>
           <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-            Have questions about Bolvi Care? We're here to help. Reach out to our team
-            and we'll get back to you as soon as possible.
+            Have questions about Bolvi Care? We&apos;re here to help. Reach out to our team
+            and we&apos;ll get back to you as soon as possible.
           </p>
         </div>
 

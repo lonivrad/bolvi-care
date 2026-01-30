@@ -14,7 +14,6 @@ import {
 import {
   DollarSign,
   TrendingUp,
-  TrendingDown,
   ArrowUpRight,
   ArrowDownRight,
   Download,
@@ -451,7 +450,7 @@ export default function AdminFinancialsPage() {
                     { month: "January 2024", amount: 32280, change: "+8%" },
                     { month: "December 2023", amount: 29890, change: "+15%" },
                     { month: "November 2023", amount: 25990, change: "+5%" },
-                  ].map((item, index) => (
+                  ].map((item) => (
                     <div
                       key={item.month}
                       className="flex items-center justify-between rounded-lg border border-border p-3"

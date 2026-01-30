@@ -20,8 +20,6 @@ import {
   ArrowRight,
   Check,
   Calendar as CalendarIcon,
-  Clock,
-  MapPin,
   Star,
   Shield,
   CreditCard,
@@ -67,7 +65,7 @@ const durations = [
 export default function BookingPage({ params }: { params: Promise<{ caregiverId: string }> }) {
   const { caregiverId } = use(params);
   const router = useRouter();
-  const { currentUser } = useStore();
+  useStore();
   const caregiver = caregivers.find((c) => c.id === caregiverId) || caregivers[0];
 
   const [currentStep, setCurrentStep] = useState(0);
