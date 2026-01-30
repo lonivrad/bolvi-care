@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useAuthStore } from "@/lib/store";
+import { useToast } from "@/components/ui/toast";
 import {
   Search,
   Send,
@@ -19,8 +20,26 @@ import {
   Check,
   CheckCheck,
   ArrowLeft,
+  MessageSquare,
+  Smile,
 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+
+// Quick reply suggestions
+const quickReplies = [
+  "Thank you!",
+  "I'll be there soon",
+  "Can we reschedule?",
+  "See you tomorrow!",
+  "On my way!",
+];
 
 const mockConversations = [
   {
@@ -102,27 +121,59 @@ const mockMessages = [
 
 export default function MessagesPage() {
   const { role } = useAuthStore();
+  const { toast } = useToast();
   const isAuthenticated = role !== null;
   const [selectedConversation, setSelectedConversation] = useState(mockConversations[0]);
   const [messages, setMessages] = useState(mockMessages);
   const [newMessage, setNewMessage] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [showMobileChat, setShowMobileChat] = useState(false);
+  const [showQuickReplies, setShowQuickReplies] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
-  const sendMessage = () => {
-    if (!newMessage.trim()) return;
-    
+  // Scroll to bottom when new messages arrive
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  const sendMessage = (text?: string) => {
+    const messageText = text || newMessage;
+    if (!messageText.trim()) return;
+
     setMessages([
       ...messages,
       {
         id: String(messages.length + 1),
         senderId: "me",
-        text: newMessage,
+        text: messageText,
         timestamp: "Just now",
         read: false,
       },
     ]);
     setNewMessage("");
+    setShowQuickReplies(false);
+  };
+
+  const handleQuickReply = (reply: string) => {
+    sendMessage(reply);
+  };
+
+  const handleVideoCall = () => {
+    toast({
+      title: "Starting video call...",
+      description: `Connecting to ${selectedConversation?.name}`,
+      variant: "info",
+    });
+  };
+
+  const handleVoiceCall = () => {
+    toast({
+      title: "Starting call...",
+      description: `Calling ${selectedConversation?.name}`,
+      variant: "info",
+    });
   };
 
   const filteredConversations = mockConversations.filter((c) =>
@@ -241,20 +292,48 @@ export default function MessagesPage() {
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="icon">
+                    <Button variant="ghost" size="icon" onClick={handleVoiceCall}>
                       <Phone className="h-5 w-5" />
                     </Button>
-                    <Button variant="ghost" size="icon">
+                    <Button variant="ghost" size="icon" onClick={handleVideoCall}>
                       <Video className="h-5 w-5" />
                     </Button>
-                    <Button variant="ghost" size="icon">
-                      <MoreVertical className="h-5 w-5" />
-                    </Button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon">
+                          <MoreVertical className="h-5 w-5" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => toast({
+                          title: "Profile",
+                          description: `Viewing ${selectedConversation?.name}'s profile`,
+                          variant: "info",
+                        })}>
+                          View Profile
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => toast({
+                          title: "Muted",
+                          description: "Notifications muted for this conversation",
+                          variant: "success",
+                        })}>
+                          Mute Notifications
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem className="text-destructive" onClick={() => toast({
+                          title: "Report submitted",
+                          description: "Our team will review this conversation",
+                          variant: "info",
+                        })}>
+                          Report Conversation
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
                 </div>
 
                 {/* Messages */}
-                <ScrollArea className="flex-1 p-4">
+                <ScrollArea className="flex-1 p-4" ref={scrollRef}>
                   <div className="space-y-4">
                     {messages.map((message) => (
                       <div
@@ -296,11 +375,46 @@ export default function MessagesPage() {
                   </div>
                 </ScrollArea>
 
+                {/* Quick Replies */}
+                {showQuickReplies && (
+                  <div className="border-t border-border px-4 py-2">
+                    <div className="flex flex-wrap gap-2">
+                      {quickReplies.map((reply) => (
+                        <Button
+                          key={reply}
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleQuickReply(reply)}
+                          className="text-xs"
+                        >
+                          {reply}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {/* Message Input */}
                 <div className="border-t border-border p-4">
                   <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="icon">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => toast({
+                        title: "Attachment",
+                        description: "File attachments coming soon",
+                        variant: "info",
+                      })}
+                    >
                       <Paperclip className="h-5 w-5" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setShowQuickReplies(!showQuickReplies)}
+                      className={cn(showQuickReplies && "bg-muted")}
+                    >
+                      <Smile className="h-5 w-5" />
                     </Button>
                     <Input
                       placeholder="Type a message..."
@@ -308,16 +422,23 @@ export default function MessagesPage() {
                       onChange={(e) => setNewMessage(e.target.value)}
                       onKeyDown={(e) => e.key === "Enter" && sendMessage()}
                       className="flex-1"
+                      aria-label="Type your message"
                     />
-                    <Button onClick={sendMessage} disabled={!newMessage.trim()}>
+                    <Button onClick={() => sendMessage()} disabled={!newMessage.trim()}>
                       <Send className="h-5 w-5" />
                     </Button>
                   </div>
                 </div>
               </>
             ) : (
-              <div className="flex flex-1 items-center justify-center">
-                <p className="text-muted-foreground">Select a conversation to start messaging</p>
+              <div className="flex flex-1 flex-col items-center justify-center text-center p-8">
+                <div className="rounded-full bg-muted p-4">
+                  <MessageSquare className="h-10 w-10 text-muted-foreground" />
+                </div>
+                <h3 className="mt-4 text-lg font-semibold">Select a conversation</h3>
+                <p className="mt-2 text-sm text-muted-foreground max-w-sm">
+                  Choose a conversation from the list to start messaging with caregivers or families
+                </p>
               </div>
             )}
           </div>
