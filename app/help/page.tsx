@@ -164,12 +164,12 @@ export default function HelpCenterPage() {
                 href={`/help/category/${category.id}`}
               >
                 <Card className="h-full hover:border-primary/50 hover:shadow-md transition-all cursor-pointer">
-                  <CardContent className="pt-6">
+                  <CardContent className="p-6">
                     <div className="flex items-start gap-4">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+                      <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-primary/10">
                         <Icon className="h-6 w-6 text-primary" />
                       </div>
-                      <div className="flex-1">
+                      <div className="flex-1 min-w-0">
                         <h3 className="font-semibold text-foreground">
                           {category.title}
                         </h3>
@@ -180,7 +180,7 @@ export default function HelpCenterPage() {
                           {articleCount} article{articleCount !== 1 ? "s" : ""}
                         </p>
                       </div>
-                      <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                      <ChevronRight className="h-5 w-5 text-muted-foreground flex-shrink-0" />
                     </div>
                   </CardContent>
                 </Card>

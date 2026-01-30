@@ -6,6 +6,7 @@ import { Footer } from "@/components/layout/footer";
 import { CaregiverCard } from "@/components/caregivers/caregiver-card";
 import { CaregiverFilters } from "@/components/caregivers/caregiver-filters";
 import { useCaregiversStore, useAuthStore } from "@/lib/store";
+import { AuthPrompt } from "@/components/auth/auth-prompt";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -21,17 +22,34 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 export default function CaregiversPage() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [filtersOpen, setFiltersOpen] = useState(false);
-  
+
   const { filters, setFilters, getFilteredCaregivers } = useCaregiversStore();
-  const { familyUser } = useAuthStore();
-  
+  const { role, familyUser } = useAuthStore();
+
   const filteredCaregivers = getFilteredCaregivers();
   const favoriteIds = familyUser?.favoriteCaregiversIds || [];
+
+  // Show auth prompt if user is not logged in
+  if (!role) {
+    return (
+      <div className="flex min-h-screen flex-col bg-background">
+        <Header />
+        <main className="flex-1">
+          <AuthPrompt
+            title="Sign in to browse caregivers"
+            description="Create an account or sign in to view our verified caregivers and book care"
+            action="browsing caregivers"
+          />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
-      
+
       <main className="flex-1">
         {/* Search Header */}
         <div className="border-b border-border bg-card">
@@ -45,7 +63,7 @@ export default function CaregiversPage() {
                   {filteredCaregivers.length} verified caregivers available
                 </p>
               </div>
-              
+
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                 <div className="relative">
                   <MapPin className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />

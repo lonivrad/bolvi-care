@@ -4,7 +4,7 @@ import { ArrowRight, Phone } from "lucide-react";
 
 export function CTASection() {
   return (
-    <section className="py-16 lg:py-24">
+    <section className="py-12 sm:py-16">
       <div className="mx-auto max-w-7xl px-4 lg:px-8">
         <div className="rounded-2xl bg-primary px-8 py-12 lg:px-16 lg:py-16 text-center">
           <h2 className="font-serif text-3xl font-bold text-primary-foreground sm:text-4xl text-balance">

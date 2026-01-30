@@ -3,23 +3,54 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Search, MapPin, Calendar, ArrowRight } from "lucide-react";
+import { format } from "date-fns";
+import { Search, MapPin, Calendar as CalendarIcon, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useCaregiversStore } from "@/lib/store";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { useCaregiversStore, useAuthStore } from "@/lib/store";
+import { useToast } from "@/components/ui/toast";
+import { cn } from "@/lib/utils";
 
 export function HeroSection() {
   const router = useRouter();
+  const { toast } = useToast();
   const { setFilters } = useCaregiversStore();
+  const { role } = useAuthStore();
   const [zipCode, setZipCode] = useState("");
-  const [careDate, setCareDate] = useState("");
+  const [careDate, setCareDate] = useState<Date | undefined>(undefined);
+  const [calendarOpen, setCalendarOpen] = useState(false);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // Set location filter based on zip code input
-    if (zipCode) {
-      setFilters({ location: zipCode });
+
+    // Validate that zip code is filled
+    if (!zipCode.trim()) {
+      toast({
+        title: "Please enter your zip code",
+        description: "We need your location to find caregivers near you",
+        variant: "error",
+      });
+      return;
     }
+
+    // Validate that date is selected
+    if (!careDate) {
+      toast({
+        title: "Please select a date",
+        description: "Choose when you need care to find available caregivers",
+        variant: "error",
+      });
+      return;
+    }
+
+    // Set location filter based on zip code input
+    setFilters({ location: zipCode });
     router.push("/caregivers");
   };
 
@@ -31,7 +62,7 @@ export function HeroSection() {
         <div className="absolute bottom-0 left-0 h-[400px] w-[400px] rounded-full bg-secondary/5 blur-3xl" />
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8 lg:py-32">
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
           {/* Left column - Content */}
           <div className="flex flex-col justify-center">
@@ -63,17 +94,33 @@ export function HeroSection() {
                     aria-label="Enter your zip code or city"
                   />
                 </div>
-                <div className="relative flex-1">
-                  <Calendar className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
-                  <Input
-                    type="text"
-                    placeholder="When do you need care?"
-                    className="h-12 pl-10"
-                    value={careDate}
-                    onChange={(e) => setCareDate(e.target.value)}
-                    aria-label="When do you need care"
-                  />
-                </div>
+                <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      type="button"
+                      className={cn(
+                        "h-12 flex-1 justify-start text-left font-normal",
+                        !careDate && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-5 w-5 text-muted-foreground" />
+                      {careDate ? format(careDate, "PPP") : "When do you need care?"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={careDate}
+                      onSelect={(date) => {
+                        setCareDate(date);
+                        setCalendarOpen(false);
+                      }}
+                      disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
                 <Button type="submit" size="lg" className="h-12 gap-2 px-6">
                   <Search className="h-5 w-5" />
                   <span>Find Care</span>

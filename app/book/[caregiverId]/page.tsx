@@ -27,9 +27,11 @@ import {
   Heart,
 } from "lucide-react";
 import { caregivers, mockCareRecipients } from "@/lib/mock-data";
-import { useStore } from "@/lib/store";
+import { useStore, useAuthStore } from "@/lib/store";
 import { BackButton } from "@/components/ui/back-button";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
+import { AuthPrompt } from "@/components/auth/auth-prompt";
+import { Footer } from "@/components/layout/footer";
 
 const steps = [
   { id: "recipient", title: "Care Recipient" },
@@ -66,7 +68,25 @@ export default function BookingPage({ params }: { params: Promise<{ caregiverId:
   const { caregiverId } = use(params);
   const router = useRouter();
   useStore();
+  const { role } = useAuthStore();
   const caregiver = caregivers.find((c) => c.id === caregiverId) || caregivers[0];
+
+  // Show auth prompt if user is not logged in or not a family user
+  if (!role || role !== 'family') {
+    return (
+      <div className="flex min-h-screen flex-col bg-muted/30">
+        <Header />
+        <main className="flex-1">
+          <AuthPrompt
+            title="Sign in as a family to book a caregiver"
+            description={`Create a family account or sign in to book ${caregiver.name}`}
+            action="booking"
+          />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   const [currentStep, setCurrentStep] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);

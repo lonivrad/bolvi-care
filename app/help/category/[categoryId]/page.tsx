@@ -66,31 +66,31 @@ export default function CategoryPage() {
           {articles.map((article) => (
             <Link key={article.id} href={`/help/article/${article.slug}`}>
               <Card className="hover:border-primary/50 hover:shadow-md transition-all cursor-pointer">
-                <CardContent className="py-5">
+                <CardContent className="p-6">
                   <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1">
+                    <div className="flex-1 min-w-0">
                       <h3 className="font-semibold text-foreground text-lg">
                         {article.title}
                       </h3>
-                      <p className="mt-1 text-muted-foreground line-clamp-2">
+                      <p className="mt-2 text-muted-foreground line-clamp-2">
                         {article.summary}
                       </p>
-                      <div className="flex items-center gap-4 mt-3 text-sm text-muted-foreground">
-                        <span className="flex items-center gap-1">
-                          <Clock className="h-4 w-4" />
+                      <div className="flex flex-wrap items-center gap-3 sm:gap-4 mt-3 text-sm text-muted-foreground">
+                        <span className="flex items-center gap-1.5">
+                          <Clock className="h-4 w-4 flex-shrink-0" />
                           {article.readTime} min read
                         </span>
-                        <span className="flex items-center gap-1">
-                          <Eye className="h-4 w-4" />
+                        <span className="flex items-center gap-1.5">
+                          <Eye className="h-4 w-4 flex-shrink-0" />
                           {article.views.toLocaleString()} views
                         </span>
-                        <span className="flex items-center gap-1">
-                          <ThumbsUp className="h-4 w-4" />
+                        <span className="flex items-center gap-1.5">
+                          <ThumbsUp className="h-4 w-4 flex-shrink-0" />
                           {article.helpful} found helpful
                         </span>
                       </div>
                     </div>
-                    <ChevronRight className="h-5 w-5 text-muted-foreground mt-1" />
+                    <ChevronRight className="h-5 w-5 text-muted-foreground mt-1 flex-shrink-0" />
                   </div>
                 </CardContent>
               </Card>

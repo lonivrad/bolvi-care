@@ -31,9 +31,12 @@ import { caregivers, reviews } from "@/lib/mock-data";
 import { BackButton } from "@/components/ui/back-button";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { VerificationBadge } from "@/components/trust/verification-badge";
+import { AuthPrompt } from "@/components/auth/auth-prompt";
+import { useAuthStore } from "@/lib/store";
 
 export default function CaregiverProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
+  const { role } = useAuthStore();
   const caregiver = caregivers.find((c) => c.id === id) || caregivers[0];
   const caregiverReviews = reviews.filter((r) => r.caregiverId === caregiver.id);
 
@@ -44,6 +47,23 @@ export default function CaregiverProfilePage({ params }: { params: Promise<{ id:
     { stars: 2, percentage: 1 },
     { stars: 1, percentage: 1 },
   ];
+
+  // Show auth prompt if user is not logged in
+  if (!role) {
+    return (
+      <div className="flex min-h-screen flex-col bg-background">
+        <Header />
+        <main className="flex-1">
+          <AuthPrompt
+            title="Sign in to view caregiver profiles"
+            description={`Create an account or sign in to view ${caregiver.name}'s full profile and book care`}
+            action="viewing caregiver profiles"
+          />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-background">

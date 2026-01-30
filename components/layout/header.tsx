@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useAuthStore, useNotificationsStore, useMessagesStore } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import {
@@ -66,18 +67,32 @@ const adminNavItems = [
 ];
 
 export function Header() {
+  const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [commandOpen, setCommandOpen] = useState(false);
   const { role, setRole, familyUser, caregiverUser } = useAuthStore();
   const unreadNotifications = useNotificationsStore((s) => s.getUnreadCount());
   const unreadMessages = useMessagesStore((s) => s.getTotalUnread());
 
-  const navItems = role === 'family' ? familyNavItems 
-    : role === 'caregiver' ? caregiverNavItems 
-    : role === 'admin' ? adminNavItems 
+  const navItems = role === 'family' ? familyNavItems
+    : role === 'caregiver' ? caregiverNavItems
+    : role === 'admin' ? adminNavItems
     : publicNavItems;
 
   const currentUser = role === 'family' ? familyUser : role === 'caregiver' ? caregiverUser : null;
+
+  // Handle role switching with automatic redirect
+  const handleRoleSwitch = (newRole: 'family' | 'caregiver' | 'admin') => {
+    setRole(newRole);
+    // Redirect to the appropriate dashboard
+    if (newRole === 'family') {
+      router.push('/dashboard/family');
+    } else if (newRole === 'caregiver') {
+      router.push('/dashboard/caregiver');
+    } else if (newRole === 'admin') {
+      router.push('/admin');
+    }
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
@@ -225,13 +240,13 @@ export function Header() {
                 
                 <DropdownMenuSeparator />
                 <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">Switch View</DropdownMenuLabel>
-                <DropdownMenuItem onClick={() => setRole('family')} className={cn(role === 'family' && "bg-muted")}>
+                <DropdownMenuItem onClick={() => handleRoleSwitch('family')} className={cn(role === 'family' && "bg-muted")}>
                   <User className="mr-2 h-4 w-4" />View as Family
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setRole('caregiver')} className={cn(role === 'caregiver' && "bg-muted")}>
+                <DropdownMenuItem onClick={() => handleRoleSwitch('caregiver')} className={cn(role === 'caregiver' && "bg-muted")}>
                   <Heart className="mr-2 h-4 w-4" />View as Caregiver
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setRole('admin')} className={cn(role === 'admin' && "bg-muted")}>
+                <DropdownMenuItem onClick={() => handleRoleSwitch('admin')} className={cn(role === 'admin' && "bg-muted")}>
                   <Shield className="mr-2 h-4 w-4" />View as Admin
                 </DropdownMenuItem>
                 
@@ -248,13 +263,13 @@ export function Header() {
                   <Button variant="ghost">Log in</Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => setRole('family')}>
+                  <DropdownMenuItem onClick={() => handleRoleSwitch('family')}>
                     <User className="mr-2 h-4 w-4" />Log in as Family
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setRole('caregiver')}>
+                  <DropdownMenuItem onClick={() => handleRoleSwitch('caregiver')}>
                     <Heart className="mr-2 h-4 w-4" />Log in as Caregiver
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setRole('admin')}>
+                  <DropdownMenuItem onClick={() => handleRoleSwitch('admin')}>
                     <Shield className="mr-2 h-4 w-4" />Log in as Admin
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -294,10 +309,10 @@ export function Header() {
             ))}
             {!role && (
               <div className="mt-4 flex flex-col gap-2 border-t border-border pt-4">
-                <Button variant="outline" onClick={() => { setRole('family'); setMobileMenuOpen(false); }}>
+                <Button variant="outline" onClick={() => { handleRoleSwitch('family'); setMobileMenuOpen(false); }}>
                   Log in as Family
                 </Button>
-                <Button onClick={() => { setRole('caregiver'); setMobileMenuOpen(false); }}>
+                <Button onClick={() => { handleRoleSwitch('caregiver'); setMobileMenuOpen(false); }}>
                   Join as Caregiver
                 </Button>
               </div>

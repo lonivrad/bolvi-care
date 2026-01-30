@@ -66,31 +66,31 @@ export default function SafetyPage() {
       <Header />
       <main className="flex-1">
         {/* Hero */}
-        <section className="bg-gradient-to-b from-primary/5 to-background py-20">
+        <section className="bg-gradient-to-b from-primary/5 to-background py-12">
           <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-              <Shield className="h-8 w-8 text-primary" />
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
+              <Shield className="h-7 w-7 text-primary" />
             </div>
-            <h1 className="mt-6 text-balance text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+            <h1 className="mt-4 text-balance text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
               Your Safety is Our Priority
             </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-pretty text-lg text-muted-foreground">
-              We go above and beyond to ensure the safety and security of both families and caregivers 
+            <p className="mx-auto mt-4 max-w-2xl text-pretty text-muted-foreground">
+              We go above and beyond to ensure the safety and security of both families and caregivers
               on our platform. Trust and transparency are at the heart of everything we do.
             </p>
           </div>
         </section>
 
         {/* Safety Measures */}
-        <section className="py-20">
+        <section className="py-10">
           <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
             <div className="text-center">
-              <h2 className="text-3xl font-bold text-foreground">Comprehensive Safety Measures</h2>
-              <p className="mt-4 text-muted-foreground">
+              <h2 className="text-2xl font-bold text-foreground sm:text-3xl">Comprehensive Safety Measures</h2>
+              <p className="mt-2 text-muted-foreground">
                 Multiple layers of protection for your peace of mind
               </p>
             </div>
-            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {safetyMeasures.map((measure) => (
                 <Card key={measure.title}>
                   <CardContent className="pt-6">
@@ -107,9 +107,9 @@ export default function SafetyPage() {
         </section>
 
         {/* Features List */}
-        <section className="bg-muted/30 py-20">
+        <section className="bg-muted/30 py-10">
           <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-            <div className="grid gap-12 lg:grid-cols-2">
+            <div className="grid gap-8 lg:grid-cols-2">
               <div>
                 <h2 className="text-3xl font-bold text-foreground">Additional Safety Features</h2>
                 <p className="mt-4 text-muted-foreground">
@@ -160,13 +160,13 @@ export default function SafetyPage() {
         </section>
 
         {/* CTA */}
-        <section className="py-20">
+        <section className="py-10">
           <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
-            <h2 className="text-3xl font-bold text-foreground">Questions About Safety?</h2>
-            <p className="mt-4 text-muted-foreground">
+            <h2 className="text-2xl font-bold text-foreground sm:text-3xl">Questions About Safety?</h2>
+            <p className="mt-2 text-muted-foreground">
               Our team is here to address any safety concerns you may have
             </p>
-            <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <div className="mt-6 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Button size="lg" asChild>
                 <Link href="/contact">Contact Us</Link>
               </Button>

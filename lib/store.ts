@@ -92,17 +92,20 @@ const defaultFilters: CaregiverFilters = {
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
-      role: 'family',
-      familyUser: sampleFamilyUser,
-      caregiverUser: sampleCaregiverUser,
-      setRole: (role) => set({ 
+      role: null,  // Start as third-party visitor (not logged in)
+      familyUser: null,
+      caregiverUser: null,
+      setRole: (role) => set({
         role,
         familyUser: role === 'family' ? sampleFamilyUser : null,
         caregiverUser: role === 'caregiver' ? sampleCaregiverUser : null,
       }),
       logout: () => set({ role: null, familyUser: null, caregiverUser: null }),
     }),
-    { name: 'auth-storage' }
+    {
+      name: 'auth-storage',
+      version: 2, // Increment this to force reset for all users
+    }
   )
 );
 

@@ -66,13 +66,13 @@ export default function AboutPage() {
       <Header />
       <main>
         {/* Hero Section */}
-        <section className="relative bg-primary/5 py-20">
+        <section className="relative bg-primary/5 py-12">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-3xl mx-auto">
-              <h1 className="text-4xl font-bold text-foreground sm:text-5xl">
+              <h1 className="text-3xl font-bold text-foreground sm:text-4xl">
                 Reimagining Family Support for Modern Life
               </h1>
-              <p className="mt-6 text-lg text-muted-foreground">
+              <p className="mt-4 text-muted-foreground">
                 Bolvi Care was founded with a simple mission: to make finding trusted,
                 compassionate support for your loved ones as easy and transparent as possible.
               </p>
@@ -81,9 +81,9 @@ export default function AboutPage() {
         </section>
 
         {/* Founder's Story */}
-        <section className="py-16 lg:py-24">
+        <section className="py-10">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
+            <div className="grid gap-8 lg:grid-cols-2 lg:items-center">
               <div>
                 <h2 className="text-3xl font-bold text-foreground">Founder&apos;s Story</h2>
                 <div className="mt-6 space-y-4 text-muted-foreground">
@@ -140,7 +140,7 @@ export default function AboutPage() {
         </section>
 
         {/* Stats */}
-        <section className="bg-primary py-16">
+        <section className="bg-primary py-10">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
               {stats.map((stat) => (
@@ -154,15 +154,15 @@ export default function AboutPage() {
         </section>
 
         {/* Our Values */}
-        <section className="py-16 lg:py-24">
+        <section className="py-10">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-foreground">Our Values</h2>
-              <p className="mt-4 text-lg text-muted-foreground">
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-bold text-foreground sm:text-3xl">Our Values</h2>
+              <p className="mt-2 text-muted-foreground">
                 The principles that guide everything we do
               </p>
             </div>
-            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
               {values.map((value) => {
                 const Icon = value.icon;
                 return (
@@ -182,11 +182,11 @@ export default function AboutPage() {
         </section>
 
         {/* Meet the Founder */}
-        <section className="bg-muted/50 py-16 lg:py-24">
+        <section className="bg-muted/50 py-10">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-foreground">Meet the Founder</h2>
-              <p className="mt-4 text-lg text-muted-foreground">
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-bold text-foreground sm:text-3xl">Meet the Founder</h2>
+              <p className="mt-2 text-muted-foreground">
                 Building the care system that should have existed all along
               </p>
             </div>
@@ -212,9 +212,9 @@ export default function AboutPage() {
         </section>
 
         {/* Why Choose Us */}
-        <section className="py-16 lg:py-24">
+        <section className="py-10">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
+            <div className="grid gap-8 lg:grid-cols-2 lg:items-center">
               <div>
                 <h2 className="text-3xl font-bold text-foreground">Why Families Choose Bolvi Care</h2>
                 <div className="mt-8 space-y-4">
@@ -261,9 +261,9 @@ export default function AboutPage() {
         </section>
 
         {/* CTA Section */}
-        <section className="bg-primary py-16">
+        <section className="bg-primary py-10">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="text-3xl font-bold text-primary-foreground">
+            <h2 className="text-2xl font-bold text-primary-foreground sm:text-3xl">
               Ready to Experience Better Care?
             </h2>
             <p className="mt-4 text-lg text-primary-foreground/80 max-w-2xl mx-auto">

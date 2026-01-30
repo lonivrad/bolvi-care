@@ -41,7 +41,7 @@ export function TestimonialsSection() {
   const prev = () => setCurrent((c) => (c - 1 + testimonials.length) % testimonials.length);
 
   return (
-    <section className="py-16 lg:py-24">
+    <section className="py-12 sm:py-16">
       <div className="mx-auto max-w-7xl px-4 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-12">
           <h2 className="font-serif text-3xl font-bold text-foreground sm:text-4xl text-balance">

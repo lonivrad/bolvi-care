@@ -56,12 +56,12 @@ export default function PricingPage() {
       <Header />
       <main className="flex-1">
         {/* Hero */}
-        <section className="bg-gradient-to-b from-primary/5 to-background py-20">
+        <section className="bg-gradient-to-b from-primary/5 to-background py-12">
           <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
-            <h1 className="text-balance text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+            <h1 className="text-balance text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
               Transparent, Affordable Pricing
             </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-pretty text-lg text-muted-foreground">
+            <p className="mx-auto mt-4 max-w-2xl text-pretty text-muted-foreground">
               Quality care shouldn't break the bank. Our caregivers set their own rates, 
               giving you flexibility to find care that fits your budget.
             </p>
@@ -69,9 +69,9 @@ export default function PricingPage() {
         </section>
 
         {/* Pricing Cards */}
-        <section className="py-20">
+        <section className="py-10">
           <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-            <div className="grid gap-8 lg:grid-cols-3">
+            <div className="grid gap-6 lg:grid-cols-3">
               {careTypes.map((type) => (
                 <Card
                   key={type.title}
@@ -112,13 +112,13 @@ export default function PricingPage() {
         </section>
 
         {/* How Pricing Works */}
-        <section className="bg-muted/30 py-20">
+        <section className="bg-muted/30 py-10">
           <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
             <div className="text-center">
-              <h2 className="text-3xl font-bold text-foreground">How Pricing Works</h2>
-              <p className="mt-4 text-muted-foreground">Simple and straightforward</p>
+              <h2 className="text-2xl font-bold text-foreground sm:text-3xl">How Pricing Works</h2>
+              <p className="mt-2 text-muted-foreground">Simple and straightforward</p>
             </div>
-            <div className="mt-12 grid gap-6 sm:grid-cols-3">
+            <div className="mt-8 grid gap-4 sm:grid-cols-3">
               <Card>
                 <CardContent className="pt-6 text-center">
                   <DollarSign className="mx-auto h-10 w-10 text-primary" />
@@ -176,10 +176,10 @@ export default function PricingPage() {
         </section>
 
         {/* FAQs */}
-        <section className="py-20">
+        <section className="py-10">
           <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-            <h2 className="text-center text-3xl font-bold text-foreground">Pricing FAQs</h2>
-            <div className="mt-12 space-y-4">
+            <h2 className="text-center text-2xl font-bold text-foreground sm:text-3xl">Pricing FAQs</h2>
+            <div className="mt-8 space-y-3">
               {faqs.map((faq) => (
                 <Card key={faq.q}>
                   <CardContent className="py-4">
@@ -193,9 +193,9 @@ export default function PricingPage() {
         </section>
 
         {/* CTA */}
-        <section className="bg-primary py-16">
+        <section className="bg-primary py-10">
           <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
-            <h2 className="text-3xl font-bold text-primary-foreground">
+            <h2 className="text-2xl font-bold text-primary-foreground sm:text-3xl">
               Start Finding Care Today
             </h2>
             <p className="mt-4 text-primary-foreground/80">

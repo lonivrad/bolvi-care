@@ -62,16 +62,16 @@ export default function HowItWorksPage() {
       <Header />
       <main className="flex-1">
         {/* Hero */}
-        <section className="bg-gradient-to-b from-primary/5 to-background py-20">
+        <section className="bg-gradient-to-b from-primary/5 to-background py-12">
           <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
-            <h1 className="text-balance text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+            <h1 className="text-balance text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
               Finding Quality Care Made Simple
             </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-pretty text-lg text-muted-foreground">
-              Our platform connects families with trusted, verified caregivers in just a few steps. 
+            <p className="mx-auto mt-4 max-w-2xl text-pretty text-muted-foreground">
+              Our platform connects families with trusted, verified caregivers in just a few steps.
               Here's how we make finding support accessible and stress-free.
             </p>
-            <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <div className="mt-6 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Button size="lg" asChild>
                 <Link href="/caregivers">
                   Find a Caregiver
@@ -86,9 +86,9 @@ export default function HowItWorksPage() {
         </section>
 
         {/* Steps */}
-        <section className="py-20">
+        <section className="py-10">
           <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-            <div className="space-y-16">
+            <div className="space-y-10">
               {steps.map((step, index) => (
                 <div
                   key={step.number}
@@ -128,15 +128,15 @@ export default function HowItWorksPage() {
         </section>
 
         {/* Benefits */}
-        <section className="bg-muted/30 py-20">
+        <section className="bg-muted/30 py-10">
           <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
             <div className="text-center">
-              <h2 className="text-3xl font-bold text-foreground">Why Choose Us</h2>
-              <p className="mt-4 text-muted-foreground">
+              <h2 className="text-2xl font-bold text-foreground sm:text-3xl">Why Choose Us</h2>
+              <p className="mt-2 text-muted-foreground">
                 We're committed to making quality care accessible and reliable
               </p>
             </div>
-            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {benefits.map((benefit) => (
                 <Card key={benefit.title}>
                   <CardContent className="pt-6">
@@ -153,13 +153,13 @@ export default function HowItWorksPage() {
         </section>
 
         {/* CTA */}
-        <section className="py-20">
+        <section className="py-10">
           <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
-            <h2 className="text-3xl font-bold text-foreground">Ready to Get Started?</h2>
-            <p className="mt-4 text-muted-foreground">
+            <h2 className="text-2xl font-bold text-foreground sm:text-3xl">Ready to Get Started?</h2>
+            <p className="mt-2 text-muted-foreground">
               Join thousands of families who trust us for their everyday care needs
             </p>
-            <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <div className="mt-6 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Button size="lg" asChild>
                 <Link href="/caregivers">Find Care Now</Link>
               </Button>
