@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/components/ui/toast";
 import {
   Accordion,
   AccordionContent,
@@ -24,7 +25,6 @@ import {
   Shield,
   Users,
   Settings,
-  HelpCircle,
   ExternalLink,
   ChevronRight,
 } from "lucide-react";
@@ -135,8 +135,28 @@ const faqs = [
   },
 ];
 
+const quickLinks = [
+  { label: "Terms of Service", href: "/terms" },
+  { label: "Privacy Policy", href: "/privacy" },
+  { label: "Community Guidelines", href: "/community" },
+  { label: "Accessibility", href: "/accessibility" },
+];
+
 export default function HelpCenterPage() {
+  const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
+
+  const handleLiveChat = () => {
+    toast({
+      title: "Live Chat",
+      description: "Live chat support is connecting... This feature will be available soon.",
+      variant: "info",
+    });
+  };
+
+  const handleEmailSupport = () => {
+    window.location.href = "mailto:support@bolvicare.com";
+  };
 
   return (
     <>
@@ -254,7 +274,11 @@ export default function HelpCenterPage() {
               <CardTitle>Need more help?</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <Button className="w-full justify-start" variant="outline">
+              <Button
+                className="w-full justify-start"
+                variant="outline"
+                onClick={handleLiveChat}
+              >
                 <MessageCircle className="mr-3 h-5 w-5" />
                 <div className="text-left">
                   <p className="font-medium">Live Chat</p>
@@ -263,16 +287,22 @@ export default function HelpCenterPage() {
                   </p>
                 </div>
               </Button>
-              <Button className="w-full justify-start" variant="outline">
-                <Phone className="mr-3 h-5 w-5" />
-                <div className="text-left">
-                  <p className="font-medium">Call Us</p>
-                  <p className="text-xs text-muted-foreground">
-                    1-800-BOLVI-CARE
-                  </p>
-                </div>
+              <Button className="w-full justify-start" variant="outline" asChild>
+                <a href="tel:1-800-265-8422">
+                  <Phone className="mr-3 h-5 w-5" />
+                  <div className="text-left">
+                    <p className="font-medium">Call Us</p>
+                    <p className="text-xs text-muted-foreground">
+                      1-800-BOLVI-CARE
+                    </p>
+                  </div>
+                </a>
               </Button>
-              <Button className="w-full justify-start" variant="outline">
+              <Button
+                className="w-full justify-start"
+                variant="outline"
+                onClick={handleEmailSupport}
+              >
                 <Mail className="mr-3 h-5 w-5" />
                 <div className="text-left">
                   <p className="font-medium">Email Support</p>
@@ -293,9 +323,11 @@ export default function HelpCenterPage() {
                 If you or your loved one is experiencing a medical emergency,
                 please call 911 immediately.
               </p>
-              <Button variant="destructive" className="w-full">
-                <Phone className="mr-2 h-4 w-4" />
-                Call 911
+              <Button variant="destructive" className="w-full" asChild>
+                <a href="tel:911">
+                  <Phone className="mr-2 h-4 w-4" />
+                  Call 911
+                </a>
               </Button>
             </CardContent>
           </Card>
@@ -306,19 +338,17 @@ export default function HelpCenterPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
-                {[
-                  "Terms of Service",
-                  "Privacy Policy",
-                  "Community Guidelines",
-                  "Accessibility",
-                ].map((link) => (
+                {quickLinks.map((link) => (
                   <Button
-                    key={link}
+                    key={link.label}
                     variant="ghost"
                     className="w-full justify-between"
+                    asChild
                   >
-                    {link}
-                    <ExternalLink className="h-4 w-4" />
+                    <Link href={link.href}>
+                      {link.label}
+                      <ExternalLink className="h-4 w-4" />
+                    </Link>
                   </Button>
                 ))}
               </div>
