@@ -101,8 +101,8 @@ const forumTopics = [
   {
     id: 4,
     category: "Local Resources",
-    title: "Senior centers in the Bay Area - recommendations?",
-    author: "BayAreaFamily",
+    title: "Senior centers in the Seattle area - recommendations?",
+    author: "SeattleFamily",
     replies: 15,
     views: 234,
     lastActivity: "2 days ago",
@@ -123,11 +123,11 @@ const forumTopics = [
 const upcomingEvents = [
   {
     id: 1,
-    title: "Caregiver Support Group - SF Chapter",
+    title: "Caregiver Support Group - Seattle Chapter",
     type: "In-Person Meetup",
     date: "Mar 15, 2024",
     time: "6:00 PM",
-    location: "San Francisco Community Center",
+    location: "Seattle Community Center",
     attendees: 28,
     maxAttendees: 40,
   },
@@ -147,7 +147,7 @@ const upcomingEvents = [
     type: "In-Person Workshop",
     date: "Mar 22, 2024",
     time: "10:00 AM",
-    location: "Oakland Senior Center",
+    location: "Bellevue Senior Center",
     attendees: 35,
     maxAttendees: 50,
   },
@@ -185,24 +185,24 @@ const topCaregivers = [
 
 const localResources = [
   {
-    name: "SF Senior Center",
+    name: "Seattle Senior Center",
     type: "Senior Center",
-    address: "481 O'Farrell St, San Francisco",
-    phone: "(415) 555-0123",
+    address: "2208 2nd Ave, Seattle",
+    phone: "(206) 555-0123",
     services: ["Day Programs", "Meals", "Social Activities"],
   },
   {
-    name: "Bay Area Alzheimer's Association",
+    name: "Puget Sound Alzheimer's Association",
     type: "Support Organization",
-    address: "2290 N First St, San Jose",
-    phone: "(408) 555-0456",
+    address: "100 W Harrison St, Seattle",
+    phone: "(206) 555-0456",
     services: ["Support Groups", "Education", "Resources"],
   },
   {
     name: "Elder Care Solutions",
     type: "Care Management",
-    address: "123 Market St, San Francisco",
-    phone: "(415) 555-0789",
+    address: "1501 4th Ave, Seattle",
+    phone: "(206) 555-0789",
     services: ["Care Planning", "Advocacy", "Referrals"],
   },
 ];

@@ -175,7 +175,7 @@ export default function CaregiverDashboard() {
                               </span>
                               <span className="flex items-center gap-1">
                                 <MapPin className="h-3 w-3" />
-                                San Francisco, CA
+                                Seattle, WA
                               </span>
                             </div>
                             <div className="mt-2 flex flex-wrap gap-1">

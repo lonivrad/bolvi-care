@@ -126,7 +126,7 @@ export default function SettingsPage() {
                     </div>
                     <div className="space-y-2 sm:col-span-2">
                       <Label htmlFor="address">Address</Label>
-                      <Input id="address" defaultValue="San Francisco, CA" />
+                      <Input id="address" defaultValue="Seattle, WA" />
                     </div>
                   </div>
 

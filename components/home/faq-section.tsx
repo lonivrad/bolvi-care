@@ -34,7 +34,7 @@ const faqs = [
   },
   {
     question: "Is Bolvi Care available in my area?",
-    answer: "We're currently serving the San Francisco Bay Area with plans to expand to Los Angeles, Seattle, and other major metropolitan areas soon. Enter your zip code on our search page to see available caregivers near you.",
+    answer: "We're currently serving the Seattle / Puget Sound area with plans to expand to Portland, San Francisco, and other major metropolitan areas soon. Enter your zip code on our search page to see available caregivers near you.",
   },
 ];
 

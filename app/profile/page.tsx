@@ -32,13 +32,13 @@ import {
 const userProfile = {
   name: "Sarah Johnson",
   email: "sarah.johnson@email.com",
-  phone: "(415) 555-0123",
+  phone: "(206) 555-0123",
   photo: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop",
   address: {
-    street: "123 Oak Street",
-    city: "San Francisco",
-    state: "CA",
-    zip: "94102",
+    street: "123 Pine Street",
+    city: "Seattle",
+    state: "WA",
+    zip: "98101",
   },
   role: "family",
   memberSince: "January 2024",
@@ -270,7 +270,7 @@ export default function ProfilePage() {
                   <div>
                     <p className="font-medium">Current Session</p>
                     <p className="text-sm text-muted-foreground">
-                      San Francisco, CA • Chrome on MacOS
+                      Seattle, WA • Chrome on MacOS
                     </p>
                   </div>
                   <Badge variant="secondary">Active Now</Badge>
@@ -279,7 +279,7 @@ export default function ProfilePage() {
                   <div>
                     <p className="font-medium">iPhone 14</p>
                     <p className="text-sm text-muted-foreground">
-                      San Francisco, CA • iOS App
+                      Seattle, WA • iOS App
                     </p>
                   </div>
                   <Button variant="ghost" size="sm">

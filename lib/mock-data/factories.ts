@@ -116,14 +116,14 @@ const LAST_NAMES = [
 ];
 
 const CITIES = [
-  { city: 'San Francisco', state: 'CA', zip: '94102' },
-  { city: 'Oakland', state: 'CA', zip: '94612' },
-  { city: 'San Jose', state: 'CA', zip: '95110' },
-  { city: 'Berkeley', state: 'CA', zip: '94704' },
-  { city: 'Palo Alto', state: 'CA', zip: '94301' },
-  { city: 'Mountain View', state: 'CA', zip: '94041' },
-  { city: 'Fremont', state: 'CA', zip: '94538' },
-  { city: 'Sunnyvale', state: 'CA', zip: '94086' },
+  { city: 'Seattle', state: 'WA', zip: '98101' },
+  { city: 'Bellevue', state: 'WA', zip: '98004' },
+  { city: 'Tacoma', state: 'WA', zip: '98402' },
+  { city: 'Kirkland', state: 'WA', zip: '98033' },
+  { city: 'Redmond', state: 'WA', zip: '98052' },
+  { city: 'Renton', state: 'WA', zip: '98055' },
+  { city: 'Everett', state: 'WA', zip: '98201' },
+  { city: 'Kent', state: 'WA', zip: '98032' },
 ];
 
 const STREETS = [
@@ -261,9 +261,9 @@ export function createMedication(overrides?: Partial<Medication>): Medication {
 
 export function createCertification(overrides?: Partial<Certification>): Certification {
   const certifications = [
-    { name: 'Certified Nursing Assistant (CNA)', org: 'California Department of Public Health' },
+    { name: 'Certified Nursing Assistant (CNA)', org: 'Washington State Department of Health' },
     { name: 'CPR/First Aid Certification', org: 'American Red Cross' },
-    { name: 'Home Health Aide (HHA)', org: 'California Home Care Services' },
+    { name: 'Home Health Aide (HHA)', org: 'Washington Home Care Services' },
     { name: 'Dementia Care Specialist', org: 'Alzheimer\'s Association' },
     { name: 'Medication Administration', org: 'State Board of Nursing' },
   ];
@@ -443,7 +443,7 @@ export function createCaregiverUser(overrides?: Partial<CaregiverUser>): Caregiv
     },
     serviceArea: {
       type: 'radius',
-      center: { latitude: 37.7749, longitude: -122.4194 },
+      center: { latitude: 47.6062, longitude: -122.3321 },
       radiusMiles: randomNumber(10, 25),
     },
     rating: randomDecimal(4.5, 5.0, 1),

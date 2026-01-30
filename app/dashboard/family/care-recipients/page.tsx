@@ -52,7 +52,7 @@ const careRecipients = [
     allergies: ["Penicillin", "Shellfish"],
     emergencyContact: {
       name: "Dr. Sarah Miller",
-      phone: "(415) 555-0190",
+      phone: "(206) 555-0190",
       relationship: "Primary Physician",
     },
     careNeeds: ["Medication reminders", "Meal preparation", "Light housekeeping", "Companionship"],
@@ -74,7 +74,7 @@ const careRecipients = [
     allergies: ["Sulfa drugs"],
     emergencyContact: {
       name: "Dr. James Wilson",
-      phone: "(415) 555-0191",
+      phone: "(206) 555-0191",
       relationship: "Cardiologist",
     },
     careNeeds: ["Vital sign monitoring", "Medication reminders", "Transportation to appointments"],

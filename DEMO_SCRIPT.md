@@ -63,7 +63,7 @@ Navigate to **Find Care** in the header.
 > "Let me show you how easy it is to find the perfect caregiver."
 
 **Demonstrate Search Filters:**
-- Location: "San Francisco"
+- Location: "Seattle"
 - Availability: Select "Weekends"
 - Specialties: Check "Dementia Care"
 - Experience: Set to "5+ years"
