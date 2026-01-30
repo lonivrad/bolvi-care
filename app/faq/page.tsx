@@ -60,7 +60,7 @@ const faqs: FAQItem[] = [
   },
   {
     question: "Is Bolvi Care available in my area?",
-    answer: "Bolvi Care is currently available in major metropolitan areas across California, including San Francisco, Los Angeles, San Diego, and Sacramento. We're rapidly expanding to new regions. Enter your zip code on our homepage to check availability in your area.",
+    answer: "Bolvi Care is currently available throughout Washington State, including Seattle, Bellevue, Tacoma, Spokane, Vancouver, and surrounding areas. We're rapidly expanding to new regions. Enter your zip code on our homepage to check availability in your area.",
     category: "getting-started",
   },
   {

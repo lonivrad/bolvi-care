@@ -9,8 +9,25 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useToast } from "@/components/ui/toast";
 import {
   Search,
@@ -27,6 +44,7 @@ import {
   Clock,
   ExternalLink,
   Loader2,
+  Send,
 } from "lucide-react";
 
 // Mock community data - use local placeholder images to avoid loading issues
@@ -270,6 +288,20 @@ export default function CommunityPage() {
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMoreStories, setHasMoreStories] = useState(true);
 
+  // New Topic Dialog State
+  const [showNewTopicDialog, setShowNewTopicDialog] = useState(false);
+  const [newTopicTitle, setNewTopicTitle] = useState("");
+  const [newTopicCategory, setNewTopicCategory] = useState("");
+  const [newTopicContent, setNewTopicContent] = useState("");
+  const [isSubmittingTopic, setIsSubmittingTopic] = useState(false);
+
+  // Nomination Dialog State
+  const [showNominationDialog, setShowNominationDialog] = useState(false);
+  const [nominationName, setNominationName] = useState("");
+  const [nominationReason, setNominationReason] = useState("");
+  const [nominationEmail, setNominationEmail] = useState("");
+  const [isSubmittingNomination, setIsSubmittingNomination] = useState(false);
+
   const handleLike = (storyId: number) => {
     setStories(stories.map(story => {
       if (story.id === storyId) {
@@ -324,10 +356,32 @@ export default function CommunityPage() {
   };
 
   const handleStartNewTopic = () => {
+    setShowNewTopicDialog(true);
+  };
+
+  const handleSubmitNewTopic = async () => {
+    if (!newTopicTitle.trim() || !newTopicCategory || !newTopicContent.trim()) {
+      toast({
+        title: "Missing information",
+        description: "Please fill in all required fields.",
+        variant: "error",
+      });
+      return;
+    }
+
+    setIsSubmittingTopic(true);
+    // Simulate API call
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+    setIsSubmittingTopic(false);
+    setShowNewTopicDialog(false);
+    setNewTopicTitle("");
+    setNewTopicCategory("");
+    setNewTopicContent("");
+
     toast({
-      title: "Coming Soon",
-      description: "Forum posting will be available soon. Join our community to be notified!",
-      variant: "info",
+      title: "Topic posted!",
+      description: "Your topic has been published to the forum.",
+      variant: "success",
     });
   };
 
@@ -350,10 +404,32 @@ export default function CommunityPage() {
   };
 
   const handleNominate = () => {
+    setShowNominationDialog(true);
+  };
+
+  const handleSubmitNomination = async () => {
+    if (!nominationName.trim() || !nominationReason.trim()) {
+      toast({
+        title: "Missing information",
+        description: "Please provide the caregiver's name and reason for nomination.",
+        variant: "error",
+      });
+      return;
+    }
+
+    setIsSubmittingNomination(true);
+    // Simulate API call
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+    setIsSubmittingNomination(false);
+    setShowNominationDialog(false);
+    setNominationName("");
+    setNominationReason("");
+    setNominationEmail("");
+
     toast({
-      title: "Nominate a Caregiver",
-      description: "Thank you for your interest! The nomination form will be available soon.",
-      variant: "info",
+      title: "Nomination submitted!",
+      description: "Thank you for recognizing an outstanding caregiver. We'll review your nomination.",
+      variant: "success",
     });
   };
 
@@ -861,6 +937,136 @@ export default function CommunityPage() {
         </Tabs>
       </main>
       <Footer />
+
+      {/* New Topic Dialog */}
+      <Dialog open={showNewTopicDialog} onOpenChange={setShowNewTopicDialog}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Start a New Discussion</DialogTitle>
+            <DialogDescription>
+              Share your question or topic with the community. Be respectful and helpful!
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="topic-title">Topic Title *</Label>
+              <Input
+                id="topic-title"
+                placeholder="What would you like to discuss?"
+                value={newTopicTitle}
+                onChange={(e) => setNewTopicTitle(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="topic-category">Category *</Label>
+              <Select value={newTopicCategory} onValueChange={setNewTopicCategory}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Caregiving Tips">Caregiving Tips</SelectItem>
+                  <SelectItem value="Family Support">Family Support</SelectItem>
+                  <SelectItem value="Medical Questions">Medical Questions</SelectItem>
+                  <SelectItem value="Local Resources">Local Resources</SelectItem>
+                  <SelectItem value="Caregiver Resources">Caregiver Resources</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="topic-content">Your Message *</Label>
+              <Textarea
+                id="topic-content"
+                placeholder="Share more details about your topic..."
+                value={newTopicContent}
+                onChange={(e) => setNewTopicContent(e.target.value)}
+                rows={4}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowNewTopicDialog(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleSubmitNewTopic} disabled={isSubmittingTopic}>
+              {isSubmittingTopic ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Posting...
+                </>
+              ) : (
+                <>
+                  <Send className="mr-2 h-4 w-4" />
+                  Post Topic
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Nomination Dialog */}
+      <Dialog open={showNominationDialog} onOpenChange={setShowNominationDialog}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Nominate a Caregiver</DialogTitle>
+            <DialogDescription>
+              Know an exceptional caregiver? Tell us why they deserve recognition!
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="caregiver-name">Caregiver&apos;s Name *</Label>
+              <Input
+                id="caregiver-name"
+                placeholder="Enter the caregiver's full name"
+                value={nominationName}
+                onChange={(e) => setNominationName(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="nomination-reason">Why are you nominating them? *</Label>
+              <Textarea
+                id="nomination-reason"
+                placeholder="Tell us what makes this caregiver exceptional..."
+                value={nominationReason}
+                onChange={(e) => setNominationReason(e.target.value)}
+                rows={4}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="your-email">Your Email (optional)</Label>
+              <Input
+                id="your-email"
+                type="email"
+                placeholder="your@email.com"
+                value={nominationEmail}
+                onChange={(e) => setNominationEmail(e.target.value)}
+              />
+              <p className="text-xs text-muted-foreground">
+                We may reach out to you for more details about your nomination.
+              </p>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowNominationDialog(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleSubmitNomination} disabled={isSubmittingNomination}>
+              {isSubmittingNomination ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Submitting...
+                </>
+              ) : (
+                <>
+                  <Award className="mr-2 h-4 w-4" />
+                  Submit Nomination
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

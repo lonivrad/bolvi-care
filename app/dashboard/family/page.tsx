@@ -243,7 +243,16 @@ export default function FamilyDashboard() {
                       {caregiver.rating}
                     </div>
                   </div>
-                  <Button variant="outline" size="sm">Book</Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      window.location.href = `/book/${caregiver.id}`;
+                    }}
+                  >
+                    Book
+                  </Button>
                 </Link>
               ))}
             </CardContent>
