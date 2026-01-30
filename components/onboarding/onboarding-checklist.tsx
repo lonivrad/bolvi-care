@@ -316,7 +316,7 @@ export function OnboardingChecklist({
                     <p
                       className={cn(
                         "font-medium",
-                        item.completed && "line-through text-muted-foreground"
+                        item.completed && "text-muted-foreground"
                       )}
                     >
                       {item.title}
@@ -350,7 +350,19 @@ export function OnboardingChecklist({
                     </Link>
                   </Button>
                 )}
-                {item.completed && (
+                {item.completed && item.href && (
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="shrink-0 text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300"
+                    asChild
+                  >
+                    <Link href={item.href}>
+                      Edit
+                    </Link>
+                  </Button>
+                )}
+                {item.completed && !item.href && (
                   <span className="text-xs text-green-600 dark:text-green-400 font-medium">
                     Done
                   </span>
