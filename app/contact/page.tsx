@@ -31,6 +31,7 @@ import {
 export default function ContactPage() {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -39,8 +40,49 @@ export default function ContactPage() {
     message: "",
   });
 
+  const validate = (): boolean => {
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.name.trim()) {
+      newErrors.name = "Name is required";
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address";
+    }
+
+    if (formData.phone && !/^[\d\s\-()]*$/.test(formData.phone)) {
+      newErrors.phone = "Please enter a valid phone number";
+    }
+
+    if (!formData.subject) {
+      newErrors.subject = "Please select a topic";
+    }
+
+    if (!formData.message.trim()) {
+      newErrors.message = "Message is required";
+    } else if (formData.message.trim().length < 10) {
+      newErrors.message = "Message must be at least 10 characters";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!validate()) {
+      toast({
+        title: "Please fix the errors",
+        description: "Some required fields are missing or invalid.",
+        variant: "error",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
 
     // Simulate form submission
@@ -49,6 +91,7 @@ export default function ContactPage() {
     toast({
       title: "Message sent!",
       description: "We'll get back to you within 24 hours.",
+      variant: "success",
     });
 
     setFormData({
@@ -58,6 +101,7 @@ export default function ContactPage() {
       subject: "",
       message: "",
     });
+    setErrors({});
     setIsSubmitting(false);
   };
 
@@ -157,26 +201,28 @@ export default function ContactPage() {
                       <Label htmlFor="name">Full Name *</Label>
                       <Input
                         id="name"
-                        required
                         value={formData.name}
                         onChange={(e) =>
                           setFormData({ ...formData, name: e.target.value })
                         }
                         placeholder="John Smith"
+                        className={errors.name ? "border-destructive" : ""}
                       />
+                      {errors.name && <p className="text-xs text-destructive">{errors.name}</p>}
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="email">Email Address *</Label>
                       <Input
                         id="email"
                         type="email"
-                        required
                         value={formData.email}
                         onChange={(e) =>
                           setFormData({ ...formData, email: e.target.value })
                         }
                         placeholder="john@example.com"
+                        className={errors.email ? "border-destructive" : ""}
                       />
+                      {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
                     </div>
                   </div>
 
@@ -191,7 +237,9 @@ export default function ContactPage() {
                           setFormData({ ...formData, phone: e.target.value })
                         }
                         placeholder="(206) 555-0123"
+                        className={errors.phone ? "border-destructive" : ""}
                       />
+                      {errors.phone && <p className="text-xs text-destructive">{errors.phone}</p>}
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="subject">Subject *</Label>
@@ -201,7 +249,7 @@ export default function ContactPage() {
                           setFormData({ ...formData, subject: value })
                         }
                       >
-                        <SelectTrigger>
+                        <SelectTrigger className={errors.subject ? "border-destructive" : ""}>
                           <SelectValue placeholder="Select a topic" />
                         </SelectTrigger>
                         <SelectContent>
@@ -214,6 +262,7 @@ export default function ContactPage() {
                           <SelectItem value="partnership">Partnership Inquiry</SelectItem>
                         </SelectContent>
                       </Select>
+                      {errors.subject && <p className="text-xs text-destructive">{errors.subject}</p>}
                     </div>
                   </div>
 
@@ -221,14 +270,15 @@ export default function ContactPage() {
                     <Label htmlFor="message">Message *</Label>
                     <Textarea
                       id="message"
-                      required
                       value={formData.message}
                       onChange={(e) =>
                         setFormData({ ...formData, message: e.target.value })
                       }
                       placeholder="How can we help you?"
                       rows={6}
+                      className={errors.message ? "border-destructive" : ""}
                     />
+                    {errors.message && <p className="text-xs text-destructive">{errors.message}</p>}
                   </div>
 
                   <Button type="submit" disabled={isSubmitting} className="w-full sm:w-auto">

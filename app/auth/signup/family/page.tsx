@@ -31,15 +31,40 @@ export default function FamilySignupPage() {
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
-    if (!formData.firstName) newErrors.firstName = "First name is required";
-    if (!formData.lastName) newErrors.lastName = "Last name is required";
-    if (!formData.email) newErrors.email = "Email is required";
-    if (!formData.phone) newErrors.phone = "Phone number is required";
-    if (!formData.password) newErrors.password = "Password is required";
-    if (formData.password.length < 8) newErrors.password = "Password must be at least 8 characters";
-    if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = "Passwords do not match";
-    if (!formData.zipCode) newErrors.zipCode = "ZIP code is required";
-    if (!formData.agreeTerms) newErrors.agreeTerms = "You must agree to the terms";
+
+    if (!formData.firstName.trim()) {
+      newErrors.firstName = "First name is required";
+    }
+    if (!formData.lastName.trim()) {
+      newErrors.lastName = "Last name is required";
+    }
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address";
+    }
+    if (!formData.phone.trim()) {
+      newErrors.phone = "Phone number is required";
+    } else if (!/^[\d\s\-()]+$/.test(formData.phone) || formData.phone.replace(/\D/g, "").length < 10) {
+      newErrors.phone = "Please enter a valid 10-digit phone number";
+    }
+    if (!formData.password) {
+      newErrors.password = "Password is required";
+    } else if (formData.password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters";
+    }
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
+    }
+    if (!formData.zipCode.trim()) {
+      newErrors.zipCode = "ZIP code is required";
+    } else if (!/^\d{5}(-\d{4})?$/.test(formData.zipCode)) {
+      newErrors.zipCode = "Please enter a valid 5-digit ZIP code";
+    }
+    if (!formData.agreeTerms) {
+      newErrors.agreeTerms = "You must agree to the terms";
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };

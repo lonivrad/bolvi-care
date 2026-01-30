@@ -39,6 +39,7 @@ export default function CaregiverSignupPage() {
   const [currentStep, setCurrentStep] = useState(0);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -93,9 +94,72 @@ export default function CaregiverSignupPage() {
     }));
   };
 
+  const validateStep = (step: number): boolean => {
+    const newErrors: Record<string, string> = {};
+
+    if (step === 0) {
+      if (!formData.firstName.trim()) newErrors.firstName = "First name is required";
+      if (!formData.lastName.trim()) newErrors.lastName = "Last name is required";
+      if (!formData.email.trim()) {
+        newErrors.email = "Email is required";
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+        newErrors.email = "Please enter a valid email";
+      }
+      if (!formData.phone.trim()) {
+        newErrors.phone = "Phone number is required";
+      } else if (!/^[\d\s\-()]+$/.test(formData.phone) || formData.phone.replace(/\D/g, "").length < 10) {
+        newErrors.phone = "Please enter a valid phone number";
+      }
+      if (!formData.zipCode.trim()) {
+        newErrors.zipCode = "ZIP code is required";
+      } else if (!/^\d{5}(-\d{4})?$/.test(formData.zipCode)) {
+        newErrors.zipCode = "Please enter a valid ZIP code";
+      }
+      if (!formData.password) {
+        newErrors.password = "Password is required";
+      } else if (formData.password.length < 8) {
+        newErrors.password = "Password must be at least 8 characters";
+      }
+      if (formData.password !== formData.confirmPassword) {
+        newErrors.confirmPassword = "Passwords do not match";
+      }
+    }
+
+    if (step === 1) {
+      if (formData.services.length === 0) {
+        newErrors.services = "Please select at least one service";
+      }
+      if (!formData.yearsExperience) {
+        newErrors.yearsExperience = "Years of experience is required";
+      }
+      if (!formData.hourlyRate) {
+        newErrors.hourlyRate = "Hourly rate is required";
+      } else if (Number(formData.hourlyRate) < 15) {
+        newErrors.hourlyRate = "Minimum rate is $15/hour";
+      }
+    }
+
+    if (step === 2) {
+      const hasAvailability = Object.values(formData.availability).some((v) => v);
+      if (!hasAvailability) {
+        newErrors.availability = "Please select at least one day of availability";
+      }
+      if (!formData.agreeTerms) {
+        newErrors.agreeTerms = "You must agree to the terms";
+      }
+      if (!formData.agreeBackground) {
+        newErrors.agreeBackground = "Background check consent is required";
+      }
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleNext = () => {
-    if (currentStep < steps.length - 1) {
+    if (validateStep(currentStep) && currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
+      setErrors({});
     }
   };
 
@@ -107,6 +171,8 @@ export default function CaregiverSignupPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validateStep(currentStep)) return;
+
     setIsLoading(true);
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
@@ -164,8 +230,9 @@ export default function CaregiverSignupPage() {
                       id="firstName"
                       value={formData.firstName}
                       onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                      required
+                      className={errors.firstName ? "border-destructive" : ""}
                     />
+                    {errors.firstName && <p className="text-xs text-destructive">{errors.firstName}</p>}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="lastName">Last name</Label>
@@ -173,8 +240,9 @@ export default function CaregiverSignupPage() {
                       id="lastName"
                       value={formData.lastName}
                       onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                      required
+                      className={errors.lastName ? "border-destructive" : ""}
                     />
+                    {errors.lastName && <p className="text-xs text-destructive">{errors.lastName}</p>}
                   </div>
                 </div>
                 <div className="space-y-2">
@@ -184,8 +252,9 @@ export default function CaregiverSignupPage() {
                     type="email"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    required
+                    className={errors.email ? "border-destructive" : ""}
                   />
+                  {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="phone">Phone number</Label>
@@ -194,8 +263,9 @@ export default function CaregiverSignupPage() {
                     type="tel"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    required
+                    className={errors.phone ? "border-destructive" : ""}
                   />
+                  {errors.phone && <p className="text-xs text-destructive">{errors.phone}</p>}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="zipCode">ZIP code</Label>
@@ -203,8 +273,9 @@ export default function CaregiverSignupPage() {
                     id="zipCode"
                     value={formData.zipCode}
                     onChange={(e) => setFormData({ ...formData, zipCode: e.target.value })}
-                    required
+                    className={errors.zipCode ? "border-destructive" : ""}
                   />
+                  {errors.zipCode && <p className="text-xs text-destructive">{errors.zipCode}</p>}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="password">Password</Label>
@@ -214,8 +285,7 @@ export default function CaregiverSignupPage() {
                       type={showPassword ? "text" : "password"}
                       value={formData.password}
                       onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                      className="pr-10"
-                      required
+                      className={`pr-10 ${errors.password ? "border-destructive" : ""}`}
                     />
                     <button
                       type="button"
@@ -225,6 +295,7 @@ export default function CaregiverSignupPage() {
                       {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </button>
                   </div>
+                  {errors.password && <p className="text-xs text-destructive">{errors.password}</p>}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="confirmPassword">Confirm password</Label>
@@ -233,8 +304,9 @@ export default function CaregiverSignupPage() {
                     type="password"
                     value={formData.confirmPassword}
                     onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                    required
+                    className={errors.confirmPassword ? "border-destructive" : ""}
                   />
+                  {errors.confirmPassword && <p className="text-xs text-destructive">{errors.confirmPassword}</p>}
                 </div>
               </>
             )}
@@ -260,7 +332,9 @@ export default function CaregiverSignupPage() {
                       min="0"
                       value={formData.yearsExperience}
                       onChange={(e) => setFormData({ ...formData, yearsExperience: e.target.value })}
+                      className={errors.yearsExperience ? "border-destructive" : ""}
                     />
+                    {errors.yearsExperience && <p className="text-xs text-destructive">{errors.yearsExperience}</p>}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="hourlyRate">Hourly rate ($)</Label>
@@ -270,7 +344,9 @@ export default function CaregiverSignupPage() {
                       min="15"
                       value={formData.hourlyRate}
                       onChange={(e) => setFormData({ ...formData, hourlyRate: e.target.value })}
+                      className={errors.hourlyRate ? "border-destructive" : ""}
                     />
+                    {errors.hourlyRate && <p className="text-xs text-destructive">{errors.hourlyRate}</p>}
                   </div>
                 </div>
                 <div className="space-y-2">
@@ -291,6 +367,7 @@ export default function CaregiverSignupPage() {
                       </button>
                     ))}
                   </div>
+                  {errors.services && <p className="text-xs text-destructive">{errors.services}</p>}
                 </div>
                 <div className="space-y-2">
                   <Label>Certifications</Label>
@@ -335,6 +412,7 @@ export default function CaregiverSignupPage() {
                       </button>
                     ))}
                   </div>
+                  {errors.availability && <p className="text-xs text-destructive">{errors.availability}</p>}
                 </div>
 
                 <div className="space-y-3 rounded-lg border bg-muted/50 p-4">
@@ -350,6 +428,7 @@ export default function CaregiverSignupPage() {
                       <Link href="/caregiver-agreement" className="text-primary hover:underline">Caregiver Agreement</Link>
                     </Label>
                   </div>
+                  {errors.agreeTerms && <p className="text-xs text-destructive ml-6">{errors.agreeTerms}</p>}
                   <div className="flex items-start gap-2">
                     <Checkbox
                       id="background"
@@ -360,6 +439,7 @@ export default function CaregiverSignupPage() {
                       I consent to a background check as part of the verification process
                     </Label>
                   </div>
+                  {errors.agreeBackground && <p className="text-xs text-destructive ml-6">{errors.agreeBackground}</p>}
                 </div>
               </>
             )}
