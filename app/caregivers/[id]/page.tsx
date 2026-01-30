@@ -380,27 +380,78 @@ export default function CaregiverProfilePage({ params }: { params: Promise<{ id:
                   )}
                 </TabsContent>
 
-                <TabsContent value="availability" className="mt-4">
+                <TabsContent value="availability" className="mt-4 space-y-6">
                   <Card>
                     <CardHeader>
-                      <CardTitle>Current Availability</CardTitle>
+                      <CardTitle>Current Status</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="space-y-4">
-                        <div className="flex items-center gap-3 rounded-lg border p-4">
-                          <div className={`h-3 w-3 rounded-full ${
-                            caregiver.availability === 'available' ? 'bg-green-500' :
-                            caregiver.availability === 'busy' ? 'bg-yellow-500' : 'bg-gray-400'
-                          }`} />
-                          <div>
-                            <p className="font-medium capitalize">{caregiver.availability}</p>
-                            <p className="text-sm text-muted-foreground">{caregiver.responseTime}</p>
-                          </div>
+                      <div className="flex items-center gap-3 rounded-lg border p-4">
+                        <div className={`h-3 w-3 rounded-full ${
+                          caregiver.availability === 'available' ? 'bg-green-500' :
+                          caregiver.availability === 'busy' ? 'bg-yellow-500' : 'bg-gray-400'
+                        }`} />
+                        <div>
+                          <p className="font-medium capitalize">{caregiver.availability}</p>
+                          <p className="text-sm text-muted-foreground">{caregiver.responseTime}</p>
                         </div>
-                        <p className="text-sm text-muted-foreground">
-                          Contact {caregiver.name.split(' ')[0]} directly to discuss specific scheduling needs and availability.
-                        </p>
                       </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Weekly Availability</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        {[
+                          { day: 'Monday', hours: '8:00 AM - 6:00 PM', available: true },
+                          { day: 'Tuesday', hours: '8:00 AM - 6:00 PM', available: true },
+                          { day: 'Wednesday', hours: '8:00 AM - 2:00 PM', available: true },
+                          { day: 'Thursday', hours: '8:00 AM - 6:00 PM', available: true },
+                          { day: 'Friday', hours: '8:00 AM - 6:00 PM', available: true },
+                          { day: 'Saturday', hours: '9:00 AM - 4:00 PM', available: true },
+                          { day: 'Sunday', hours: 'Not available', available: false },
+                        ].map((schedule) => (
+                          <div
+                            key={schedule.day}
+                            className={`flex items-center justify-between rounded-lg border p-3 ${
+                              schedule.available ? '' : 'bg-muted/50'
+                            }`}
+                          >
+                            <span className="font-medium">{schedule.day}</span>
+                            <span className={`text-sm ${schedule.available ? 'text-muted-foreground' : 'text-muted-foreground/60'}`}>
+                              {schedule.hours}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Next Available</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid gap-3 sm:grid-cols-3">
+                        {[
+                          { date: 'Tomorrow', time: '9:00 AM' },
+                          { date: 'Wed, Feb 5', time: '10:00 AM' },
+                          { date: 'Thu, Feb 6', time: '8:00 AM' },
+                        ].map((slot, i) => (
+                          <Link key={i} href={`/book/${caregiver.id}`}>
+                            <div className="rounded-lg border p-4 text-center hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
+                              <p className="font-medium">{slot.date}</p>
+                              <p className="text-sm text-muted-foreground">{slot.time}</p>
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                      <p className="mt-4 text-sm text-muted-foreground text-center">
+                        Click a time slot to book or contact {caregiver.name.split(' ')[0]} for custom scheduling.
+                      </p>
                     </CardContent>
                   </Card>
                 </TabsContent>

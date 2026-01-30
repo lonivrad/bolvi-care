@@ -161,6 +161,26 @@ export const useCaregiversStore = create<CaregiversState>()((set, get) => ({
       );
     }
 
+    // Certifications filter
+    if (filters.certifications.length > 0) {
+      filtered = filtered.filter(cg =>
+        filters.certifications.some(cert =>
+          cg.certifications.some(c => c.toLowerCase().includes(cert.toLowerCase()))
+        )
+      );
+    }
+
+    // Availability filter
+    if (filters.availability.length > 0) {
+      filtered = filtered.filter(cg => {
+        if (filters.availability.includes('Available Now') && cg.availability === 'available') return true;
+        if (filters.availability.includes('This Week') && cg.availability !== 'offline') return true;
+        if (filters.availability.includes('Weekends')) return true; // All caregivers could be available weekends
+        if (filters.availability.includes('Evenings')) return true; // All caregivers could be available evenings
+        return filters.availability.length === 0;
+      });
+    }
+
     // Sort
     switch (filters.sortBy) {
       case 'rating':
