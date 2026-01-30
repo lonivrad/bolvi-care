@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { Header } from "@/components/layout/header";
+import { Footer } from "@/components/layout/footer";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -209,7 +211,9 @@ export default function CommunityPage() {
   const [searchQuery, setSearchQuery] = useState("");
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
+    <>
+      <Header />
+      <main className="mx-auto max-w-7xl px-4 py-8">
       {/* Header */}
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold text-foreground">Community</h1>
@@ -601,6 +605,8 @@ export default function CommunityPage() {
           </div>
         </TabsContent>
       </Tabs>
-    </div>
+      </main>
+      <Footer />
+    </>
   );
 }

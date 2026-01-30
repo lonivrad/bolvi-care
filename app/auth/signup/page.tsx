@@ -27,10 +27,10 @@ export default function SignupPage() {
         <CardHeader className="text-center">
           <Link href="/" className="mx-auto mb-4 flex items-center gap-2">
             <Heart className="h-8 w-8 text-primary" />
-            <span className="text-2xl font-bold">ElderCare</span>
+            <span className="text-2xl font-bold">Bolvi Care</span>
           </Link>
-          <CardTitle className="text-2xl">Join ElderCare</CardTitle>
-          <CardDescription>Choose how you want to use ElderCare</CardDescription>
+          <CardTitle className="text-2xl">Join Bolvi Care</CardTitle>
+          <CardDescription>Choose how you want to use Bolvi Care</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <button

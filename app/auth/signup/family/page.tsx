@@ -67,7 +67,7 @@ export default function FamilySignupPage() {
           </Link>
           <div className="flex items-center gap-2">
             <Heart className="h-6 w-6 text-primary" />
-            <span className="font-semibold">ElderCare</span>
+            <span className="font-semibold">Bolvi Care</span>
           </div>
           <CardTitle className="text-2xl">Create your family account</CardTitle>
           <CardDescription>Find trusted care for your loved ones</CardDescription>

@@ -54,7 +54,7 @@ export default function LoginPage() {
         <CardHeader className="text-center">
           <Link href="/" className="mx-auto mb-4 flex items-center gap-2">
             <Heart className="h-8 w-8 text-primary" />
-            <span className="text-2xl font-bold">ElderCare</span>
+            <span className="text-2xl font-bold">Bolvi Care</span>
           </Link>
           <CardTitle className="text-2xl">Welcome back</CardTitle>
           <CardDescription>Sign in to your account to continue</CardDescription>

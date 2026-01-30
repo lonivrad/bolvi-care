@@ -126,7 +126,7 @@ export default function CaregiverSignupPage() {
           </Link>
           <div className="flex items-center gap-2">
             <Heart className="h-6 w-6 text-primary" />
-            <span className="font-semibold">ElderCare</span>
+            <span className="font-semibold">Bolvi Care</span>
           </div>
           <CardTitle className="text-2xl">Become a caregiver</CardTitle>
           <CardDescription>Join our network of trusted care providers</CardDescription>
