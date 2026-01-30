@@ -104,7 +104,7 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'auth-storage',
-      version: 2, // Increment this to force reset for all users
+      version: 3, // Increment this to force reset for all users
     }
   )
 );

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { format } from "date-fns";
+import { format, addMonths } from "date-fns";
 import { Search, MapPin, Calendar as CalendarIcon, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -116,7 +116,13 @@ export function HeroSection() {
                         setCareDate(date);
                         setCalendarOpen(false);
                       }}
-                      disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+                      disabled={(date) => {
+                        const today = new Date(new Date().setHours(0, 0, 0, 0));
+                        const sixMonthsFromNow = addMonths(today, 6);
+                        return date < today || date > sixMonthsFromNow;
+                      }}
+                      startMonth={new Date()}
+                      endMonth={addMonths(new Date(), 6)}
                       initialFocus
                     />
                   </PopoverContent>
