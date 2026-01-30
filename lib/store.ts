@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
 import { 
   sampleFamilyUser, 
   sampleCaregiverUser, 
@@ -89,25 +88,19 @@ const defaultFilters: CaregiverFilters = {
   sortBy: 'rating',
 };
 
-export const useAuthStore = create<AuthState>()(
-  persist(
-    (set) => ({
-      role: null,  // Start as third-party visitor (not logged in)
-      familyUser: null,
-      caregiverUser: null,
-      setRole: (role) => set({
-        role,
-        familyUser: role === 'family' ? sampleFamilyUser : null,
-        caregiverUser: role === 'caregiver' ? sampleCaregiverUser : null,
-      }),
-      logout: () => set({ role: null, familyUser: null, caregiverUser: null }),
-    }),
-    {
-      name: 'auth-storage',
-      version: 3, // Increment this to force reset for all users
-    }
-  )
-);
+// No persistence - each visit starts fresh as a visitor (not logged in)
+// This is ideal for demo purposes so investors always see the public landing page first
+export const useAuthStore = create<AuthState>()((set) => ({
+  role: null,  // Start as third-party visitor (not logged in)
+  familyUser: null,
+  caregiverUser: null,
+  setRole: (role) => set({
+    role,
+    familyUser: role === 'family' ? sampleFamilyUser : null,
+    caregiverUser: role === 'caregiver' ? sampleCaregiverUser : null,
+  }),
+  logout: () => set({ role: null, familyUser: null, caregiverUser: null }),
+}));
 
 export const useCaregiversStore = create<CaregiversState>()((set, get) => ({
   caregivers: caregivers,
