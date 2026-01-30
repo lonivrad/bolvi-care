@@ -25,14 +25,15 @@ import {
   Car,
   Languages,
   Briefcase,
-  ArrowLeft,
 } from "lucide-react";
-import { mockCaregivers, mockReviews } from "@/lib/mock-data";
+import { caregivers, reviews } from "@/lib/mock-data";
+import { BackButton } from "@/components/ui/back-button";
+import { Breadcrumb } from "@/components/ui/breadcrumb";
 
 export default function CaregiverProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  const caregiver = mockCaregivers.find((c) => c.id === id) || mockCaregivers[0];
-  const reviews = mockReviews.filter((r) => r.caregiverId === caregiver.id);
+  const caregiver = caregivers.find((c) => c.id === id) || caregivers[0];
+  const caregiverReviews = reviews.filter((r) => r.caregiverId === caregiver.id);
 
   const ratingBreakdown = [
     { stars: 5, percentage: 85 },
@@ -45,14 +46,19 @@ export default function CaregiverProfilePage({ params }: { params: Promise<{ id:
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
-      <main className="flex-1">
+      <main id="main-content" className="flex-1">
         <div className="container mx-auto px-4 py-6">
-          <Link
-            href="/caregivers"
-            className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
-          >
-            <ArrowLeft className="h-4 w-4" /> Back to search
-          </Link>
+          {/* Navigation */}
+          <div className="mb-4">
+            <BackButton href="/caregivers" label="Back to search" variant="link" />
+          </div>
+          <Breadcrumb
+            items={[
+              { label: "Find Care", href: "/caregivers" },
+              { label: caregiver.name },
+            ]}
+            className="mb-6"
+          />
 
           <div className="grid gap-8 lg:grid-cols-3">
             {/* Main Content */}
@@ -63,13 +69,13 @@ export default function CaregiverProfilePage({ params }: { params: Promise<{ id:
                   <div className="flex flex-col gap-6 sm:flex-row">
                     <div className="relative">
                       <Image
-                        src={caregiver.avatar || "/placeholder.svg"}
-                        alt={`${caregiver.firstName} ${caregiver.lastName}`}
+                        src={caregiver.photo || "/placeholder.svg"}
+                        alt={caregiver.name}
                         width={160}
                         height={160}
                         className="rounded-xl object-cover"
                       />
-                      {caregiver.verified && (
+                      {caregiver.badges.includes('Background Check') && (
                         <div className="absolute -bottom-2 -right-2 flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground">
                           <CheckCircle className="h-5 w-5" />
                         </div>
@@ -79,9 +85,9 @@ export default function CaregiverProfilePage({ params }: { params: Promise<{ id:
                       <div className="flex items-start justify-between">
                         <div>
                           <h1 className="text-2xl font-bold">
-                            {caregiver.firstName} {caregiver.lastName}
+                            {caregiver.name}
                           </h1>
-                          <p className="text-muted-foreground">{caregiver.tagline}</p>
+                          <p className="text-muted-foreground">{caregiver.bio.substring(0, 60)}...</p>
                         </div>
                         <div className="flex gap-2">
                           <Button variant="outline" size="icon">
@@ -101,7 +107,7 @@ export default function CaregiverProfilePage({ params }: { params: Promise<{ id:
                         </div>
                         <div className="flex items-center gap-1 text-muted-foreground">
                           <MapPin className="h-4 w-4" />
-                          {caregiver.location.city}, {caregiver.location.state}
+                          {caregiver.location}
                         </div>
                         <div className="flex items-center gap-1 text-muted-foreground">
                           <Clock className="h-4 w-4" />
@@ -110,7 +116,7 @@ export default function CaregiverProfilePage({ params }: { params: Promise<{ id:
                       </div>
 
                       <div className="mt-4 flex flex-wrap gap-2">
-                        {caregiver.verified && (
+                        {caregiver.badges.includes('Background Check') && (
                           <Badge variant="secondary" className="bg-green-100 text-green-700">
                             <Shield className="mr-1 h-3 w-3" /> Background Checked
                           </Badge>
@@ -138,7 +144,7 @@ export default function CaregiverProfilePage({ params }: { params: Promise<{ id:
                 <TabsContent value="about" className="mt-4 space-y-6">
                   <Card>
                     <CardHeader>
-                      <CardTitle>About {caregiver.firstName}</CardTitle>
+                      <CardTitle>About {caregiver.name.split(' ')[0]}</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <p className="text-muted-foreground leading-relaxed">{caregiver.bio}</p>
@@ -175,7 +181,7 @@ export default function CaregiverProfilePage({ params }: { params: Promise<{ id:
                           </div>
                           <div>
                             <p className="text-sm text-muted-foreground">Transportation</p>
-                            <p className="font-medium">{caregiver.hasTransportation ? "Has own vehicle" : "Public transit"}</p>
+                            <p className="font-medium">{caregiver.specialties.includes('Transportation') ? "Has own vehicle" : "Public transit"}</p>
                           </div>
                         </div>
                         <div className="flex items-center gap-3">
@@ -215,7 +221,7 @@ export default function CaregiverProfilePage({ params }: { params: Promise<{ id:
                     </CardHeader>
                     <CardContent>
                       <div className="grid gap-3 sm:grid-cols-2">
-                        {caregiver.services.map((service) => (
+                        {caregiver.specialties.map((service) => (
                           <div key={service} className="flex items-center gap-3 rounded-lg border p-3">
                             <CheckCircle className="h-5 w-5 text-primary" />
                             <span>{service}</span>
@@ -263,19 +269,19 @@ export default function CaregiverProfilePage({ params }: { params: Promise<{ id:
                     </CardContent>
                   </Card>
 
-                  {reviews.length > 0 ? (
+                  {caregiverReviews.length > 0 ? (
                     <div className="space-y-4">
-                      {reviews.map((review) => (
+                      {caregiverReviews.map((review) => (
                         <Card key={review.id}>
                           <CardContent className="p-4">
                             <div className="flex items-start gap-4">
                               <Avatar>
-                                <AvatarImage src={review.clientAvatar} />
-                                <AvatarFallback>{review.clientName.charAt(0)}</AvatarFallback>
+                                <AvatarImage src={review.authorPhoto} />
+                                <AvatarFallback>{review.authorName.charAt(0)}</AvatarFallback>
                               </Avatar>
                               <div className="flex-1">
                                 <div className="flex items-center justify-between">
-                                  <h4 className="font-medium">{review.clientName}</h4>
+                                  <h4 className="font-medium">{review.authorName}</h4>
                                   <span className="text-sm text-muted-foreground">{review.date}</span>
                                 </div>
                                 <div className="mt-1 flex">
@@ -288,7 +294,7 @@ export default function CaregiverProfilePage({ params }: { params: Promise<{ id:
                                     />
                                   ))}
                                 </div>
-                                <p className="mt-2 text-sm text-muted-foreground">{review.comment}</p>
+                                <p className="mt-2 text-sm text-muted-foreground">{review.content}</p>
                               </div>
                             </div>
                           </CardContent>
@@ -307,26 +313,23 @@ export default function CaregiverProfilePage({ params }: { params: Promise<{ id:
                 <TabsContent value="availability" className="mt-4">
                   <Card>
                     <CardHeader>
-                      <CardTitle>Weekly Availability</CardTitle>
+                      <CardTitle>Current Availability</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="grid gap-2">
-                        {Object.entries(caregiver.availability).map(([day, slots]) => (
-                          <div key={day} className="flex items-center justify-between rounded-lg border p-3">
-                            <span className="font-medium capitalize">{day}</span>
-                            {slots.length > 0 ? (
-                              <div className="flex gap-2">
-                                {slots.map((slot, i) => (
-                                  <Badge key={i} variant="secondary">
-                                    {slot}
-                                  </Badge>
-                                ))}
-                              </div>
-                            ) : (
-                              <span className="text-sm text-muted-foreground">Not available</span>
-                            )}
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-3 rounded-lg border p-4">
+                          <div className={`h-3 w-3 rounded-full ${
+                            caregiver.availability === 'available' ? 'bg-green-500' :
+                            caregiver.availability === 'busy' ? 'bg-yellow-500' : 'bg-gray-400'
+                          }`} />
+                          <div>
+                            <p className="font-medium capitalize">{caregiver.availability}</p>
+                            <p className="text-sm text-muted-foreground">{caregiver.responseTime}</p>
                           </div>
-                        ))}
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          Contact {caregiver.name.split(' ')[0]} directly to discuss specific scheduling needs and availability.
+                        </p>
                       </div>
                     </CardContent>
                   </Card>
@@ -364,8 +367,8 @@ export default function CaregiverProfilePage({ params }: { params: Promise<{ id:
                       <span className="font-medium">~2 hours</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Bookings completed</span>
-                      <span className="font-medium">{caregiver.completedBookings}+</span>
+                      <span className="text-muted-foreground">Visits completed</span>
+                      <span className="font-medium">{caregiver.completedVisits}+</span>
                     </div>
                   </div>
 

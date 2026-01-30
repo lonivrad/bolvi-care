@@ -13,11 +13,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { 
-  Bell, 
-  Menu, 
-  X, 
-  MessageSquare, 
+import {
+  Bell,
+  Menu,
+  X,
+  MessageSquare,
   ChevronDown,
   User,
   Settings,
@@ -30,19 +30,21 @@ import {
   Briefcase,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 const publicNavItems = [
   { label: "Find Care", href: "/caregivers" },
   { label: "How It Works", href: "/how-it-works" },
-  { label: "For Caregivers", href: "/caregiver/signup" },
+  { label: "For Caregivers", href: "/auth/signup/caregiver" },
   { label: "Safety", href: "/safety" },
-  { label: "Pricing", href: "/pricing" },
+  { label: "Community", href: "/community" },
 ];
 
 const familyNavItems = [
   { label: "Find Care", href: "/caregivers" },
   { label: "My Bookings", href: "/dashboard/family/bookings" },
-  { label: "Care Team", href: "/dashboard/family/team" },
+  { label: "Care Team", href: "/dashboard/family/care-team" },
+  { label: "Community", href: "/community" },
 ];
 
 const caregiverNavItems = [
@@ -80,7 +82,7 @@ export function Header() {
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
             <Heart className="h-5 w-5 text-primary-foreground" />
           </div>
-          <span className="font-serif text-xl font-semibold text-foreground">CareConnect</span>
+          <span className="font-serif text-xl font-semibold text-foreground">Bolvi Care</span>
         </Link>
 
         {/* Desktop Navigation */}
@@ -98,6 +100,9 @@ export function Header() {
 
         {/* Right side */}
         <div className="flex items-center gap-2">
+          {/* Theme Toggle */}
+          <ThemeToggle />
+
           {role && (
             <>
               {/* Messages */}
@@ -228,7 +233,7 @@ export function Header() {
                 </DropdownMenuContent>
               </DropdownMenu>
               <Button asChild>
-                <Link href="/caregiver/signup">Join as Caregiver</Link>
+                <Link href="/auth/signup/caregiver">Join as Caregiver</Link>
               </Button>
             </div>
           )}

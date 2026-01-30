@@ -72,7 +72,7 @@ export function HeroSection() {
                 </Link>
               </Button>
               <Button size="lg" variant="ghost" className="gap-2" asChild>
-                <Link href="/caregiver/signup">
+                <Link href="/auth/signup/caregiver">
                   Become a Caregiver
                 </Link>
               </Button>

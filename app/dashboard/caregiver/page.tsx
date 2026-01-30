@@ -94,9 +94,9 @@ export default function CaregiverDashboard() {
             />
             <StatsCard
               title="Rating"
-              value={caregiverUser?.rating || 4.9}
+              value={caregiverUser?.profile?.rating || 4.9}
               icon={Star}
-              description={`${caregiverUser?.reviewCount || 127} reviews`}
+              description={`${caregiverUser?.profile?.reviewCount || 127} reviews`}
             />
           </div>
 
@@ -175,7 +175,7 @@ export default function CaregiverDashboard() {
                               </span>
                               <span className="flex items-center gap-1">
                                 <MapPin className="h-3 w-3" />
-                                {visit.address || "123 Main St"}
+                                San Francisco, CA
                               </span>
                             </div>
                             <div className="mt-2 flex flex-wrap gap-1">

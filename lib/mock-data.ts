@@ -1,4 +1,4 @@
-// Mock data for Elder Care Marketplace MVP
+// Mock data for Bolvi Care
 
 export interface Caregiver {
   id: string;
@@ -704,6 +704,37 @@ export const visitReports: VisitReport[] = [
     appetite: 'good',
     medicationsGiven: ['Metformin 500mg', 'Lisinopril 10mg', 'Aricept 5mg'],
     photos: [],
+  },
+];
+
+// Export aliases for compatibility
+export const mockCaregivers = caregivers;
+export const mockReviews = reviews;
+export const mockCareRecipients = sampleFamilyUser.careRecipients;
+
+// Mock Users for authentication
+export interface MockUser {
+  id: string;
+  email: string;
+  name: string;
+  role: 'family' | 'caregiver';
+  photo: string;
+}
+
+export const mockUsers: MockUser[] = [
+  {
+    id: 'f-1',
+    email: 'sarah@example.com',
+    name: 'Sarah Johnson',
+    role: 'family',
+    photo: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop',
+  },
+  {
+    id: 'cg-1',
+    email: 'maria@caregiver.com',
+    name: 'Maria Rodriguez',
+    role: 'caregiver',
+    photo: 'https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=200&h=200&fit=crop',
   },
 ];
 

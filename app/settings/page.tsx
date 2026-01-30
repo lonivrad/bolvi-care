@@ -12,6 +12,7 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -37,8 +38,8 @@ import {
 import { cn } from "@/lib/utils";
 
 export default function SettingsPage() {
-  const { familyUser, caregiverUser, logout, userRole } = useAuthStore();
-  const user = userRole === "caregiver" ? caregiverUser : familyUser;
+  const { familyUser, caregiverUser, logout, role } = useAuthStore();
+  const user = role === "caregiver" ? caregiverUser : familyUser;
 
   const [notifications, setNotifications] = useState({
     email: true,
@@ -125,7 +126,7 @@ export default function SettingsPage() {
                     </div>
                     <div className="space-y-2 sm:col-span-2">
                       <Label htmlFor="address">Address</Label>
-                      <Input id="address" defaultValue={user?.address} />
+                      <Input id="address" defaultValue="San Francisco, CA" />
                     </div>
                   </div>
 

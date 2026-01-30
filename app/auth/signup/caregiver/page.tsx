@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Heart, Eye, EyeOff, ArrowLeft, ArrowRight, Check } from "lucide-react";
-import { useStore } from "@/lib/store";
+import { useStore, useAuthStore } from "@/lib/store";
 
 const steps = ["Basic Info", "Experience", "Availability"];
 
@@ -35,7 +35,7 @@ const certifications = [
 
 export default function CaregiverSignupPage() {
   const router = useRouter();
-  const { setCurrentUser } = useStore();
+  const { setRole } = useAuthStore();
   const [currentStep, setCurrentStep] = useState(0);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -110,25 +110,9 @@ export default function CaregiverSignupPage() {
     setIsLoading(true);
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
-    const newUser = {
-      id: `caregiver-${Date.now()}`,
-      email: formData.email,
-      role: "caregiver" as const,
-      profile: {
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        phone: formData.phone,
-        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${formData.firstName}`,
-        bio: formData.bio,
-        hourlyRate: parseFloat(formData.hourlyRate),
-        yearsExperience: parseInt(formData.yearsExperience),
-        services: formData.services,
-        certifications: formData.certifications,
-      },
-      createdAt: new Date().toISOString(),
-    };
-
-    setCurrentUser(newUser);
+    // For MVP, just set the role to caregiver (uses sample data)
+    // In production, this would create a new user in the database
+    setRole("caregiver");
     router.push("/dashboard/caregiver");
     setIsLoading(false);
   };

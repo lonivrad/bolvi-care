@@ -11,7 +11,7 @@ export function CTASection() {
             Ready to Find Trusted Care?
           </h2>
           <p className="mt-4 text-lg text-primary-foreground/80 max-w-2xl mx-auto">
-            Join thousands of families who have found peace of mind with CareConnect. Start your search today.
+            Join thousands of families who have found peace of mind with Bolvi Care. Start your search today.
           </p>
           
           <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">

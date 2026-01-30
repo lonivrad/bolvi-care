@@ -33,7 +33,7 @@ const faqs = [
     answer: "Our secure in-app messaging lets you communicate directly with your caregiver before, during, and after visits. You'll also receive detailed visit summaries including activities completed, notes, and even photos (with your permission) after each care session.",
   },
   {
-    question: "Is CareConnect available in my area?",
+    question: "Is Bolvi Care available in my area?",
     answer: "We're currently serving the San Francisco Bay Area with plans to expand to Los Angeles, Seattle, and other major metropolitan areas soon. Enter your zip code on our search page to see available caregivers near you.",
   },
 ];
@@ -47,7 +47,7 @@ export function FAQSection() {
             Frequently Asked Questions
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Everything you need to know about finding care with CareConnect.
+            Everything you need to know about finding care with Bolvi Care.
           </p>
         </div>
 

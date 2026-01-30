@@ -28,8 +28,10 @@ import {
   User,
   Heart,
 } from "lucide-react";
-import { mockCaregivers, mockCareRecipients } from "@/lib/mock-data";
+import { caregivers, mockCareRecipients } from "@/lib/mock-data";
 import { useStore } from "@/lib/store";
+import { BackButton } from "@/components/ui/back-button";
+import { Breadcrumb } from "@/components/ui/breadcrumb";
 
 const steps = [
   { id: "recipient", title: "Care Recipient" },
@@ -66,7 +68,7 @@ export default function BookingPage({ params }: { params: Promise<{ caregiverId:
   const { caregiverId } = use(params);
   const router = useRouter();
   const { currentUser } = useStore();
-  const caregiver = mockCaregivers.find((c) => c.id === caregiverId) || mockCaregivers[0];
+  const caregiver = caregivers.find((c) => c.id === caregiverId) || caregivers[0];
 
   const [currentStep, setCurrentStep] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -155,14 +157,20 @@ export default function BookingPage({ params }: { params: Promise<{ caregiverId:
   return (
     <div className="flex min-h-screen flex-col bg-muted/30">
       <Header />
-      <main className="flex-1">
+      <main id="main-content" className="flex-1">
         <div className="container mx-auto px-4 py-6">
-          <Link
-            href={`/caregivers/${caregiverId}`}
-            className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
-          >
-            <ArrowLeft className="h-4 w-4" /> Back to profile
-          </Link>
+          {/* Navigation */}
+          <div className="mb-4">
+            <BackButton href={`/caregivers/${caregiverId}`} label="Back to profile" variant="link" />
+          </div>
+          <Breadcrumb
+            items={[
+              { label: "Find Care", href: "/caregivers" },
+              { label: caregiver.name, href: `/caregivers/${caregiverId}` },
+              { label: "Book Appointment" },
+            ]}
+            className="mb-6"
+          />
 
           {/* Progress Steps */}
           <div className="mb-8">
@@ -220,7 +228,7 @@ export default function BookingPage({ params }: { params: Promise<{ caregiverId:
                                     <User className="h-5 w-5 text-primary" />
                                   </div>
                                   <div>
-                                    <p className="font-medium">{recipient.firstName} {recipient.lastName}</p>
+                                    <p className="font-medium">{recipient.name}</p>
                                     <p className="text-sm text-muted-foreground">
                                       {recipient.relationship} • Age {recipient.age}
                                     </p>
@@ -459,11 +467,11 @@ export default function BookingPage({ params }: { params: Promise<{ caregiverId:
                 <Card>
                   <CardHeader>
                     <CardTitle>Select services needed</CardTitle>
-                    <CardDescription>Choose the services you need from {caregiver.firstName}</CardDescription>
+                    <CardDescription>Choose the services you need from {caregiver.name.split(' ')[0]}</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-6">
                     <div className="grid gap-3 sm:grid-cols-2">
-                      {caregiver.services.map((service) => (
+                      {caregiver.specialties.map((service) => (
                         <button
                           key={service}
                           type="button"
@@ -648,15 +656,15 @@ export default function BookingPage({ params }: { params: Promise<{ caregiverId:
                 <CardContent className="p-6">
                   <div className="flex items-center gap-4">
                     <Image
-                      src={caregiver.avatar || "/placeholder.svg"}
-                      alt={caregiver.firstName}
+                      src={caregiver.photo || "/placeholder.svg"}
+                      alt={caregiver.name}
                       width={64}
                       height={64}
                       className="rounded-lg"
                     />
                     <div>
                       <h3 className="font-semibold">
-                        {caregiver.firstName} {caregiver.lastName}
+                        {caregiver.name}
                       </h3>
                       <div className="flex items-center gap-1 text-sm">
                         <Star className="h-4 w-4 fill-amber-400 text-amber-400" />

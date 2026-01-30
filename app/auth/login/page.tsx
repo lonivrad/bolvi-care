@@ -9,12 +9,12 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Heart, Eye, EyeOff, Mail, Lock } from "lucide-react";
-import { useStore } from "@/lib/store";
-import { mockUsers } from "@/lib/mock-data";
+import { useAuthStore } from "@/lib/store";
+import { sampleFamilyUser, sampleCaregiverUser } from "@/lib/mock-data";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { setCurrentUser } = useStore();
+  const { setRole } = useAuthStore();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -30,18 +30,19 @@ export default function LoginPage() {
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    // Mock authentication - find user by email
-    const user = mockUsers.find((u) => u.email.toLowerCase() === email.toLowerCase());
+    // Mock authentication - check credentials
+    const familyEmail = sampleFamilyUser.email.toLowerCase();
+    const caregiverEmail = sampleCaregiverUser.email.toLowerCase();
+    const inputEmail = email.toLowerCase();
 
-    if (user) {
-      setCurrentUser(user);
-      if (user.role === "family") {
-        router.push("/dashboard/family");
-      } else {
-        router.push("/dashboard/caregiver");
-      }
+    if (inputEmail === familyEmail || inputEmail === "sarah@example.com") {
+      setRole("family");
+      router.push("/dashboard/family");
+    } else if (inputEmail === caregiverEmail || inputEmail === "maria@caregiver.com") {
+      setRole("caregiver");
+      router.push("/dashboard/caregiver");
     } else {
-      setError("Invalid email or password. Try: sarah@example.com or maria@caregiver.com");
+      setError("Invalid email or password. Try: sarah.johnson@email.com or maria.rodriguez@email.com");
     }
 
     setIsLoading(false);

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 const testimonials = [
   {
     id: 1,
-    content: "CareConnect has been a blessing for our family. Maria treats my mother like her own grandmother. The detailed visit reports give us peace of mind even from miles away.",
+    content: "Bolvi Care has been a blessing for our family. Maria treats my mother like her own grandmother. The detailed visit reports give us peace of mind even from miles away.",
     author: "Sarah M.",
     role: "Daughter caring for mother",
     location: "San Francisco, CA",
@@ -16,7 +16,7 @@ const testimonials = [
   },
   {
     id: 2,
-    content: "After trying two agencies, we found CareConnect. The transparency in pricing and the quality of caregivers is unmatched. Dad actually looks forward to his visits now.",
+    content: "After trying two agencies, we found Bolvi Care. The transparency in pricing and the quality of caregivers is unmatched. Dad actually looks forward to his visits now.",
     author: "John D.",
     role: "Son caring for father",
     location: "Oakland, CA",
@@ -48,7 +48,7 @@ export function TestimonialsSection() {
             Trusted by Thousands of Families
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Hear from families who have found peace of mind with CareConnect.
+            Hear from families who have found peace of mind with Bolvi Care.
           </p>
         </div>
 

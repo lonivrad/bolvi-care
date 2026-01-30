@@ -9,11 +9,11 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Heart, Eye, EyeOff, ArrowLeft } from "lucide-react";
-import { useStore } from "@/lib/store";
+import { useAuthStore } from "@/lib/store";
 
 export default function FamilySignupPage() {
   const router = useRouter();
-  const { setCurrentUser } = useStore();
+  const { setRole } = useAuthStore();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -51,22 +51,9 @@ export default function FamilySignupPage() {
     setIsLoading(true);
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
-    // Create mock user
-    const newUser = {
-      id: `user-${Date.now()}`,
-      email: formData.email,
-      role: "family" as const,
-      profile: {
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        phone: formData.phone,
-        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${formData.firstName}`,
-        address: { city: "San Francisco", state: "CA", zipCode: formData.zipCode },
-      },
-      createdAt: new Date().toISOString(),
-    };
-
-    setCurrentUser(newUser);
+    // For MVP, just set the role to family (uses sample data)
+    // In production, this would create a new user in the database
+    setRole("family");
     router.push("/dashboard/family");
     setIsLoading(false);
   };

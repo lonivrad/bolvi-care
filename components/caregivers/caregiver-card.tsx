@@ -91,7 +91,7 @@ export function CaregiverCard({ caregiver, variant = "grid", onFavorite, isFavor
                 </div>
                 <div className="flex gap-2">
                   <Button variant="outline" asChild>
-                    <Link href={`/caregiver/${caregiver.id}`}>View Profile</Link>
+                    <Link href={`/caregivers/${caregiver.id}`}>View Profile</Link>
                   </Button>
                   <Button asChild>
                     <Link href={`/book/${caregiver.id}`}>
@@ -250,7 +250,7 @@ export function CaregiverCard({ caregiver, variant = "grid", onFavorite, isFavor
 
         <div className="mt-4 flex gap-2">
           <Button variant="outline" className="flex-1" asChild>
-            <Link href={`/caregiver/${caregiver.id}`}>Profile</Link>
+            <Link href={`/caregivers/${caregiver.id}`}>Profile</Link>
           </Button>
           <Button className="flex-1" asChild>
             <Link href={`/book/${caregiver.id}`}>Book</Link>

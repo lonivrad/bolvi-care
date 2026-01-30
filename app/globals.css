@@ -48,8 +48,32 @@
   --font-mono: var(--font-geist-mono);
 }
 
+/* Dark mode via class (manual toggle) */
+.dark {
+  --background: #111827;
+  --foreground: #F9FAFB;
+  --card: #1F2937;
+  --card-foreground: #F9FAFB;
+  --popover: #1F2937;
+  --popover-foreground: #F9FAFB;
+  --primary: #60A5FA;
+  --primary-foreground: #1F2937;
+  --secondary: #FBBF24;
+  --secondary-foreground: #1F2937;
+  --muted: #374151;
+  --muted-foreground: #9CA3AF;
+  --accent: #34D399;
+  --accent-foreground: #1F2937;
+  --destructive: #F87171;
+  --destructive-foreground: #1F2937;
+  --border: #374151;
+  --input: #374151;
+  --ring: #60A5FA;
+}
+
+/* Dark mode via system preference (fallback when no class set) */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not(.light) {
     --background: #111827;
     --foreground: #F9FAFB;
     --card: #1F2937;
@@ -88,4 +112,31 @@ body {
 
 .text-pretty {
   text-wrap: pretty;
+}
+
+/* Print styles */
+@media print {
+  /* Hide non-essential elements when printing */
+  .no-print,
+  header,
+  footer,
+  nav {
+    display: none !important;
+  }
+
+  /* Reset backgrounds for printing */
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  /* Remove shadows for print */
+  * {
+    box-shadow: none !important;
+  }
+
+  /* Adjust margins for print */
+  @page {
+    margin: 1in;
+  }
 }

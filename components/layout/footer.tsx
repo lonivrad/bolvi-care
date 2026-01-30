@@ -3,17 +3,17 @@ import { Heart, Phone, Mail, MapPin } from "lucide-react";
 
 const footerLinks = {
   forFamilies: [
-    { label: "Find Caregivers", href: "/find-care" },
+    { label: "Find Caregivers", href: "/caregivers" },
     { label: "How It Works", href: "/how-it-works" },
     { label: "Pricing", href: "/pricing" },
-    { label: "Care Plans", href: "/resources" },
-    { label: "Gift Care", href: "/gift" },
+    { label: "Health Tracking", href: "/dashboard/family/health-tracking" },
+    { label: "Community", href: "/community" },
   ],
   forCaregivers: [
-    { label: "Become a Caregiver", href: "/caregiver/signup" },
-    { label: "Caregiver Resources", href: "/training" },
-    { label: "Success Stories", href: "/resources" },
-    { label: "Earnings Calculator", href: "/caregiver/earnings" },
+    { label: "Become a Caregiver", href: "/auth/signup/caregiver" },
+    { label: "Training Center", href: "/training" },
+    { label: "Success Stories", href: "/community" },
+    { label: "Earnings Calculator", href: "/dashboard/caregiver/earnings" },
   ],
   company: [
     { label: "About Us", href: "/about" },
@@ -60,7 +60,7 @@ export function Footer() {
               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
                 <Heart className="h-5 w-5 text-primary-foreground" />
               </div>
-              <span className="font-serif text-xl font-semibold">CareConnect</span>
+              <span className="font-serif text-xl font-semibold">Bolvi Care</span>
             </Link>
             <p className="mt-4 text-sm text-muted-foreground">
               Connecting families with trusted, verified caregivers for compassionate elder care.
@@ -72,8 +72,8 @@ export function Footer() {
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="h-4 w-4" />
-                <a href="mailto:hello@careconnect.com" className="hover:text-foreground">
-                  hello@careconnect.com
+                <a href="mailto:hello@bolvicare.com" className="hover:text-foreground">
+                  hello@bolvicare.com
                 </a>
               </div>
             </div>
@@ -167,7 +167,7 @@ export function Footer() {
         {/* Bottom */}
         <div className="mt-8 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 sm:flex-row">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} CareConnect. All rights reserved.
+            © {new Date().getFullYear()} Bolvi Care. All rights reserved.
           </p>
           <div className="flex gap-6 text-sm text-muted-foreground">
             <Link href="/privacy" className="hover:text-foreground">Privacy Policy</Link>

@@ -101,7 +101,8 @@ const mockMessages = [
 ];
 
 export default function MessagesPage() {
-  const { isAuthenticated } = useAuthStore();
+  const { role } = useAuthStore();
+  const isAuthenticated = role !== null;
   const [selectedConversation, setSelectedConversation] = useState(mockConversations[0]);
   const [messages, setMessages] = useState(mockMessages);
   const [newMessage, setNewMessage] = useState("");
