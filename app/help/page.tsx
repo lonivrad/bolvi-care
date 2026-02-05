@@ -163,24 +163,26 @@ export default function HelpCenterPage() {
                 key={category.id}
                 href={`/help/category/${category.id}`}
               >
-                <Card className="h-full hover:border-primary/50 hover:shadow-md transition-all cursor-pointer">
-                  <CardContent className="p-6">
-                    <div className="flex items-start gap-4">
-                      <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-primary/10">
-                        <Icon className="h-6 w-6 text-primary" />
+                <Card className="h-full hover:border-primary/50 hover:shadow-md transition-all cursor-pointer group">
+                  <CardContent className="p-6 h-full">
+                    <div className="flex flex-col h-full">
+                      <div className="flex items-center gap-4 mb-3">
+                        <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-primary/10 group-hover:bg-primary/15 transition-colors">
+                          <Icon className="h-6 w-6 text-primary" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
+                            {category.title}
+                          </h3>
+                        </div>
+                        <ChevronRight className="h-5 w-5 text-muted-foreground flex-shrink-0 group-hover:text-primary group-hover:translate-x-0.5 transition-all" />
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-foreground">
-                          {category.title}
-                        </h3>
-                        <p className="mt-1 text-sm text-muted-foreground">
-                          {category.description}
-                        </p>
-                        <p className="mt-2 text-xs text-muted-foreground">
-                          {articleCount} article{articleCount !== 1 ? "s" : ""}
-                        </p>
-                      </div>
-                      <ChevronRight className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                      <p className="text-sm text-muted-foreground flex-1 line-clamp-2">
+                        {category.description}
+                      </p>
+                      <p className="mt-3 text-xs text-muted-foreground pt-3 border-t border-border">
+                        {articleCount} article{articleCount !== 1 ? "s" : ""}
+                      </p>
                     </div>
                   </CardContent>
                 </Card>

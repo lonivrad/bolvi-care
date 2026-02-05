@@ -49,14 +49,14 @@ interface CommandInputProps extends React.InputHTMLAttributes<HTMLInputElement> 
 
 const CommandInput = React.forwardRef<HTMLInputElement, CommandInputProps>(
   ({ className, value, onValueChange, ...props }, ref) => (
-    <div className="flex items-center border-b px-3" cmdk-input-wrapper="">
-      <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
+    <div className="flex items-center border-b px-4" cmdk-input-wrapper="">
+      <Search className="mr-3 h-5 w-5 shrink-0 text-muted-foreground" />
       <input
         ref={ref}
         value={value}
         onChange={(e) => onValueChange?.(e.target.value)}
         className={cn(
-          "flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50",
+          "flex h-12 w-full rounded-md bg-transparent py-3 text-base outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50",
           className
         )}
         {...props}
@@ -97,13 +97,13 @@ const CommandGroup = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "overflow-hidden p-1 text-foreground",
+      "overflow-hidden p-2 text-foreground",
       className
     )}
     {...props}
   >
     {heading && (
-      <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground">
+      <div className="px-2 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
         {heading}
       </div>
     )}
@@ -134,7 +134,7 @@ const CommandItem = React.forwardRef<HTMLDivElement, CommandItemProps>(
     <div
       ref={ref}
       className={cn(
-        "relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground aria-selected:bg-accent aria-selected:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+        "relative flex cursor-pointer select-none items-center rounded-lg px-3 py-2.5 text-sm outline-none hover:bg-muted aria-selected:bg-muted data-[disabled]:pointer-events-none data-[disabled]:opacity-50 transition-colors",
         disabled && "pointer-events-none opacity-50",
         className
       )}

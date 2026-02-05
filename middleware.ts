@@ -54,13 +54,15 @@ const publicApiRoutes = [
 export default auth((req) => {
   const { pathname } = req.nextUrl;
 
+  // CRITICAL: Skip all processing for NextAuth routes to avoid CSRF issues
+  if (pathname.startsWith('/api/auth')) {
+    return NextResponse.next();
+  }
+
   // Allow public API routes
   if (publicApiRoutes.some((route) => pathname.startsWith(route))) {
     // Check if it's a read-only request for public routes
     if (pathname.startsWith('/api/caregivers') && req.method === 'GET') {
-      return NextResponse.next();
-    }
-    if (pathname.startsWith('/api/auth')) {
       return NextResponse.next();
     }
   }
@@ -122,11 +124,12 @@ export const config = {
   matcher: [
     /*
      * Match all request paths except for the ones starting with:
+     * - api/auth (NextAuth routes - must be excluded to prevent CSRF issues)
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
      * - public files (images, etc.)
      */
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!api/auth|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 };

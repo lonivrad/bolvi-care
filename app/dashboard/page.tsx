@@ -9,7 +9,16 @@ export default async function DashboardPage() {
     redirect("/auth/login");
   }
 
-  const role = session.user.role;
+  // Fetch the actual role from database to ensure it's current
+  const dbUser = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { role: true },
+  });
+
+  // Use database role as source of truth (session might have stale data)
+  const role = dbUser?.role || session.user.role;
+
+  console.log("[Dashboard] Session role:", session.user.role, "DB role:", dbUser?.role, "Using:", role);
 
   // Check if user needs onboarding
   if (role === "CAREGIVER") {

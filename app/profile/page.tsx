@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import { useSession } from "next-auth/react";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,45 +20,34 @@ import {
   CheckCircle,
   Upload,
   Trash2,
+  Loader2,
+  AlertCircle,
 } from "lucide-react";
 
-const initialProfile = {
-  name: "Sarah Johnson",
-  email: "sarah.johnson@email.com",
-  phone: "(206) 555-0123",
-  photo: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop",
+interface ProfileData {
+  name: string;
+  email: string;
+  phone: string;
+  photo: string | null;
   address: {
-    street: "123 Pine Street",
-    city: "Seattle",
-    state: "WA",
-    zip: "98101",
-  },
-  role: "family",
-  memberSince: "January 2024",
-  verified: true,
-  paymentMethods: [
-    {
-      id: "pm-1",
-      type: "visa",
-      last4: "4242",
-      expiry: "12/26",
-      isDefault: true,
-    },
-    {
-      id: "pm-2",
-      type: "mastercard",
-      last4: "8888",
-      expiry: "08/25",
-      isDefault: false,
-    },
-  ],
-};
+    street: string;
+    city: string;
+    state: string;
+    zip: string;
+  };
+  role: string;
+  memberSince: string;
+  verified: boolean;
+  emailVerified: boolean;
+}
 
 export default function ProfilePage() {
+  const { data: session, status } = useSession();
   const { toast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
-  const [profile, setProfile] = useState(initialProfile);
-  const [editedProfile, setEditedProfile] = useState(initialProfile);
+  const [profile, setProfile] = useState<ProfileData | null>(null);
+  const [editedProfile, setEditedProfile] = useState<ProfileData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [passwords, setPasswords] = useState({
     current: "",
     new: "",
@@ -66,18 +56,145 @@ export default function ProfilePage() {
   const [isSaving, setIsSaving] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Fetch profile data
+  useEffect(() => {
+    async function fetchProfile() {
+      if (status !== "authenticated" || !session?.user) return;
+
+      try {
+        // Determine the correct API endpoint based on role
+        const role = session.user.role?.toLowerCase();
+        const endpoint = role === "caregiver"
+          ? "/api/profile/caregiver"
+          : "/api/profile/family";
+
+        const res = await fetch(endpoint);
+
+        if (res.ok) {
+          const data = await res.json();
+
+          // Build profile from API data
+          const profileData: ProfileData = {
+            name: session.user.name || "",
+            email: session.user.email || "",
+            phone: data.user?.phone || data.phone || "",
+            photo: session.user.image || data.user?.photo || null,
+            address: {
+              street: data.address || "",
+              city: data.city || "",
+              state: data.state || "",
+              zip: data.zipCode || "",
+            },
+            role: role || "family",
+            memberSince: formatDate(session.user.createdAt || new Date().toISOString()),
+            verified: data.verificationStatus === "VERIFIED",
+            emailVerified: !!session.user.email,
+          };
+
+          setProfile(profileData);
+          setEditedProfile(profileData);
+        } else {
+          // Use session data as fallback
+          const profileData: ProfileData = {
+            name: session.user.name || "",
+            email: session.user.email || "",
+            phone: "",
+            photo: session.user.image || null,
+            address: {
+              street: "",
+              city: "",
+              state: "",
+              zip: "",
+            },
+            role: session.user.role?.toLowerCase() || "family",
+            memberSince: formatDate(new Date().toISOString()),
+            verified: false,
+            emailVerified: !!session.user.email,
+          };
+          setProfile(profileData);
+          setEditedProfile(profileData);
+        }
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+        // Use session data as fallback
+        if (session?.user) {
+          const profileData: ProfileData = {
+            name: session.user.name || "",
+            email: session.user.email || "",
+            phone: "",
+            photo: session.user.image || null,
+            address: {
+              street: "",
+              city: "",
+              state: "",
+              zip: "",
+            },
+            role: session.user.role?.toLowerCase() || "family",
+            memberSince: formatDate(new Date().toISOString()),
+            verified: false,
+            emailVerified: !!session.user.email,
+          };
+          setProfile(profileData);
+          setEditedProfile(profileData);
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    if (status === "authenticated") {
+      fetchProfile();
+    } else if (status === "unauthenticated") {
+      setIsLoading(false);
+    }
+  }, [status, session]);
+
+  function formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+  }
+
   const handleSaveProfile = async () => {
+    if (!editedProfile) return;
+
     setIsSaving(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setProfile(editedProfile);
-    setIsEditing(false);
-    setIsSaving(false);
-    toast({
-      title: "Profile updated",
-      description: "Your changes have been saved successfully.",
-      variant: "success",
-    });
+    try {
+      const role = session?.user?.role?.toLowerCase();
+      const endpoint = role === "caregiver"
+        ? "/api/profile/caregiver"
+        : "/api/profile/family";
+
+      const res = await fetch(endpoint, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          address: editedProfile.address.street,
+          city: editedProfile.address.city,
+          state: editedProfile.address.state,
+          zipCode: editedProfile.address.zip,
+        }),
+      });
+
+      if (res.ok) {
+        setProfile(editedProfile);
+        setIsEditing(false);
+        toast({
+          title: "Profile updated",
+          description: "Your changes have been saved successfully.",
+          variant: "success",
+        });
+      } else {
+        throw new Error("Failed to update profile");
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to save changes. Please try again.",
+        variant: "error",
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleCancelEdit = () => {
@@ -91,8 +208,7 @@ export default function ProfilePage() {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      // In a real app, this would upload to a server
+    if (file && editedProfile) {
       const reader = new FileReader();
       reader.onloadend = () => {
         setEditedProfile({ ...editedProfile, photo: reader.result as string });
@@ -132,6 +248,7 @@ export default function ProfilePage() {
       return;
     }
     setIsSaving(true);
+    // TODO: Implement actual password update API
     await new Promise((resolve) => setTimeout(resolve, 1000));
     setPasswords({ current: "", new: "", confirm: "" });
     setIsSaving(false);
@@ -150,35 +267,6 @@ export default function ProfilePage() {
     });
   };
 
-  const handleRevokeSession = (sessionName: string) => {
-    toast({
-      title: "Session revoked",
-      description: `${sessionName} has been signed out.`,
-      variant: "success",
-    });
-  };
-
-  const handleRemovePayment = (methodId: string) => {
-    const method = profile.paymentMethods.find((m) => m.id === methodId);
-    if (method?.isDefault) {
-      toast({
-        title: "Cannot remove default",
-        description: "Please set another card as default first.",
-        variant: "error",
-      });
-      return;
-    }
-    setProfile({
-      ...profile,
-      paymentMethods: profile.paymentMethods.filter((m) => m.id !== methodId),
-    });
-    toast({
-      title: "Card removed",
-      description: "Payment method has been removed.",
-      variant: "success",
-    });
-  };
-
   const handleAddCard = () => {
     toast({
       title: "Add Payment Method",
@@ -194,6 +282,45 @@ export default function ProfilePage() {
       variant: "info",
     });
   };
+
+  // Loading state
+  if (status === "loading" || isLoading) {
+    return (
+      <>
+        <Header />
+        <main className="flex min-h-[60vh] items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </main>
+        <Footer />
+      </>
+    );
+  }
+
+  // Not authenticated
+  if (status === "unauthenticated" || !profile || !editedProfile) {
+    return (
+      <>
+        <Header />
+        <main className="mx-auto max-w-4xl px-4 py-8">
+          <Card>
+            <CardContent className="flex flex-col items-center justify-center py-12">
+              <AlertCircle className="h-12 w-12 text-muted-foreground" />
+              <h2 className="mt-4 text-lg font-semibold">Please sign in</h2>
+              <p className="mt-2 text-muted-foreground">
+                You need to be signed in to view your profile.
+              </p>
+            </CardContent>
+          </Card>
+        </main>
+        <Footer />
+      </>
+    );
+  }
+
+  const displayProfile = isEditing ? editedProfile : profile;
+  const initials = displayProfile.name
+    ? displayProfile.name.charAt(0).toUpperCase()
+    : "U";
 
   return (
     <>
@@ -261,11 +388,17 @@ export default function ProfilePage() {
                 {/* Photo */}
                 <div className="flex items-center gap-6">
                   <div className="relative">
-                    <img
-                      src={isEditing ? editedProfile.photo : profile.photo}
-                      alt={profile.name}
-                      className="h-24 w-24 rounded-full object-cover"
-                    />
+                    {displayProfile.photo ? (
+                      <img
+                        src={displayProfile.photo}
+                        alt={displayProfile.name}
+                        className="h-24 w-24 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-24 w-24 items-center justify-center rounded-full bg-primary text-primary-foreground text-3xl font-semibold">
+                        {initials}
+                      </div>
+                    )}
                     {isEditing && (
                       <Button
                         size="icon"
@@ -278,11 +411,11 @@ export default function ProfilePage() {
                     )}
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold">{profile.name}</h3>
+                    <h3 className="text-lg font-semibold">{displayProfile.name || "Your Name"}</h3>
                     <p className="text-sm text-muted-foreground">
-                      Member since {profile.memberSince}
+                      Member since {displayProfile.memberSince}
                     </p>
-                    {profile.verified && (
+                    {displayProfile.verified && (
                       <Badge className="mt-1" variant="secondary">
                         <CheckCircle className="mr-1 h-3 w-3" />
                         Verified
@@ -296,11 +429,12 @@ export default function ProfilePage() {
                   <div>
                     <Label>Full Name</Label>
                     <Input
-                      value={isEditing ? editedProfile.name : profile.name}
+                      value={displayProfile.name}
                       onChange={(e) =>
                         setEditedProfile({ ...editedProfile, name: e.target.value })
                       }
                       disabled={!isEditing}
+                      placeholder="Enter your name"
                       className="mt-1"
                     />
                   </div>
@@ -308,29 +442,30 @@ export default function ProfilePage() {
                     <Label>Email</Label>
                     <Input
                       type="email"
-                      value={isEditing ? editedProfile.email : profile.email}
-                      onChange={(e) =>
-                        setEditedProfile({ ...editedProfile, email: e.target.value })
-                      }
-                      disabled={!isEditing}
+                      value={displayProfile.email}
+                      disabled
                       className="mt-1"
                     />
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      Contact support to change your email
+                    </p>
                   </div>
                   <div>
                     <Label>Phone</Label>
                     <Input
-                      value={isEditing ? editedProfile.phone : profile.phone}
+                      value={displayProfile.phone}
                       onChange={(e) =>
                         setEditedProfile({ ...editedProfile, phone: e.target.value })
                       }
                       disabled={!isEditing}
+                      placeholder="Enter phone number"
                       className="mt-1"
                     />
                   </div>
                   <div>
                     <Label>Account Type</Label>
                     <Input
-                      value={profile.role === "family" ? "Family Account" : "Caregiver"}
+                      value={displayProfile.role === "family" ? "Family Account" : displayProfile.role === "caregiver" ? "Caregiver" : "Admin"}
                       disabled
                       className="mt-1"
                     />
@@ -344,7 +479,7 @@ export default function ProfilePage() {
                     <div className="md:col-span-2">
                       <Label className="text-sm">Street Address</Label>
                       <Input
-                        value={isEditing ? editedProfile.address.street : profile.address.street}
+                        value={displayProfile.address.street}
                         onChange={(e) =>
                           setEditedProfile({
                             ...editedProfile,
@@ -352,13 +487,14 @@ export default function ProfilePage() {
                           })
                         }
                         disabled={!isEditing}
+                        placeholder="Enter street address"
                         className="mt-1"
                       />
                     </div>
                     <div>
                       <Label className="text-sm">City</Label>
                       <Input
-                        value={isEditing ? editedProfile.address.city : profile.address.city}
+                        value={displayProfile.address.city}
                         onChange={(e) =>
                           setEditedProfile({
                             ...editedProfile,
@@ -366,6 +502,7 @@ export default function ProfilePage() {
                           })
                         }
                         disabled={!isEditing}
+                        placeholder="Enter city"
                         className="mt-1"
                       />
                     </div>
@@ -373,7 +510,7 @@ export default function ProfilePage() {
                       <div>
                         <Label className="text-sm">State</Label>
                         <Input
-                          value={isEditing ? editedProfile.address.state : profile.address.state}
+                          value={displayProfile.address.state}
                           onChange={(e) =>
                             setEditedProfile({
                               ...editedProfile,
@@ -381,13 +518,14 @@ export default function ProfilePage() {
                             })
                           }
                           disabled={!isEditing}
+                          placeholder="State"
                           className="mt-1"
                         />
                       </div>
                       <div>
                         <Label className="text-sm">ZIP Code</Label>
                         <Input
-                          value={isEditing ? editedProfile.address.zip : profile.address.zip}
+                          value={displayProfile.address.zip}
                           onChange={(e) =>
                             setEditedProfile({
                               ...editedProfile,
@@ -395,6 +533,7 @@ export default function ProfilePage() {
                             })
                           }
                           disabled={!isEditing}
+                          placeholder="ZIP"
                           className="mt-1"
                         />
                       </div>
@@ -476,25 +615,10 @@ export default function ProfilePage() {
                     <div>
                       <p className="font-medium">Current Session</p>
                       <p className="text-sm text-muted-foreground">
-                        Seattle, WA • Chrome on MacOS
+                        This device • Active now
                       </p>
                     </div>
                     <Badge variant="secondary">Active Now</Badge>
-                  </div>
-                  <div className="flex items-center justify-between rounded-lg border border-border p-4">
-                    <div>
-                      <p className="font-medium">iPhone 14</p>
-                      <p className="text-sm text-muted-foreground">
-                        Seattle, WA • iOS App
-                      </p>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleRevokeSession("iPhone 14")}
-                    >
-                      Revoke
-                    </Button>
                   </div>
                 </div>
               </CardContent>
@@ -514,39 +638,12 @@ export default function ProfilePage() {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {profile.paymentMethods.map((method) => (
-                    <div
-                      key={method.id}
-                      className="flex items-center justify-between rounded-lg border border-border p-4"
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-muted">
-                          <CreditCard className="h-6 w-6" />
-                        </div>
-                        <div>
-                          <p className="font-medium capitalize">
-                            {method.type} •••• {method.last4}
-                          </p>
-                          <p className="text-sm text-muted-foreground">
-                            Expires {method.expiry}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {method.isDefault && (
-                          <Badge variant="secondary">Default</Badge>
-                        )}
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleRemovePayment(method.id)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <CreditCard className="h-12 w-12 text-muted-foreground" />
+                  <h3 className="mt-4 font-semibold">No payment methods</h3>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    Add a payment method to book caregivers
+                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -556,28 +653,10 @@ export default function ProfilePage() {
                 <CardTitle>Billing History</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {[
-                    { date: "Mar 1, 2024", amount: "$185.00", status: "Paid" },
-                    { date: "Feb 25, 2024", amount: "$240.00", status: "Paid" },
-                    { date: "Feb 18, 2024", amount: "$92.50", status: "Paid" },
-                  ].map((invoice, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between border-b border-border pb-4 last:border-0"
-                    >
-                      <div>
-                        <p className="font-medium">{invoice.date}</p>
-                        <p className="text-sm text-muted-foreground">
-                          Care Services
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-medium">{invoice.amount}</p>
-                        <Badge variant="secondary">{invoice.status}</Badge>
-                      </div>
-                    </div>
-                  ))}
+                <div className="flex flex-col items-center justify-center py-8 text-center">
+                  <p className="text-sm text-muted-foreground">
+                    No transactions yet
+                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -592,32 +671,25 @@ export default function ProfilePage() {
               <CardContent className="space-y-6">
                 <div className="flex items-center justify-between rounded-lg border border-border p-4">
                   <div className="flex items-center gap-4">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100">
-                      <CheckCircle className="h-5 w-5 text-green-600" />
+                    <div className={`flex h-10 w-10 items-center justify-center rounded-full ${profile.emailVerified ? "bg-green-100" : "bg-muted"}`}>
+                      {profile.emailVerified ? (
+                        <CheckCircle className="h-5 w-5 text-green-600" />
+                      ) : (
+                        <AlertCircle className="h-5 w-5 text-muted-foreground" />
+                      )}
                     </div>
                     <div>
-                      <p className="font-medium">Email Verified</p>
+                      <p className="font-medium">Email Verification</p>
                       <p className="text-sm text-muted-foreground">
-                        {profile.email}
+                        {profile.email || "No email set"}
                       </p>
                     </div>
                   </div>
-                  <Badge className="bg-green-100 text-green-800">Verified</Badge>
-                </div>
-
-                <div className="flex items-center justify-between rounded-lg border border-border p-4">
-                  <div className="flex items-center gap-4">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100">
-                      <CheckCircle className="h-5 w-5 text-green-600" />
-                    </div>
-                    <div>
-                      <p className="font-medium">Phone Verified</p>
-                      <p className="text-sm text-muted-foreground">
-                        {profile.phone}
-                      </p>
-                    </div>
-                  </div>
-                  <Badge className="bg-green-100 text-green-800">Verified</Badge>
+                  {profile.emailVerified ? (
+                    <Badge className="bg-green-100 text-green-800">Verified</Badge>
+                  ) : (
+                    <Button variant="outline" size="sm">Verify</Button>
+                  )}
                 </div>
 
                 <div className="flex items-center justify-between rounded-lg border border-border p-4">
@@ -637,6 +709,25 @@ export default function ProfilePage() {
                     Upload
                   </Button>
                 </div>
+
+                {profile.role === "caregiver" && (
+                  <div className="flex items-center justify-between rounded-lg border border-border p-4">
+                    <div className="flex items-center gap-4">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted">
+                        <Shield className="h-5 w-5 text-muted-foreground" />
+                      </div>
+                      <div>
+                        <p className="font-medium">Background Check</p>
+                        <p className="text-sm text-muted-foreground">
+                          Required for caregivers to receive bookings
+                        </p>
+                      </div>
+                    </div>
+                    <Button variant="outline">
+                      Start Check
+                    </Button>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>

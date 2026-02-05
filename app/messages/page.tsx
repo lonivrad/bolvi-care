@@ -2,13 +2,14 @@
 
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useAuthStore } from "@/lib/store";
 import { useToast } from "@/components/ui/toast";
 import {
   Search,
@@ -22,6 +23,7 @@ import {
   ArrowLeft,
   MessageSquare,
   Smile,
+  Loader2,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -50,98 +52,72 @@ const quickReplies = [
   "On my way!",
 ];
 
-const mockConversations = [
-  {
-    id: "1",
-    name: "Sarah Martinez",
-    photo: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop",
-    lastMessage: "Thank you so much! Dad really enjoyed the visit.",
-    timestamp: "2 min ago",
-    unread: 2,
-    online: true,
-    role: "caregiver",
-  },
-  {
-    id: "2",
-    name: "Johnson Family",
-    photo: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop",
-    lastMessage: "Can we schedule for next Tuesday?",
-    timestamp: "1 hour ago",
-    unread: 0,
-    online: false,
-    role: "family",
-  },
-  {
-    id: "3",
-    name: "Emily Chen",
-    photo: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop",
-    lastMessage: "I'll be there at 9am sharp!",
-    timestamp: "Yesterday",
-    unread: 0,
-    online: true,
-    role: "caregiver",
-  },
-];
+interface Conversation {
+  id: string;
+  name: string;
+  photo: string | null;
+  lastMessage: string;
+  timestamp: string;
+  unread: number;
+  online: boolean;
+  role: string;
+}
 
-const mockMessages = [
-  {
-    id: "1",
-    senderId: "other",
-    text: "Hi! I wanted to check in about the visit tomorrow.",
-    timestamp: "10:30 AM",
-    read: true,
-  },
-  {
-    id: "2",
-    senderId: "me",
-    text: "Hi Sarah! Yes, I'm all set for tomorrow. Is 9 AM still good?",
-    timestamp: "10:32 AM",
-    read: true,
-  },
-  {
-    id: "3",
-    senderId: "other",
-    text: "Perfect! Dad is really looking forward to it. He mentioned he'd like to go to the park if the weather is nice.",
-    timestamp: "10:33 AM",
-    read: true,
-  },
-  {
-    id: "4",
-    senderId: "me",
-    text: "That sounds wonderful! I'll check the weather and plan accordingly. Should I bring any specific activities?",
-    timestamp: "10:35 AM",
-    read: true,
-  },
-  {
-    id: "5",
-    senderId: "other",
-    text: "He loves playing chess if you're up for it! Also, his medications are on the kitchen counter.",
-    timestamp: "10:36 AM",
-    read: true,
-  },
-  {
-    id: "6",
-    senderId: "other",
-    text: "Thank you so much! Dad really enjoyed the visit.",
-    timestamp: "Just now",
-    read: false,
-  },
-];
+interface Message {
+  id: string;
+  senderId: string;
+  text: string;
+  timestamp: string;
+  read: boolean;
+}
 
 export default function MessagesPage() {
-  const { role } = useAuthStore();
+  const { data: session, status } = useSession();
   const { toast } = useToast();
-  const isAuthenticated = role !== null;
-  const [selectedConversation, setSelectedConversation] = useState(mockConversations[0]);
-  const [messages, setMessages] = useState(mockMessages);
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [showMobileChat, setShowMobileChat] = useState(false);
   const [showQuickReplies, setShowQuickReplies] = useState(false);
   const [showAttachmentDialog, setShowAttachmentDialog] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Fetch conversations from API
+  useEffect(() => {
+    async function fetchConversations() {
+      if (status !== "authenticated") {
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        // TODO: Replace with actual API call
+        // const res = await fetch("/api/messages/conversations");
+        // if (res.ok) {
+        //   const data = await res.json();
+        //   setConversations(data.conversations);
+        // }
+
+        // For now, show empty state for new users
+        setConversations([]);
+      } catch (error) {
+        console.error("Error fetching conversations:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    if (status === "authenticated") {
+      fetchConversations();
+    } else if (status === "unauthenticated") {
+      setIsLoading(false);
+    }
+  }, [status]);
 
   // Scroll to bottom when new messages arrive
   useEffect(() => {
@@ -166,6 +142,7 @@ export default function MessagesPage() {
     ]);
     setNewMessage("");
     setShowQuickReplies(false);
+    // TODO: Call API to send message
   };
 
   const handleQuickReply = (reply: string) => {
@@ -218,9 +195,29 @@ export default function MessagesPage() {
     }
   };
 
-  const filteredConversations = mockConversations.filter((c) =>
+  const filteredConversations = conversations.filter((c) =>
     c.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
+  if (status === "loading" || isLoading) {
+    return (
+      <div className="flex min-h-screen flex-col bg-background">
+        <Header />
+        <main className="flex flex-1 items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -246,52 +243,72 @@ export default function MessagesPage() {
                 />
               </div>
             </div>
-            <ScrollArea className="flex-1">
-              <div className="p-2">
-                {filteredConversations.map((conversation) => (
-                  <button
-                    key={conversation.id}
-                    onClick={() => {
-                      setSelectedConversation(conversation);
-                      setShowMobileChat(true);
-                    }}
-                    className={cn(
-                      "flex w-full items-center gap-3 rounded-lg p-3 text-left transition-colors hover:bg-muted",
-                      selectedConversation?.id === conversation.id && "bg-muted"
-                    )}
-                  >
-                    <div className="relative">
-                      <Image
-                        src={conversation.photo}
-                        alt={conversation.name}
-                        width={48}
-                        height={48}
-                        className="rounded-full"
-                      />
-                      {conversation.online && (
-                        <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-background bg-accent" />
-                      )}
-                    </div>
-                    <div className="flex-1 overflow-hidden">
-                      <div className="flex items-center justify-between">
-                        <span className="font-medium">{conversation.name}</span>
-                        <span className="text-xs text-muted-foreground">
-                          {conversation.timestamp}
-                        </span>
-                      </div>
-                      <p className="truncate text-sm text-muted-foreground">
-                        {conversation.lastMessage}
-                      </p>
-                    </div>
-                    {conversation.unread > 0 && (
-                      <Badge className="bg-primary text-primary-foreground">
-                        {conversation.unread}
-                      </Badge>
-                    )}
-                  </button>
-                ))}
+
+            {conversations.length === 0 ? (
+              <div className="flex flex-1 flex-col items-center justify-center p-8 text-center">
+                <div className="rounded-full bg-muted p-4">
+                  <MessageSquare className="h-8 w-8 text-muted-foreground" />
+                </div>
+                <h3 className="mt-4 font-semibold">No messages yet</h3>
+                <p className="mt-2 text-sm text-muted-foreground max-w-[200px]">
+                  When you connect with caregivers or families, your conversations will appear here.
+                </p>
               </div>
-            </ScrollArea>
+            ) : (
+              <ScrollArea className="flex-1">
+                <div className="p-2">
+                  {filteredConversations.map((conversation) => (
+                    <button
+                      key={conversation.id}
+                      onClick={() => {
+                        setSelectedConversation(conversation);
+                        setShowMobileChat(true);
+                        // TODO: Fetch messages for this conversation
+                      }}
+                      className={cn(
+                        "flex w-full items-center gap-3 rounded-lg p-3 text-left transition-colors hover:bg-muted",
+                        selectedConversation?.id === conversation.id && "bg-muted"
+                      )}
+                    >
+                      <div className="relative">
+                        {conversation.photo ? (
+                          <Image
+                            src={conversation.photo}
+                            alt={conversation.name}
+                            width={48}
+                            height={48}
+                            className="rounded-full"
+                          />
+                        ) : (
+                          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground font-medium">
+                            {getInitials(conversation.name)}
+                          </div>
+                        )}
+                        {conversation.online && (
+                          <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-background bg-accent" />
+                        )}
+                      </div>
+                      <div className="flex-1 overflow-hidden">
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium">{conversation.name}</span>
+                          <span className="text-xs text-muted-foreground">
+                            {conversation.timestamp}
+                          </span>
+                        </div>
+                        <p className="truncate text-sm text-muted-foreground">
+                          {conversation.lastMessage}
+                        </p>
+                      </div>
+                      {conversation.unread > 0 && (
+                        <Badge className="bg-primary text-primary-foreground">
+                          {conversation.unread}
+                        </Badge>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </ScrollArea>
+            )}
           </div>
 
           {/* Chat Area */}
@@ -315,13 +332,19 @@ export default function MessagesPage() {
                       <ArrowLeft className="h-5 w-5" />
                     </Button>
                     <div className="relative">
-                      <Image
-                        src={selectedConversation.photo}
-                        alt={selectedConversation.name}
-                        width={40}
-                        height={40}
-                        className="rounded-full"
-                      />
+                      {selectedConversation.photo ? (
+                        <Image
+                          src={selectedConversation.photo}
+                          alt={selectedConversation.name}
+                          width={40}
+                          height={40}
+                          className="rounded-full"
+                        />
+                      ) : (
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground text-sm font-medium">
+                          {getInitials(selectedConversation.name)}
+                        </div>
+                      )}
                       {selectedConversation.online && (
                         <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-background bg-accent" />
                       )}
@@ -473,9 +496,13 @@ export default function MessagesPage() {
                 <div className="rounded-full bg-muted p-4">
                   <MessageSquare className="h-10 w-10 text-muted-foreground" />
                 </div>
-                <h3 className="mt-4 text-lg font-semibold">Select a conversation</h3>
+                <h3 className="mt-4 text-lg font-semibold">
+                  {conversations.length === 0 ? "No messages yet" : "Select a conversation"}
+                </h3>
                 <p className="mt-2 text-sm text-muted-foreground max-w-sm">
-                  Choose a conversation from the list to start messaging with caregivers or families
+                  {conversations.length === 0
+                    ? "Start by finding a caregiver or waiting for families to contact you."
+                    : "Choose a conversation from the list to start messaging with caregivers or families"}
                 </p>
               </div>
             )}

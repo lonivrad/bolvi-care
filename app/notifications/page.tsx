@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -21,80 +22,38 @@ import {
   Trash2,
   Check,
   Star,
+  Loader2,
 } from "lucide-react";
 
-const notifications = [
-  {
-    id: "n-1",
-    type: "booking",
-    title: "Booking Confirmed",
-    message: "Your booking with Maria Rodriguez for tomorrow at 9:00 AM has been confirmed.",
-    time: "5 minutes ago",
-    read: false,
-    icon: Calendar,
-    color: "text-blue-500",
-  },
-  {
-    id: "n-2",
-    type: "message",
-    title: "New Message",
-    message: "Maria Rodriguez sent you a message about tomorrow's visit.",
-    time: "15 minutes ago",
-    read: false,
-    icon: MessageSquare,
-    color: "text-green-500",
-  },
-  {
-    id: "n-3",
-    type: "payment",
-    title: "Payment Processed",
-    message: "Your payment of $185.00 for the visit on March 1st has been processed.",
-    time: "1 hour ago",
-    read: false,
-    icon: DollarSign,
-    color: "text-emerald-500",
-  },
-  {
-    id: "n-4",
-    type: "reminder",
-    title: "Visit Reminder",
-    message: "Reminder: Sarah Thompson's visit is scheduled for Saturday at 8:00 AM.",
-    time: "2 hours ago",
-    read: true,
-    icon: Clock,
-    color: "text-yellow-500",
-  },
-  {
-    id: "n-5",
-    type: "review",
-    title: "Leave a Review",
-    message: "How was your recent visit with David Kim? Share your feedback.",
-    time: "1 day ago",
-    read: true,
-    icon: Star,
-    color: "text-purple-500",
-  },
-  {
-    id: "n-6",
-    type: "alert",
-    title: "Care Plan Update",
-    message: "Eleanor's care plan has been updated with new medication reminders.",
-    time: "2 days ago",
-    read: true,
-    icon: AlertCircle,
-    color: "text-orange-500",
-  },
-  {
-    id: "n-7",
-    type: "booking",
-    title: "Booking Request",
-    message: "Your booking request for next week has been sent to Jennifer Lee.",
-    time: "3 days ago",
-    read: true,
-    icon: Calendar,
-    color: "text-blue-500",
-  },
-];
+interface Notification {
+  id: string;
+  type: string;
+  title: string;
+  message: string;
+  time: string;
+  read: boolean;
+  icon: React.ElementType;
+  color: string;
+}
+
+const getIconForType = (type: string) => {
+  switch (type) {
+    case "booking":
+      return { icon: Calendar, color: "text-blue-500" };
+    case "message":
+      return { icon: MessageSquare, color: "text-green-500" };
+    case "payment":
+      return { icon: DollarSign, color: "text-emerald-500" };
+    case "reminder":
+      return { icon: Clock, color: "text-yellow-500" };
+    case "review":
+      return { icon: Star, color: "text-purple-500" };
+    case "alert":
+      return { icon: AlertCircle, color: "text-orange-500" };
+    default:
+      return { icon: Bell, color: "text-gray-500" };
+  }
+};
 
 const notificationSettings = [
   {
@@ -139,8 +98,42 @@ const notificationSettings = [
 ];
 
 export default function NotificationsPage() {
-  const [notificationList, setNotificationList] = useState(notifications);
+  const { data: session, status } = useSession();
+  const [notificationList, setNotificationList] = useState<Notification[]>([]);
   const [settings, setSettings] = useState(notificationSettings);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Fetch notifications from API
+  useEffect(() => {
+    async function fetchNotifications() {
+      if (status !== "authenticated") {
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        // TODO: Replace with actual API call
+        // const res = await fetch("/api/notifications");
+        // if (res.ok) {
+        //   const data = await res.json();
+        //   setNotificationList(data.notifications);
+        // }
+
+        // For now, show empty state for new users
+        setNotificationList([]);
+      } catch (error) {
+        console.error("Error fetching notifications:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    if (status === "authenticated") {
+      fetchNotifications();
+    } else if (status === "unauthenticated") {
+      setIsLoading(false);
+    }
+  }, [status]);
 
   const unreadCount = notificationList.filter((n) => !n.read).length;
 
@@ -148,14 +141,17 @@ export default function NotificationsPage() {
     setNotificationList((prev) =>
       prev.map((n) => (n.id === id ? { ...n, read: true } : n))
     );
+    // TODO: Call API to mark as read
   };
 
   const markAllAsRead = () => {
     setNotificationList((prev) => prev.map((n) => ({ ...n, read: true })));
+    // TODO: Call API to mark all as read
   };
 
   const deleteNotification = (id: string) => {
     setNotificationList((prev) => prev.filter((n) => n.id !== id));
+    // TODO: Call API to delete notification
   };
 
   const toggleSetting = (categoryIndex: number, settingIndex: number) => {
@@ -165,112 +161,138 @@ export default function NotificationsPage() {
         !newSettings[categoryIndex].settings[settingIndex].enabled;
       return newSettings;
     });
+    // TODO: Call API to save preference
   };
+
+  if (status === "loading" || isLoading) {
+    return (
+      <>
+        <Header />
+        <main className="flex min-h-[60vh] items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </main>
+        <Footer />
+      </>
+    );
+  }
 
   return (
     <>
       <Header />
       <main className="mx-auto max-w-4xl px-4 py-8">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Notifications</h1>
-          <p className="text-muted-foreground">
-            {unreadCount > 0
-              ? `You have ${unreadCount} unread notification${unreadCount > 1 ? "s" : ""}`
-              : "You're all caught up!"}
-          </p>
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground">Notifications</h1>
+            <p className="text-muted-foreground">
+              {unreadCount > 0
+                ? `You have ${unreadCount} unread notification${unreadCount > 1 ? "s" : ""}`
+                : "You're all caught up!"}
+            </p>
+          </div>
+          {unreadCount > 0 && (
+            <Button variant="outline" onClick={markAllAsRead}>
+              <Check className="mr-2 h-4 w-4" />
+              Mark all as read
+            </Button>
+          )}
         </div>
-        {unreadCount > 0 && (
-          <Button variant="outline" onClick={markAllAsRead}>
-            <Check className="mr-2 h-4 w-4" />
-            Mark all as read
-          </Button>
-        )}
-      </div>
 
-      <Tabs defaultValue="all">
-        <TabsList>
-          <TabsTrigger value="all">
-            All
-            {unreadCount > 0 && (
-              <Badge variant="secondary" className="ml-2">
-                {unreadCount}
-              </Badge>
-            )}
-          </TabsTrigger>
-          <TabsTrigger value="unread">Unread</TabsTrigger>
-          <TabsTrigger value="settings">
-            <Settings className="mr-2 h-4 w-4" />
-            Settings
-          </TabsTrigger>
-        </TabsList>
+        <Tabs defaultValue="all">
+          <TabsList>
+            <TabsTrigger value="all">
+              All
+              {unreadCount > 0 && (
+                <Badge variant="secondary" className="ml-2">
+                  {unreadCount}
+                </Badge>
+              )}
+            </TabsTrigger>
+            <TabsTrigger value="unread">Unread</TabsTrigger>
+            <TabsTrigger value="settings">
+              <Settings className="mr-2 h-4 w-4" />
+              Settings
+            </TabsTrigger>
+          </TabsList>
 
-        <TabsContent value="all" className="mt-6">
-          <div className="space-y-2">
-            {notificationList.map((notification) => {
-              const Icon = notification.icon;
-              return (
-                <Card
-                  key={notification.id}
-                  className={`transition-colors ${
-                    !notification.read ? "bg-primary/5 border-primary/20" : ""
-                  }`}
-                >
-                  <CardContent className="p-4">
-                    <div className="flex items-start gap-4">
-                      <div
-                        className={`flex h-10 w-10 items-center justify-center rounded-full bg-muted ${notification.color}`}
-                      >
-                        <Icon className="h-5 w-5" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-start justify-between">
-                          <div>
-                            <h3 className="font-medium text-foreground">
-                              {notification.title}
-                              {!notification.read && (
-                                <Badge variant="default" className="ml-2 text-xs">
-                                  New
-                                </Badge>
-                              )}
-                            </h3>
-                            <p className="mt-1 text-sm text-muted-foreground">
-                              {notification.message}
-                            </p>
-                            <p className="mt-2 text-xs text-muted-foreground">
-                              {notification.time}
-                            </p>
+          <TabsContent value="all" className="mt-6">
+            {notificationList.length === 0 ? (
+              <Card>
+                <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+                  <div className="rounded-full bg-muted p-4">
+                    <Bell className="h-8 w-8 text-muted-foreground" />
+                  </div>
+                  <h3 className="mt-4 font-semibold text-lg">No notifications yet</h3>
+                  <p className="mt-2 text-sm text-muted-foreground max-w-sm">
+                    When you receive booking updates, messages, or other important alerts, they'll appear here.
+                  </p>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="space-y-2">
+                {notificationList.map((notification) => {
+                  const { icon: Icon, color } = getIconForType(notification.type);
+                  return (
+                    <Card
+                      key={notification.id}
+                      className={`transition-colors ${
+                        !notification.read ? "bg-primary/5 border-primary/20" : ""
+                      }`}
+                    >
+                      <CardContent className="p-4">
+                        <div className="flex items-start gap-4">
+                          <div
+                            className={`flex h-10 w-10 items-center justify-center rounded-full bg-muted ${color}`}
+                          >
+                            <Icon className="h-5 w-5" />
                           </div>
-                          <div className="flex gap-1">
-                            {!notification.read && (
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => markAsRead(notification.id)}
-                              >
-                                <CheckCircle className="h-4 w-4" />
-                              </Button>
-                            )}
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => deleteNotification(notification.id)}
-                            >
-                              <Trash2 className="h-4 w-4 text-muted-foreground" />
-                            </Button>
+                          <div className="flex-1">
+                            <div className="flex items-start justify-between">
+                              <div>
+                                <h3 className="font-medium text-foreground">
+                                  {notification.title}
+                                  {!notification.read && (
+                                    <Badge variant="default" className="ml-2 text-xs">
+                                      New
+                                    </Badge>
+                                  )}
+                                </h3>
+                                <p className="mt-1 text-sm text-muted-foreground">
+                                  {notification.message}
+                                </p>
+                                <p className="mt-2 text-xs text-muted-foreground">
+                                  {notification.time}
+                                </p>
+                              </div>
+                              <div className="flex gap-1">
+                                {!notification.read && (
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => markAsRead(notification.id)}
+                                  >
+                                    <CheckCircle className="h-4 w-4" />
+                                  </Button>
+                                )}
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => deleteNotification(notification.id)}
+                                >
+                                  <Trash2 className="h-4 w-4 text-muted-foreground" />
+                                </Button>
+                              </div>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        </TabsContent>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            )}
+          </TabsContent>
 
-        <TabsContent value="unread" className="mt-6">
-          <div className="space-y-2">
+          <TabsContent value="unread" className="mt-6">
             {notificationList.filter((n) => !n.read).length === 0 ? (
               <Card>
                 <CardContent className="py-12 text-center">
@@ -282,95 +304,96 @@ export default function NotificationsPage() {
                 </CardContent>
               </Card>
             ) : (
-              notificationList
-                .filter((n) => !n.read)
-                .map((notification) => {
-                  const Icon = notification.icon;
-                  return (
-                    <Card
-                      key={notification.id}
-                      className="bg-primary/5 border-primary/20"
-                    >
-                      <CardContent className="p-4">
-                        <div className="flex items-start gap-4">
-                          <div
-                            className={`flex h-10 w-10 items-center justify-center rounded-full bg-muted ${notification.color}`}
-                          >
-                            <Icon className="h-5 w-5" />
-                          </div>
-                          <div className="flex-1">
-                            <div className="flex items-start justify-between">
-                              <div>
-                                <h3 className="font-medium text-foreground">
-                                  {notification.title}
-                                </h3>
-                                <p className="mt-1 text-sm text-muted-foreground">
-                                  {notification.message}
-                                </p>
-                                <p className="mt-2 text-xs text-muted-foreground">
-                                  {notification.time}
-                                </p>
+              <div className="space-y-2">
+                {notificationList
+                  .filter((n) => !n.read)
+                  .map((notification) => {
+                    const { icon: Icon, color } = getIconForType(notification.type);
+                    return (
+                      <Card
+                        key={notification.id}
+                        className="bg-primary/5 border-primary/20"
+                      >
+                        <CardContent className="p-4">
+                          <div className="flex items-start gap-4">
+                            <div
+                              className={`flex h-10 w-10 items-center justify-center rounded-full bg-muted ${color}`}
+                            >
+                              <Icon className="h-5 w-5" />
+                            </div>
+                            <div className="flex-1">
+                              <div className="flex items-start justify-between">
+                                <div>
+                                  <h3 className="font-medium text-foreground">
+                                    {notification.title}
+                                  </h3>
+                                  <p className="mt-1 text-sm text-muted-foreground">
+                                    {notification.message}
+                                  </p>
+                                  <p className="mt-2 text-xs text-muted-foreground">
+                                    {notification.time}
+                                  </p>
+                                </div>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => markAsRead(notification.id)}
+                                >
+                                  <CheckCircle className="h-4 w-4" />
+                                </Button>
                               </div>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => markAsRead(notification.id)}
-                              >
-                                <CheckCircle className="h-4 w-4" />
-                              </Button>
                             </div>
                           </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  );
-                })
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+              </div>
             )}
-          </div>
-        </TabsContent>
+          </TabsContent>
 
-        <TabsContent value="settings" className="mt-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Notification Preferences</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {settings.map((category, categoryIndex) => (
-                <div key={category.category}>
-                  <h3 className="font-medium text-foreground mb-3">
-                    {category.category}
-                  </h3>
-                  <div className="space-y-3">
-                    {category.settings.map((setting, settingIndex) => (
-                      <div
-                        key={setting.id}
-                        className="flex items-center justify-between"
-                      >
-                        <Label
-                          htmlFor={setting.id}
-                          className="text-sm text-muted-foreground"
+          <TabsContent value="settings" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Notification Preferences</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {settings.map((category, categoryIndex) => (
+                  <div key={category.category}>
+                    <h3 className="font-medium text-foreground mb-3">
+                      {category.category}
+                    </h3>
+                    <div className="space-y-3">
+                      {category.settings.map((setting, settingIndex) => (
+                        <div
+                          key={setting.id}
+                          className="flex items-center justify-between"
                         >
-                          {setting.label}
-                        </Label>
-                        <Switch
-                          id={setting.id}
-                          checked={setting.enabled}
-                          onCheckedChange={() =>
-                            toggleSetting(categoryIndex, settingIndex)
-                          }
-                        />
-                      </div>
-                    ))}
+                          <Label
+                            htmlFor={setting.id}
+                            className="text-sm text-muted-foreground"
+                          >
+                            {setting.label}
+                          </Label>
+                          <Switch
+                            id={setting.id}
+                            checked={setting.enabled}
+                            onCheckedChange={() =>
+                              toggleSetting(categoryIndex, settingIndex)
+                            }
+                          />
+                        </div>
+                      ))}
+                    </div>
+                    {categoryIndex < settings.length - 1 && (
+                      <div className="mt-4 border-b border-border" />
+                    )}
                   </div>
-                  {categoryIndex < settings.length - 1 && (
-                    <div className="mt-4 border-b border-border" />
-                  )}
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+                ))}
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </main>
       <Footer />
     </>

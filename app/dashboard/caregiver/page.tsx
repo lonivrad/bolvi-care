@@ -1,41 +1,91 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { StatsCard } from "@/components/ui/stats-card";
 import { Progress } from "@/components/ui/progress";
-import { useAuthStore, useBookingsStore } from "@/lib/store";
 import {
   Calendar,
   Clock,
   DollarSign,
   Star,
   TrendingUp,
-  Bell,
   CheckCircle,
   AlertCircle,
   ArrowRight,
   MessageSquare,
-  MapPin,
+  Loader2,
+  User,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { OnboardingChecklist } from "@/components/onboarding/onboarding-checklist";
-import { VisitChecklistCompact } from "@/components/caregiver/visit-checklist";
+
+interface CaregiverProfile {
+  id: string;
+  headline: string | null;
+  bio: string | null;
+  hourlyRate: number | null;
+  rating: number | null;
+  reviewCount: number;
+  isNew: boolean;
+  specialties: string[];
+  yearsExperience: number | null;
+  user: {
+    name: string;
+    email: string;
+    photo: string | null;
+  };
+}
 
 export default function CaregiverDashboard() {
-  const { caregiverUser } = useAuthStore();
-  const { bookings } = useBookingsStore();
+  const { data: session, status } = useSession();
+  const [profile, setProfile] = useState<CaregiverProfile | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const todaysVisits = bookings.filter(
-    (b) => b.status === "upcoming" && new Date(b.date).toDateString() === new Date().toDateString()
+  useEffect(() => {
+    async function fetchProfile() {
+      try {
+        const res = await fetch("/api/profile/caregiver");
+        if (res.ok) {
+          const data = await res.json();
+          setProfile(data);
+        }
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    if (status === "authenticated") {
+      fetchProfile();
+    }
+  }, [status]);
+
+  if (status === "loading" || isLoading) {
+    return (
+      <div className="flex min-h-[50vh] items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  const userName = session?.user?.name || "Caregiver";
+  const firstName = userName.split(" ")[0];
+
+  // Calculate profile completion
+  const completedItems = [
+    !!profile?.bio,
+    !!profile?.headline,
+    !!profile?.hourlyRate,
+    (profile?.specialties?.length || 0) > 0,
+    !!session?.user?.image,
+  ];
+  const completionPercentage = Math.round(
+    (completedItems.filter(Boolean).length / completedItems.length) * 100
   );
-
-  const pendingRequests = bookings.filter((b) => b.status === "pending");
-  const thisWeekEarnings = 847;
-  const thisMonthEarnings = 3240;
-  const completedThisMonth = 28;
 
   return (
     <div className="space-y-8">
@@ -43,12 +93,12 @@ export default function CaregiverDashboard() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
-            Welcome back, {caregiverUser?.name.split(" ")[0]}
+            Welcome back, {firstName}!
           </h1>
           <p className="mt-1 text-muted-foreground">
-            {todaysVisits.length > 0
-              ? `You have ${todaysVisits.length} visit${todaysVisits.length > 1 ? "s" : ""} today`
-              : "No visits scheduled for today"}
+            {profile?.isNew
+              ? "Complete your profile to start receiving booking requests"
+              : "Here's an overview of your caregiving activity"}
           </p>
         </div>
         <div className="flex gap-2">
@@ -66,64 +116,53 @@ export default function CaregiverDashboard() {
         </div>
       </div>
 
-      {/* Onboarding Checklist - show for new caregivers */}
-      <OnboardingChecklist
-        userType="caregiver"
-        userName={caregiverUser?.name.split(" ")[0]}
-        completedSteps={["profile", "photo", "background", "experience"]}
-      />
+      {/* New User Welcome Card */}
+      {profile?.isNew && (
+        <Card className="border-primary/50 bg-primary/5">
+          <CardContent className="flex items-center gap-4 py-6">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+              <User className="h-6 w-6 text-primary" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-semibold text-foreground">Complete Your Profile</h3>
+              <p className="text-sm text-muted-foreground">
+                Families can't find you until your profile is complete. Add your bio, photo, and rates.
+              </p>
+            </div>
+            <Button asChild>
+              <Link href="/onboarding/caregiver">Complete Setup</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Stats */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatsCard
           title="This Week"
-          value={`$${thisWeekEarnings}`}
+          value="$0"
           icon={DollarSign}
-          trend={{ value: 15, isPositive: true }}
-          description="vs last week"
+          description="No earnings yet"
         />
         <StatsCard
           title="This Month"
-          value={`$${thisMonthEarnings}`}
+          value="$0"
           icon={TrendingUp}
-          trend={{ value: 8, isPositive: true }}
-          description="vs last month"
+          description="Start accepting jobs"
         />
         <StatsCard
           title="Completed Visits"
-          value={completedThisMonth}
+          value={0}
           icon={CheckCircle}
           description="this month"
         />
         <StatsCard
           title="Rating"
-          value={caregiverUser?.profile?.rating || 4.9}
+          value={profile?.rating || "-"}
           icon={Star}
-          description={`${caregiverUser?.profile?.reviewCount || 127} reviews`}
+          description={profile?.reviewCount ? `${profile.reviewCount} reviews` : "No reviews yet"}
         />
       </div>
-
-      {/* Pending Requests Alert */}
-      {pendingRequests.length > 0 && (
-        <Card className="border-amber-200 dark:border-amber-800/50 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20">
-          <CardContent className="flex items-center gap-4 py-4">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-900/30">
-              <Bell className="h-5 w-5 text-amber-600 dark:text-amber-400" />
-            </div>
-            <div className="flex-1">
-              <p className="font-medium text-foreground">
-                You have {pendingRequests.length} pending request{pendingRequests.length > 1 ? "s" : ""}
-              </p>
-              <p className="text-sm text-muted-foreground">
-                Review and respond to booking requests
-              </p>
-            </div>
-            <Button asChild>
-              <Link href="/dashboard/caregiver/requests">View Requests</Link>
-            </Button>
-          </CardContent>
-        </Card>
-      )}
 
       <div className="grid gap-8 lg:grid-cols-3">
         {/* Main Content */}
@@ -140,117 +179,57 @@ export default function CaregiverDashboard() {
               </Button>
             </CardHeader>
             <CardContent>
-              {todaysVisits.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-8 text-center">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted">
-                    <Calendar className="h-8 w-8 text-muted-foreground" />
-                  </div>
-                  <h3 className="mt-4 font-semibold">No visits today</h3>
-                  <p className="mt-2 text-sm text-muted-foreground">
-                    Enjoy your day off or update your availability
-                  </p>
+              <div className="flex flex-col items-center justify-center py-8 text-center">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted">
+                  <Calendar className="h-8 w-8 text-muted-foreground" />
                 </div>
-              ) : (
-                <div className="space-y-4">
-                  {todaysVisits.map((visit, index) => (
-                    <div
-                      key={visit.id}
-                      className={cn(
-                        "flex items-start gap-4 rounded-lg border border-border p-4 transition-colors hover:bg-muted/30",
-                        index === 0 && "border-primary bg-primary/5"
-                      )}
-                    >
-                      <div className="flex h-12 w-12 flex-col items-center justify-center rounded-lg bg-muted text-center">
-                        <span className="text-xs text-muted-foreground">
-                          {visit.startTime.split(":")[0] >= "12" ? "PM" : "AM"}
-                        </span>
-                        <span className="text-sm font-semibold">{visit.startTime}</span>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <p className="font-medium text-foreground">{visit.recipientName}</p>
-                          {index === 0 && (
-                            <Badge className="bg-primary text-primary-foreground">Next</Badge>
-                          )}
-                        </div>
-                        <div className="mt-1 flex flex-wrap gap-3 text-sm text-muted-foreground">
-                          <span className="flex items-center gap-1">
-                            <Clock className="h-3 w-3" />
-                            {visit.duration} hours
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <MapPin className="h-3 w-3" />
-                            Seattle, WA
-                          </span>
-                        </div>
-                        <div className="mt-2 flex flex-wrap gap-1">
-                          {visit.services.slice(0, 3).map((service) => (
-                            <Badge key={service} variant="secondary" className="text-xs">
-                              {service}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-                      <div className="flex flex-col items-end gap-2">
-                        <span className="font-semibold text-foreground">${visit.totalCost}</span>
-                        <Button size="sm" variant={index === 0 ? "default" : "outline"} asChild>
-                          <Link href={`/dashboard/caregiver/visits/${visit.id}`}>
-                            {index === 0 ? "Start Visit" : "View"}
-                          </Link>
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+                <h3 className="mt-4 font-semibold">No visits today</h3>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  {profile?.isNew
+                    ? "Complete your profile to start receiving bookings"
+                    : "Enjoy your day off or update your availability"}
+                </p>
+              </div>
             </CardContent>
           </Card>
 
-          {/* Visit Checklist Prompt - shows when there's an active visit */}
-          {todaysVisits.length > 0 && (
-            <VisitChecklistCompact
-              visitId={todaysVisits[0].id}
-              clientName={todaysVisits[0].recipientName}
-              onStartChecklist={() => {
-                // Navigate to visit checklist
-              }}
-            />
-          )}
-
-          {/* Recent Activity */}
+          {/* Getting Started Checklist */}
           <Card>
             <CardHeader>
-              <CardTitle>Recent Activity</CardTitle>
+              <CardTitle>Getting Started</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {[
-                  { type: "booking", text: "New booking request from Sarah M.", time: "2 hours ago" },
-                  { type: "review", text: "You received a 5-star review!", time: "Yesterday" },
-                  { type: "payment", text: "Payment of $156 received", time: "2 days ago" },
-                  { type: "message", text: "New message from Johnson family", time: "3 days ago" },
-                ].map((activity, i) => (
-                  <div key={i} className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors">
-                    <div
-                      className={cn(
-                        "flex h-9 w-9 items-center justify-center rounded-full",
-                        activity.type === "booking" && "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400",
-                        activity.type === "review" && "bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400",
-                        activity.type === "payment" && "bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400",
-                        activity.type === "message" && "bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400"
-                      )}
-                    >
-                      {activity.type === "booking" && <Calendar className="h-4 w-4" />}
-                      {activity.type === "review" && <Star className="h-4 w-4" />}
-                      {activity.type === "payment" && <DollarSign className="h-4 w-4" />}
-                      {activity.type === "message" && <MessageSquare className="h-4 w-4" />}
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-foreground">{activity.text}</p>
-                      <p className="text-xs text-muted-foreground">{activity.time}</p>
-                    </div>
-                  </div>
-                ))}
+                <ChecklistItem
+                  completed={!!profile?.bio}
+                  title="Add your bio"
+                  description="Tell families about yourself"
+                  href="/onboarding/caregiver"
+                />
+                <ChecklistItem
+                  completed={!!session?.user?.image}
+                  title="Upload a profile photo"
+                  description="Profiles with photos get 3x more bookings"
+                  href="/settings"
+                />
+                <ChecklistItem
+                  completed={(profile?.specialties?.length || 0) > 0}
+                  title="Select your services"
+                  description="What types of care do you offer?"
+                  href="/onboarding/caregiver"
+                />
+                <ChecklistItem
+                  completed={!!profile?.hourlyRate}
+                  title="Set your hourly rate"
+                  description="Let families know your pricing"
+                  href="/onboarding/caregiver"
+                />
+                <ChecklistItem
+                  completed={false}
+                  title="Complete background check"
+                  description="Required to receive bookings"
+                  href="/dashboard/caregiver/verification"
+                />
               </div>
             </CardContent>
           </Card>
@@ -266,47 +245,80 @@ export default function CaregiverDashboard() {
             <CardContent>
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">85% complete</span>
-                  <span className="font-medium text-foreground">85/100</span>
+                  <span className="text-muted-foreground">{completionPercentage}% complete</span>
+                  <span className="font-medium text-foreground">{completionPercentage}/100</span>
                 </div>
-                <Progress value={85} className="h-2" />
+                <Progress value={completionPercentage} className="h-2" />
               </div>
               <div className="mt-4 space-y-2">
-                <div className="flex items-center gap-2 text-sm">
-                  <CheckCircle className="h-4 w-4 text-green-500" />
-                  <span className="text-foreground">Background check verified</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <CheckCircle className="h-4 w-4 text-green-500" />
-                  <span className="text-foreground">ID verified</span>
-                </div>
+                {profile?.bio ? (
+                  <div className="flex items-center gap-2 text-sm">
+                    <CheckCircle className="h-4 w-4 text-green-500" />
+                    <span className="text-foreground">Bio added</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <AlertCircle className="h-4 w-4 text-amber-500" />
+                    <span>Add your bio</span>
+                  </div>
+                )}
+                {session?.user?.image ? (
+                  <div className="flex items-center gap-2 text-sm">
+                    <CheckCircle className="h-4 w-4 text-green-500" />
+                    <span className="text-foreground">Photo uploaded</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <AlertCircle className="h-4 w-4 text-amber-500" />
+                    <span>Add profile photo</span>
+                  </div>
+                )}
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <AlertCircle className="h-4 w-4 text-amber-500" />
-                  <span>Add CPR certification</span>
+                  <span>Complete background check</span>
                 </div>
               </div>
               <Button variant="outline" className="mt-4 w-full" asChild>
-                <Link href="/dashboard/caregiver/profile">Complete Profile</Link>
+                <Link href="/onboarding/caregiver">Complete Profile</Link>
               </Button>
             </CardContent>
           </Card>
 
-          {/* Earnings Summary */}
-          <Card className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 border-green-100 dark:border-green-900/30">
+          {/* Your Profile */}
+          <Card>
             <CardHeader>
-              <CardTitle className="text-base">Earnings Summary</CardTitle>
+              <CardTitle className="text-base">Your Profile</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-muted-foreground">Available balance</span>
-                <span className="text-2xl font-bold text-green-600 dark:text-green-400">$1,245</span>
-              </div>
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Pending</span>
-                <span className="font-medium text-foreground">$312</span>
-              </div>
-              <Button className="w-full" asChild>
-                <Link href="/dashboard/caregiver/earnings">View Earnings</Link>
+            <CardContent className="space-y-3">
+              {profile?.headline ? (
+                <p className="text-sm font-medium">{profile.headline}</p>
+              ) : (
+                <p className="text-sm text-muted-foreground italic">No headline set</p>
+              )}
+              {profile?.hourlyRate ? (
+                <div className="flex items-center gap-2">
+                  <DollarSign className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm">${profile.hourlyRate}/hour</span>
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground italic">No rate set</p>
+              )}
+              {profile?.specialties && profile.specialties.length > 0 && (
+                <div className="flex flex-wrap gap-1">
+                  {profile.specialties.slice(0, 3).map((specialty) => (
+                    <Badge key={specialty} variant="secondary" className="text-xs">
+                      {specialty}
+                    </Badge>
+                  ))}
+                  {profile.specialties.length > 3 && (
+                    <Badge variant="secondary" className="text-xs">
+                      +{profile.specialties.length - 3}
+                    </Badge>
+                  )}
+                </div>
+              )}
+              <Button variant="outline" className="w-full" size="sm" asChild>
+                <Link href="/dashboard/caregiver/profile">Edit Profile</Link>
               </Button>
             </CardContent>
           </Card>
@@ -340,5 +352,45 @@ export default function CaregiverDashboard() {
         </div>
       </div>
     </div>
+  );
+}
+
+function ChecklistItem({
+  completed,
+  title,
+  description,
+  href,
+}: {
+  completed: boolean;
+  title: string;
+  description: string;
+  href: string;
+}) {
+  return (
+    <Link
+      href={href}
+      className="flex items-center gap-4 rounded-lg border p-4 transition-colors hover:bg-muted/50"
+    >
+      <div
+        className={`flex h-8 w-8 items-center justify-center rounded-full ${
+          completed
+            ? "bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400"
+            : "bg-muted text-muted-foreground"
+        }`}
+      >
+        {completed ? (
+          <CheckCircle className="h-4 w-4" />
+        ) : (
+          <Clock className="h-4 w-4" />
+        )}
+      </div>
+      <div className="flex-1">
+        <p className={`font-medium ${completed ? "text-muted-foreground line-through" : "text-foreground"}`}>
+          {title}
+        </p>
+        <p className="text-sm text-muted-foreground">{description}</p>
+      </div>
+      {!completed && <ArrowRight className="h-4 w-4 text-muted-foreground" />}
+    </Link>
   );
 }

@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import Image from "next/image";
+import { useSession, signOut } from "next-auth/react";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
@@ -20,11 +19,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useAuthStore } from "@/lib/store";
 import {
   User,
   Bell,
-  Shield,
   CreditCard,
   Key,
   Smartphone,
@@ -34,12 +31,11 @@ import {
   LogOut,
   Trash2,
   Camera,
+  Loader2,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 export default function SettingsPage() {
-  const { familyUser, caregiverUser, logout, role } = useAuthStore();
-  const user = role === "caregiver" ? caregiverUser : familyUser;
+  const { data: session, status } = useSession();
 
   const [notifications, setNotifications] = useState({
     email: true,
@@ -49,6 +45,28 @@ export default function SettingsPage() {
     messages: true,
     marketing: false,
   });
+
+  const handleLogout = async () => {
+    await signOut({ callbackUrl: "/" });
+  };
+
+  if (status === "loading") {
+    return (
+      <div className="flex min-h-screen flex-col bg-background">
+        <Header />
+        <main className="flex-1 flex items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </main>
+      </div>
+    );
+  }
+
+  const userName = session?.user?.name || "User";
+  const userEmail = session?.user?.email || "";
+  const userImage = session?.user?.image;
+  const nameParts = userName.split(" ");
+  const firstName = nameParts[0] || "";
+  const lastName = nameParts.slice(1).join(" ") || "";
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -81,13 +99,18 @@ export default function SettingsPage() {
                   {/* Profile Photo */}
                   <div className="flex items-center gap-6">
                     <div className="relative">
-                      <Image
-                        src={user?.photo || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop"}
-                        alt="Profile"
-                        width={80}
-                        height={80}
-                        className="rounded-full"
-                      />
+                      {userImage ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={userImage}
+                          alt="Profile"
+                          className="h-20 w-20 rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary text-primary-foreground text-2xl font-semibold">
+                          {firstName.charAt(0).toUpperCase()}
+                        </div>
+                      )}
                       <Button
                         size="icon"
                         variant="secondary"
@@ -110,23 +133,26 @@ export default function SettingsPage() {
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div className="space-y-2">
                       <Label htmlFor="firstName">First Name</Label>
-                      <Input id="firstName" defaultValue={user?.name.split(" ")[0]} />
+                      <Input id="firstName" defaultValue={firstName} />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="lastName">Last Name</Label>
-                      <Input id="lastName" defaultValue={user?.name.split(" ")[1]} />
+                      <Input id="lastName" defaultValue={lastName} />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="email">Email</Label>
-                      <Input id="email" type="email" defaultValue={user?.email} />
+                      <Input id="email" type="email" defaultValue={userEmail} disabled />
+                      <p className="text-xs text-muted-foreground">
+                        Contact support to change your email
+                      </p>
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="phone">Phone</Label>
-                      <Input id="phone" type="tel" defaultValue={user?.phone} />
+                      <Input id="phone" type="tel" placeholder="Enter phone number" />
                     </div>
                     <div className="space-y-2 sm:col-span-2">
                       <Label htmlFor="address">Address</Label>
-                      <Input id="address" defaultValue="Seattle, WA" />
+                      <Input id="address" placeholder="Enter your address" />
                     </div>
                   </div>
 
@@ -313,7 +339,7 @@ export default function SettingsPage() {
                         Log out of all devices
                       </p>
                     </div>
-                    <Button variant="outline" onClick={logout}>
+                    <Button variant="outline" onClick={handleLogout}>
                       <LogOut className="mr-2 h-4 w-4" />
                       Sign Out All
                     </Button>
@@ -345,22 +371,14 @@ export default function SettingsPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="flex items-center justify-between rounded-lg border border-border p-4">
-                    <div className="flex items-center gap-4">
-                      <div className="flex h-10 w-16 items-center justify-center rounded bg-muted">
-                        <CreditCard className="h-6 w-6" />
-                      </div>
-                      <div>
-                        <p className="font-medium">Visa ending in 4242</p>
-                        <p className="text-sm text-muted-foreground">Expires 12/26</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Badge variant="secondary">Default</Badge>
-                      <Button variant="ghost" size="sm">Edit</Button>
-                    </div>
+                  <div className="flex flex-col items-center justify-center py-8 text-center">
+                    <CreditCard className="h-12 w-12 text-muted-foreground" />
+                    <h3 className="mt-4 font-semibold">No payment methods</h3>
+                    <p className="mt-2 text-sm text-muted-foreground">
+                      Add a payment method to book caregivers
+                    </p>
                   </div>
-                  <Button variant="outline">
+                  <Button variant="outline" className="w-full">
                     <CreditCard className="mr-2 h-4 w-4" />
                     Add Payment Method
                   </Button>
@@ -375,24 +393,11 @@ export default function SettingsPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-4">
-                    {[
-                      { date: "Jan 28, 2025", desc: "Visit - Sarah Martinez", amount: "$140.00" },
-                      { date: "Jan 25, 2025", desc: "Visit - Emily Chen", amount: "$95.00" },
-                      { date: "Jan 20, 2025", desc: "Visit - Sarah Martinez", amount: "$175.00" },
-                    ].map((tx, i) => (
-                      <div key={i} className="flex items-center justify-between border-b border-border pb-4 last:border-0 last:pb-0">
-                        <div>
-                          <p className="font-medium">{tx.desc}</p>
-                          <p className="text-sm text-muted-foreground">{tx.date}</p>
-                        </div>
-                        <span className="font-medium">{tx.amount}</span>
-                      </div>
-                    ))}
+                  <div className="flex flex-col items-center justify-center py-8 text-center">
+                    <p className="text-sm text-muted-foreground">
+                      No transactions yet
+                    </p>
                   </div>
-                  <Button variant="link" className="mt-4 px-0">
-                    View all transactions
-                  </Button>
                 </CardContent>
               </Card>
             </TabsContent>

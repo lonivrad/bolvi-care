@@ -67,9 +67,13 @@ function LoginContent() {
         return;
       }
 
-      // Success - redirect based on callback URL
-      router.push(callbackUrl);
-      router.refresh();
+      if (result?.ok) {
+        // Success - redirect based on callback URL
+        window.location.href = callbackUrl;
+      } else {
+        setError("Login failed. Please try again.");
+        setIsLoading(false);
+      }
     } catch {
       setError("An unexpected error occurred. Please try again.");
       setIsLoading(false);
