@@ -305,7 +305,7 @@ export default function AdminActivityPage() {
       {/* Stats */}
       <div className="grid gap-4 sm:grid-cols-4">
         <Card>
-          <CardContent className="pt-6">
+          <CardContent className="p-6">
             <div className="text-center">
               <p className="text-2xl font-bold">1,247</p>
               <p className="text-sm text-muted-foreground">Events Today</p>
@@ -313,7 +313,7 @@ export default function AdminActivityPage() {
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="pt-6">
+          <CardContent className="p-6">
             <div className="text-center">
               <p className="text-2xl font-bold text-green-600">+156</p>
               <p className="text-sm text-muted-foreground">New Users</p>
@@ -321,7 +321,7 @@ export default function AdminActivityPage() {
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="pt-6">
+          <CardContent className="p-6">
             <div className="text-center">
               <p className="text-2xl font-bold text-blue-600">342</p>
               <p className="text-sm text-muted-foreground">Bookings</p>
@@ -329,7 +329,7 @@ export default function AdminActivityPage() {
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="pt-6">
+          <CardContent className="p-6">
             <div className="text-center">
               <p className="text-2xl font-bold text-amber-600">7</p>
               <p className="text-sm text-muted-foreground">Flags</p>
@@ -340,7 +340,7 @@ export default function AdminActivityPage() {
 
       {/* Filters */}
       <Card>
-        <CardContent className="pt-6">
+        <CardContent className="p-6">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />

@@ -169,7 +169,7 @@ export default function ContactPage() {
             const Icon = method.icon;
             return (
               <Card key={method.title} className="text-center">
-                <CardContent className="pt-6">
+                <CardContent className="p-6">
                   <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 mb-4">
                     <Icon className="h-6 w-6 text-primary" />
                   </div>
@@ -355,7 +355,7 @@ export default function ContactPage() {
 
             {/* Emergency */}
             <Card className="border-destructive/50 bg-destructive/5">
-              <CardContent className="pt-6">
+              <CardContent className="p-6">
                 <h3 className="font-semibold text-destructive mb-2">Emergency?</h3>
                 <p className="text-sm text-muted-foreground mb-4">
                   If you or your loved one is experiencing a medical emergency,

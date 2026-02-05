@@ -281,7 +281,7 @@ export default function JobsPage() {
 
       {/* Search & Filters */}
       <Card>
-        <CardContent className="pt-6">
+        <CardContent className="p-6">
           <div className="flex flex-col gap-4 sm:flex-row">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -366,7 +366,7 @@ export default function JobsPage() {
           ) : null}
           {filteredJobs.map((job) => (
             <Card key={job.id}>
-              <CardContent className="pt-6">
+              <CardContent className="p-6">
                 <div className="flex flex-col lg:flex-row gap-6">
                   {/* Main Info */}
                   <div className="flex-1">
@@ -477,7 +477,7 @@ export default function JobsPage() {
             .filter((job) => savedJobs.includes(job.id))
             .map((job) => (
               <Card key={job.id}>
-                <CardContent className="pt-6">
+                <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
                       <h3 className="font-semibold text-foreground">{job.title}</h3>
@@ -524,7 +524,7 @@ export default function JobsPage() {
         <TabsContent value="applied" className="mt-6 space-y-4">
           {allAppliedJobs.map((job) => (
             <Card key={job.id}>
-              <CardContent className="pt-6">
+              <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="flex items-center gap-2">

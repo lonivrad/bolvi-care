@@ -198,7 +198,7 @@ export default function TrainingCenterPage() {
       {/* Progress Overview */}
       <div className="grid gap-4 md:grid-cols-4 mb-8">
         <Card>
-          <CardContent className="pt-6">
+          <CardContent className="p-6">
             <div className="flex items-center gap-2">
               <BookOpen className="h-4 w-4 text-blue-500" />
               <span className="text-sm text-muted-foreground">Total Courses</span>
@@ -207,7 +207,7 @@ export default function TrainingCenterPage() {
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="pt-6">
+          <CardContent className="p-6">
             <div className="flex items-center gap-2">
               <Play className="h-4 w-4 text-yellow-500" />
               <span className="text-sm text-muted-foreground">In Progress</span>
@@ -216,7 +216,7 @@ export default function TrainingCenterPage() {
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="pt-6">
+          <CardContent className="p-6">
             <div className="flex items-center gap-2">
               <CheckCircle className="h-4 w-4 text-green-500" />
               <span className="text-sm text-muted-foreground">Completed</span>
@@ -225,7 +225,7 @@ export default function TrainingCenterPage() {
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="pt-6">
+          <CardContent className="p-6">
             <div className="flex items-center gap-2">
               <Award className="h-4 w-4 text-purple-500" />
               <span className="text-sm text-muted-foreground">Certificates</span>
@@ -292,7 +292,7 @@ export default function TrainingCenterPage() {
                       </div>
                     )}
                   </div>
-                  <CardContent className="pt-4">
+                  <CardContent className="p-5">
                     <div className="flex items-start justify-between">
                       <h3 className="font-semibold text-foreground">{course.title}</h3>
                       {getStatusBadge(course.status)}
@@ -351,7 +351,7 @@ export default function TrainingCenterPage() {
                 <div className="grid gap-4">
                   {inProgressCourses.map((course) => (
                     <Card key={course.id}>
-                      <CardContent className="pt-6">
+                      <CardContent className="p-6">
                         <div className="flex items-center gap-4">
                           <img
                             src={course.image}
@@ -385,7 +385,7 @@ export default function TrainingCenterPage() {
                 <div className="grid gap-4">
                   {completedCourses.map((course) => (
                     <Card key={course.id}>
-                      <CardContent className="pt-6">
+                      <CardContent className="p-6">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-4">
                             <img
@@ -424,7 +424,7 @@ export default function TrainingCenterPage() {
             <div className="grid gap-4">
               {certificates.map((cert) => (
                 <Card key={cert.id}>
-                  <CardContent className="pt-6">
+                  <CardContent className="p-6">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
                         <div className="flex h-16 w-16 items-center justify-center rounded-full bg-purple-100">

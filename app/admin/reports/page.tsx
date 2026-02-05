@@ -330,7 +330,7 @@ export default function AdminReportsPage() {
       {/* Quick Stats */}
       <div className="grid gap-4 sm:grid-cols-4">
         <Card>
-          <CardContent className="pt-6">
+          <CardContent className="p-6">
             <div className="flex items-center gap-2">
               <FileText className="h-4 w-4 text-primary" />
               <span className="text-sm text-muted-foreground">Reports Generated</span>
@@ -340,7 +340,7 @@ export default function AdminReportsPage() {
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="pt-6">
+          <CardContent className="p-6">
             <div className="flex items-center gap-2">
               <Clock className="h-4 w-4 text-blue-500" />
               <span className="text-sm text-muted-foreground">Scheduled</span>
@@ -350,7 +350,7 @@ export default function AdminReportsPage() {
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="pt-6">
+          <CardContent className="p-6">
             <div className="flex items-center gap-2">
               <Download className="h-4 w-4 text-green-500" />
               <span className="text-sm text-muted-foreground">Downloads</span>
@@ -360,7 +360,7 @@ export default function AdminReportsPage() {
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="pt-6">
+          <CardContent className="p-6">
             <div className="flex items-center gap-2">
               <Mail className="h-4 w-4 text-purple-500" />
               <span className="text-sm text-muted-foreground">Emailed</span>

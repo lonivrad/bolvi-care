@@ -450,7 +450,7 @@ export default function AccessibilityPage() {
 
         {/* Accessibility Statement Link */}
         <Card>
-          <CardContent className="pt-6">
+          <CardContent className="p-6">
             <div className="text-center">
               <p className="text-sm text-muted-foreground mb-4">
                 Bolvi Care is committed to WCAG 2.1 Level AA accessibility

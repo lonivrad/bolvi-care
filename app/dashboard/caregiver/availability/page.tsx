@@ -276,7 +276,7 @@ export default function AvailabilityPage() {
       {/* Stats */}
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
-          <CardContent className="pt-6">
+          <CardContent className="p-6">
             <div className="flex items-center gap-2">
               <CalendarIcon className="h-4 w-4 text-blue-500" />
               <span className="text-sm text-muted-foreground">Weekly Hours</span>
@@ -285,7 +285,7 @@ export default function AvailabilityPage() {
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="pt-6">
+          <CardContent className="p-6">
             <div className="flex items-center gap-2">
               <Clock className="h-4 w-4 text-green-500" />
               <span className="text-sm text-muted-foreground">Available Days</span>
@@ -296,7 +296,7 @@ export default function AvailabilityPage() {
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="pt-6">
+          <CardContent className="p-6">
             <div className="flex items-center gap-2">
               <AlertCircle className="h-4 w-4 text-yellow-500" />
               <span className="text-sm text-muted-foreground">Blocked Dates</span>

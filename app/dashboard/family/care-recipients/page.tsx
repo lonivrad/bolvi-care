@@ -660,7 +660,7 @@ export default function CareRecipientsPage() {
       <div className="grid gap-6">
         {careRecipients.map((recipient) => (
           <Card key={recipient.id}>
-            <CardContent className="pt-6">
+            <CardContent className="p-6">
               <div className="flex flex-col lg:flex-row gap-6">
                 {/* Profile Section */}
                 <div className="flex items-start gap-4">

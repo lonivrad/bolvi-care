@@ -21,7 +21,7 @@ export default function TermsPage() {
 
         <div className="prose prose-gray dark:prose-invert max-w-none space-y-8">
           <Card>
-            <CardContent className="pt-6">
+            <CardContent className="p-6">
               <p className="text-muted-foreground leading-relaxed">
                 Welcome to Bolvi Care. By accessing or using our platform, you agree to be bound by these
                 Terms of Service. Please read them carefully before using our services.
@@ -35,7 +35,7 @@ export default function TermsPage() {
               <h2 className="text-2xl font-semibold text-foreground">1. Acceptance of Terms</h2>
             </div>
             <Card>
-              <CardContent className="pt-6">
+              <CardContent className="p-6">
                 <p className="text-muted-foreground leading-relaxed">
                   By creating an account or using Bolvi Care, you acknowledge that you have read, understood,
                   and agree to be bound by these Terms of Service and our Privacy Policy. If you do not agree
@@ -51,7 +51,7 @@ export default function TermsPage() {
               <h2 className="text-2xl font-semibold text-foreground">2. Platform Description</h2>
             </div>
             <Card>
-              <CardContent className="pt-6 space-y-4">
+              <CardContent className="p-6 space-y-4">
                 <p className="text-muted-foreground leading-relaxed">
                   Bolvi Care is a marketplace platform that connects families seeking at-home support services
                   with independent caregivers. We provide:
@@ -78,7 +78,7 @@ export default function TermsPage() {
               <h2 className="text-2xl font-semibold text-foreground">3. User Responsibilities</h2>
             </div>
             <Card>
-              <CardContent className="pt-6 space-y-4">
+              <CardContent className="p-6 space-y-4">
                 <div>
                   <h3 className="font-medium text-foreground mb-2">For All Users:</h3>
                   <ul className="list-disc list-inside text-muted-foreground space-y-1">
@@ -118,7 +118,7 @@ export default function TermsPage() {
               <h2 className="text-2xl font-semibold text-foreground">4. Payments & Fees</h2>
             </div>
             <Card>
-              <CardContent className="pt-6 space-y-4">
+              <CardContent className="p-6 space-y-4">
                 <ul className="list-disc list-inside text-muted-foreground space-y-2">
                   <li>All payments are processed through our secure payment system</li>
                   <li>Families pay caregivers' hourly rates plus a platform service fee</li>
@@ -137,7 +137,7 @@ export default function TermsPage() {
               <h2 className="text-2xl font-semibold text-foreground">5. Limitations of Liability</h2>
             </div>
             <Card>
-              <CardContent className="pt-6 space-y-4">
+              <CardContent className="p-6 space-y-4">
                 <p className="text-muted-foreground leading-relaxed">
                   Bolvi Care provides a platform to connect families and caregivers but is not responsible for:
                 </p>
@@ -162,7 +162,7 @@ export default function TermsPage() {
               <h2 className="text-2xl font-semibold text-foreground">6. Dispute Resolution</h2>
             </div>
             <Card>
-              <CardContent className="pt-6">
+              <CardContent className="p-6">
                 <p className="text-muted-foreground leading-relaxed">
                   Any disputes arising from these Terms or your use of Bolvi Care shall be resolved through
                   binding arbitration in accordance with the rules of the American Arbitration Association.
@@ -176,7 +176,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-2xl font-semibold text-foreground mb-4">7. Contact Information</h2>
             <Card>
-              <CardContent className="pt-6">
+              <CardContent className="p-6">
                 <p className="text-muted-foreground leading-relaxed">
                   For questions about these Terms of Service, please contact us:
                 </p>

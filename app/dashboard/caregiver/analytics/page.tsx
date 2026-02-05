@@ -140,7 +140,7 @@ export default function CaregiverAnalyticsPage() {
           const Icon = stat.icon;
           return (
             <Card key={stat.title}>
-              <CardContent className="pt-6">
+              <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <Icon className="h-5 w-5 text-muted-foreground" />
                   <div

@@ -150,28 +150,28 @@ export default function CaregiverAgreementPage() {
         {/* Quick Overview Cards */}
         <div className="grid gap-4 md:grid-cols-4 mb-8">
           <Card>
-            <CardContent className="pt-6 text-center">
+            <CardContent className="p-6 text-center">
               <Shield className="h-8 w-8 text-green-500 mx-auto mb-2" />
               <p className="font-medium">$1M Liability</p>
               <p className="text-xs text-muted-foreground">Coverage per incident</p>
             </CardContent>
           </Card>
           <Card>
-            <CardContent className="pt-6 text-center">
+            <CardContent className="p-6 text-center">
               <DollarSign className="h-8 w-8 text-blue-500 mx-auto mb-2" />
               <p className="font-medium">85% Earnings</p>
               <p className="text-xs text-muted-foreground">You keep most</p>
             </CardContent>
           </Card>
           <Card>
-            <CardContent className="pt-6 text-center">
+            <CardContent className="p-6 text-center">
               <Clock className="h-8 w-8 text-purple-500 mx-auto mb-2" />
               <p className="font-medium">Weekly Payouts</p>
               <p className="text-xs text-muted-foreground">Every Friday</p>
             </CardContent>
           </Card>
           <Card>
-            <CardContent className="pt-6 text-center">
+            <CardContent className="p-6 text-center">
               <Users className="h-8 w-8 text-orange-500 mx-auto mb-2" />
               <p className="font-medium">Independent</p>
               <p className="text-xs text-muted-foreground">Contractor status</p>
@@ -197,7 +197,7 @@ export default function CaregiverAgreementPage() {
 
         {/* Important Notice */}
         <Card className="mb-8 border-yellow-200 dark:border-yellow-800 bg-yellow-50 dark:bg-yellow-900/20">
-          <CardContent className="pt-6">
+          <CardContent className="p-6">
             <div className="flex gap-4">
               <AlertTriangle className="h-6 w-6 text-yellow-600 dark:text-yellow-400 flex-shrink-0" />
               <div>
@@ -217,7 +217,7 @@ export default function CaregiverAgreementPage() {
 
         {/* Acknowledgment */}
         <Card className="mb-8 border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20">
-          <CardContent className="pt-6">
+          <CardContent className="p-6">
             <div className="flex gap-4">
               <CheckCircle className="h-6 w-6 text-green-600 dark:text-green-400 flex-shrink-0" />
               <div>

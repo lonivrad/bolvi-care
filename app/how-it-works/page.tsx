@@ -139,7 +139,7 @@ export default function HowItWorksPage() {
             <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {benefits.map((benefit) => (
                 <Card key={benefit.title}>
-                  <CardContent className="pt-6">
+                  <CardContent className="p-6">
                     <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
                       <benefit.icon className="h-6 w-6 text-primary" />
                     </div>

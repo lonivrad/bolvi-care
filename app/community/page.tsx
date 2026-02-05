@@ -568,7 +568,7 @@ export default function CommunityPage() {
                         <p className="mt-2 text-xs text-muted-foreground">Care Story</p>
                       </div>
                     </div>
-                    <CardContent className="pt-4">
+                    <CardContent className="p-5">
                       <h3 className="text-lg font-bold text-foreground">
                         {story.title}
                       </h3>
@@ -734,7 +734,7 @@ export default function CommunityPage() {
             <div className="grid gap-6 lg:grid-cols-3">
               {upcomingEvents.map(event => (
                 <Card key={event.id}>
-                  <CardContent className="pt-6">
+                  <CardContent className="p-6">
                     <Badge variant={event.type.includes("Online") ? "secondary" : "default"}>
                       {event.type}
                     </Badge>
@@ -792,7 +792,7 @@ export default function CommunityPage() {
                 <div className="grid gap-6 md:grid-cols-3">
                   {topCaregivers.map(caregiver => (
                     <Card key={caregiver.id}>
-                      <CardContent className="pt-6 text-center">
+                      <CardContent className="p-6 text-center">
                         <div className="relative inline-block">
                           <Avatar className="h-24 w-24">
                             <AvatarImage src={caregiver.photo} alt={caregiver.name} />
@@ -842,7 +842,7 @@ export default function CommunityPage() {
                 <h2 className="text-2xl font-bold text-foreground">Local Resources</h2>
                 {localResources.map((resource, index) => (
                   <Card key={index}>
-                    <CardContent className="pt-6">
+                    <CardContent className="p-6">
                       <div className="flex items-start justify-between">
                         <div>
                           <Badge variant="outline" className="mb-2">
@@ -884,7 +884,7 @@ export default function CommunityPage() {
               <div className="space-y-6">
                 <h2 className="text-2xl font-bold text-foreground">Educational Content</h2>
                 <Card>
-                  <CardContent className="pt-6">
+                  <CardContent className="p-6">
                     <div className="space-y-4">
                       {[
                         { title: "Understanding Dementia: A Guide for Families", type: "Article" },

@@ -322,7 +322,7 @@ export default function SupportTicketsPage() {
       {/* Stats */}
       <div className="grid gap-4 sm:grid-cols-4">
         <Card className="cursor-pointer hover:border-primary/50" onClick={() => setStatusFilter("open")}>
-          <CardContent className="pt-6">
+          <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Open</p>
@@ -335,7 +335,7 @@ export default function SupportTicketsPage() {
           </CardContent>
         </Card>
         <Card className="cursor-pointer hover:border-primary/50" onClick={() => setStatusFilter("in_progress")}>
-          <CardContent className="pt-6">
+          <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">In Progress</p>
@@ -348,7 +348,7 @@ export default function SupportTicketsPage() {
           </CardContent>
         </Card>
         <Card className="cursor-pointer hover:border-primary/50" onClick={() => setStatusFilter("waiting")}>
-          <CardContent className="pt-6">
+          <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Waiting</p>
@@ -361,7 +361,7 @@ export default function SupportTicketsPage() {
           </CardContent>
         </Card>
         <Card className="cursor-pointer hover:border-primary/50" onClick={() => setStatusFilter("resolved")}>
-          <CardContent className="pt-6">
+          <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Resolved</p>

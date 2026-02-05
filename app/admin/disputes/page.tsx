@@ -240,7 +240,7 @@ export default function AdminDisputesPage() {
 
   const DisputeCard = ({ dispute }: { dispute: (typeof disputes)[0] }) => (
     <Card>
-      <CardContent className="pt-6">
+      <CardContent className="p-6">
         <div className="flex items-start justify-between">
           <div>
             <div className="flex items-center gap-2">
@@ -415,7 +415,7 @@ export default function AdminDisputesPage() {
       {/* Stats */}
       <div className="grid gap-4 md:grid-cols-4">
         <Card>
-          <CardContent className="pt-6">
+          <CardContent className="p-6">
             <div className="flex items-center gap-2">
               <AlertTriangle className="h-4 w-4 text-destructive" />
               <span className="text-sm text-muted-foreground">
@@ -426,7 +426,7 @@ export default function AdminDisputesPage() {
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="pt-6">
+          <CardContent className="p-6">
             <div className="flex items-center gap-2">
               <Clock className="h-4 w-4 text-secondary" />
               <span className="text-sm text-muted-foreground">
@@ -437,7 +437,7 @@ export default function AdminDisputesPage() {
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="pt-6">
+          <CardContent className="p-6">
             <div className="flex items-center gap-2">
               <CheckCircle className="h-4 w-4 text-accent" />
               <span className="text-sm text-muted-foreground">Resolved</span>
@@ -446,7 +446,7 @@ export default function AdminDisputesPage() {
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="pt-6">
+          <CardContent className="p-6">
             <div className="flex items-center gap-2">
               <DollarSign className="h-4 w-4 text-primary" />
               <span className="text-sm text-muted-foreground">

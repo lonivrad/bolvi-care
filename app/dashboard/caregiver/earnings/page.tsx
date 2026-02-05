@@ -89,7 +89,7 @@ export default function EarningsPage() {
           {/* Balance Cards */}
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <Card className="border-primary bg-primary/5">
-              <CardContent className="pt-6">
+              <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <p className="text-sm text-muted-foreground">Available Balance</p>
                   <DollarSign className="h-4 w-4 text-primary" />
@@ -101,7 +101,7 @@ export default function EarningsPage() {
               </CardContent>
             </Card>
             <Card>
-              <CardContent className="pt-6">
+              <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <p className="text-sm text-muted-foreground">Pending</p>
                   <Clock className="h-4 w-4 text-muted-foreground" />
@@ -111,7 +111,7 @@ export default function EarningsPage() {
               </CardContent>
             </Card>
             <Card>
-              <CardContent className="pt-6">
+              <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <p className="text-sm text-muted-foreground">This Week</p>
                   <TrendingUp className="h-4 w-4 text-accent" />
@@ -121,7 +121,7 @@ export default function EarningsPage() {
               </CardContent>
             </Card>
             <Card>
-              <CardContent className="pt-6">
+              <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <p className="text-sm text-muted-foreground">This Month</p>
                   <Calendar className="h-4 w-4 text-muted-foreground" />

@@ -93,7 +93,7 @@ export default function SafetyPage() {
             <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {safetyMeasures.map((measure) => (
                 <Card key={measure.title}>
-                  <CardContent className="pt-6">
+                  <CardContent className="p-6">
                     <div className="flex items-start gap-4">
                       <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-primary/10">
                         <measure.icon className="h-6 w-6 text-primary" />

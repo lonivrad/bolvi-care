@@ -190,7 +190,7 @@ export default function CaregiverCalendarPage() {
       {/* Stats */}
       <div className="grid gap-4 sm:grid-cols-3">
         <Card>
-          <CardContent className="pt-6">
+          <CardContent className="p-6">
             <div className="flex items-center gap-2">
               <CalendarDays className="h-4 w-4 text-blue-500" />
               <span className="text-sm text-muted-foreground">This Week</span>
@@ -199,7 +199,7 @@ export default function CaregiverCalendarPage() {
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="pt-6">
+          <CardContent className="p-6">
             <div className="flex items-center gap-2">
               <Clock className="h-4 w-4 text-green-500" />
               <span className="text-sm text-muted-foreground">Hours This Week</span>
@@ -208,7 +208,7 @@ export default function CaregiverCalendarPage() {
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="pt-6">
+          <CardContent className="p-6">
             <div className="flex items-center gap-2">
               <User className="h-4 w-4 text-purple-500" />
               <span className="text-sm text-muted-foreground">Upcoming</span>

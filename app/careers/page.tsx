@@ -203,7 +203,7 @@ export default function CareersPage() {
                 const Icon = value.icon;
                 return (
                   <Card key={value.title} className="text-center">
-                    <CardContent className="pt-6">
+                    <CardContent className="p-6">
                       <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
                         <Icon className="h-6 w-6 text-primary" />
                       </div>

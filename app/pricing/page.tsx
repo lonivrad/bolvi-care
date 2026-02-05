@@ -120,7 +120,7 @@ export default function PricingPage() {
             </div>
             <div className="mt-8 grid gap-4 sm:grid-cols-3">
               <Card>
-                <CardContent className="pt-6 text-center">
+                <CardContent className="p-6 text-center">
                   <DollarSign className="mx-auto h-10 w-10 text-primary" />
                   <h3 className="mt-4 font-semibold">Caregiver Rate</h3>
                   <p className="mt-2 text-sm text-muted-foreground">
@@ -129,7 +129,7 @@ export default function PricingPage() {
                 </CardContent>
               </Card>
               <Card>
-                <CardContent className="pt-6 text-center">
+                <CardContent className="p-6 text-center">
                   <Clock className="mx-auto h-10 w-10 text-primary" />
                   <h3 className="mt-4 font-semibold">Hours Booked</h3>
                   <p className="mt-2 text-sm text-muted-foreground">
@@ -138,7 +138,7 @@ export default function PricingPage() {
                 </CardContent>
               </Card>
               <Card>
-                <CardContent className="pt-6 text-center">
+                <CardContent className="p-6 text-center">
                   <Shield className="mx-auto h-10 w-10 text-primary" />
                   <h3 className="mt-4 font-semibold">Service Fee</h3>
                   <TooltipProvider>

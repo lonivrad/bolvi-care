@@ -21,7 +21,7 @@ export default function PrivacyPage() {
 
         <div className="prose prose-gray dark:prose-invert max-w-none space-y-8">
           <Card>
-            <CardContent className="pt-6">
+            <CardContent className="p-6">
               <p className="text-muted-foreground leading-relaxed">
                 At Bolvi Care, we take your privacy seriously. This Privacy Policy explains how we collect,
                 use, disclose, and safeguard your information when you use our platform connecting families
@@ -36,7 +36,7 @@ export default function PrivacyPage() {
               <h2 className="text-2xl font-semibold text-foreground">Information We Collect</h2>
             </div>
             <Card>
-              <CardContent className="pt-6 space-y-4">
+              <CardContent className="p-6 space-y-4">
                 <div>
                   <h3 className="font-medium text-foreground mb-2">Personal Information</h3>
                   <ul className="list-disc list-inside text-muted-foreground space-y-1">
@@ -66,7 +66,7 @@ export default function PrivacyPage() {
               <h2 className="text-2xl font-semibold text-foreground">How We Use Your Information</h2>
             </div>
             <Card>
-              <CardContent className="pt-6">
+              <CardContent className="p-6">
                 <ul className="list-disc list-inside text-muted-foreground space-y-2">
                   <li>To facilitate connections between families and caregivers</li>
                   <li>To verify caregiver credentials and conduct background checks</li>
@@ -87,7 +87,7 @@ export default function PrivacyPage() {
               <h2 className="text-2xl font-semibold text-foreground">Information Security</h2>
             </div>
             <Card>
-              <CardContent className="pt-6">
+              <CardContent className="p-6">
                 <p className="text-muted-foreground leading-relaxed">
                   We implement industry-standard security measures to protect your personal information, including:
                 </p>
@@ -108,7 +108,7 @@ export default function PrivacyPage() {
               <h2 className="text-2xl font-semibold text-foreground">Information Sharing</h2>
             </div>
             <Card>
-              <CardContent className="pt-6">
+              <CardContent className="p-6">
                 <p className="text-muted-foreground leading-relaxed mb-4">
                   We do not sell your personal information. We may share information with:
                 </p>
@@ -129,7 +129,7 @@ export default function PrivacyPage() {
               <h2 className="text-2xl font-semibold text-foreground">Your Rights</h2>
             </div>
             <Card>
-              <CardContent className="pt-6">
+              <CardContent className="p-6">
                 <p className="text-muted-foreground leading-relaxed mb-4">
                   You have the right to:
                 </p>
@@ -154,7 +154,7 @@ export default function PrivacyPage() {
               <h2 className="text-2xl font-semibold text-foreground">Contact Us</h2>
             </div>
             <Card>
-              <CardContent className="pt-6">
+              <CardContent className="p-6">
                 <p className="text-muted-foreground leading-relaxed">
                   If you have questions about this Privacy Policy or our data practices, please contact us:
                 </p>
