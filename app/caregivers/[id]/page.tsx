@@ -32,11 +32,12 @@ import { BackButton } from "@/components/ui/back-button";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { VerificationBadge } from "@/components/trust/verification-badge";
 import { AuthPrompt } from "@/components/auth/auth-prompt";
-import { useAuthStore } from "@/lib/store";
+import { useSession } from "next-auth/react";
 
 export default function CaregiverProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  const { role } = useAuthStore();
+  const { data: session, status } = useSession();
+  const role = session?.user?.role?.toLowerCase();
   const caregiver = caregivers.find((c) => c.id === id) || caregivers[0];
   const caregiverReviews = reviews.filter((r) => r.caregiverId === caregiver.id);
 

@@ -365,107 +365,87 @@ export default function JobsPage() {
             </Card>
           ) : null}
           {filteredJobs.map((job) => (
-            <Card key={job.id}>
-              <CardContent className="p-6">
-                <div className="flex flex-col lg:flex-row gap-6">
-                  {/* Main Info */}
-                  <div className="flex-1">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <h3 className="text-lg font-semibold text-foreground">
-                            {job.title}
-                          </h3>
-                          {job.urgent && (
-                            <Badge variant="destructive">Urgent</Badge>
-                          )}
-                        </div>
-                        <p className="text-muted-foreground">{job.family}</p>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => toggleSaveJob(job.id)}
-                      >
-                        <Heart
-                          className={`h-5 w-5 ${
-                            savedJobs.includes(job.id)
-                              ? "fill-red-500 text-red-500"
-                              : "text-muted-foreground"
-                          }`}
-                        />
-                      </Button>
-                    </div>
-
-                    <div className="mt-3 flex flex-wrap gap-4 text-sm">
-                      <span className="flex items-center gap-1 text-muted-foreground">
-                        <MapPin className="h-4 w-4" />
-                        {job.location} ({job.distance})
-                      </span>
-                      <span className="flex items-center gap-1 text-muted-foreground">
-                        <Clock className="h-4 w-4" />
-                        {job.schedule}
-                      </span>
-                      <span className="flex items-center gap-1 font-medium text-green-600">
-                        <DollarSign className="h-4 w-4" />
-                        {job.rate}
-                      </span>
-                    </div>
-
-                    <p className="mt-3 text-sm text-muted-foreground">
-                      {job.description}
-                    </p>
-
-                    <div className="mt-3 flex flex-wrap gap-1">
-                      {job.needs.map((need) => (
-                        <Badge key={need} variant="outline">
-                          {need}
-                        </Badge>
-                      ))}
+            <Card key={job.id} className="overflow-hidden">
+              <CardContent className="p-0">
+                {/* Card Header: Title + Rate */}
+                <div className="flex items-start justify-between gap-4 p-4 pb-0">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h3 className="text-lg font-bold text-foreground">
+                        {job.title}
+                      </h3>
+                      <span className="text-lg font-bold text-primary">{job.rate}</span>
+                      {job.urgent && (
+                        <Badge variant="secondary" className="text-xs">Urgent</Badge>
+                      )}
                     </div>
                   </div>
-
-                  {/* Care Recipient Info */}
-                  <div className="lg:w-64">
-                    <div className="rounded-lg border border-border p-4">
-                      <div className="flex items-center gap-2 mb-2">
-                        <User className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm font-medium">Care Recipient</span>
-                      </div>
-                      <p className="font-medium">
-                        {job.careRecipient.name}, {job.careRecipient.age}
-                      </p>
-                      <div className="mt-2 flex flex-wrap gap-1">
-                        {job.careRecipient.conditions.map((condition) => (
-                          <Badge key={condition} variant="secondary" className="text-xs">
-                            {condition}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="shrink-0 -mr-2 -mt-1"
+                    onClick={() => toggleSaveJob(job.id)}
+                  >
+                    <Heart
+                      className={`h-5 w-5 ${
+                        savedJobs.includes(job.id)
+                          ? "fill-red-500 text-red-500"
+                          : "text-muted-foreground"
+                      }`}
+                    />
+                  </Button>
                 </div>
 
-                {/* Footer */}
-                <div className="mt-4 flex items-center justify-between border-t border-border pt-4">
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                    <span>Posted {job.posted}</span>
-                    <span>{job.applicants + (appliedJobIds.includes(job.id) ? 1 : 0)} applicants</span>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button variant="outline">View Details</Button>
-                    {appliedJobIds.includes(job.id) ? (
-                      <Button disabled variant="secondary">
-                        <CheckCircle className="mr-2 h-4 w-4" />
-                        Applied
-                      </Button>
-                    ) : (
-                      <Button onClick={() => handleApplyClick(job)}>
-                        <Send className="mr-2 h-4 w-4" />
-                        Apply Now
-                      </Button>
-                    )}
-                  </div>
+                {/* Schedule & Location Row */}
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 px-4 pt-2 text-sm text-muted-foreground">
+                  <span className="flex items-center gap-1.5">
+                    <Calendar className="h-4 w-4" />
+                    {job.schedule}
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <MapPin className="h-4 w-4" />
+                    {job.distance} away
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <User className="h-4 w-4" />
+                    {job.careRecipient.name}, {job.careRecipient.age}
+                  </span>
+                </div>
+
+                {/* Description (1-2 lines) */}
+                <p className="px-4 pt-3 text-sm text-muted-foreground line-clamp-2">
+                  {job.description}
+                </p>
+
+                {/* Care Needs Tags */}
+                <div className="flex flex-wrap gap-1.5 px-4 pt-3">
+                  {job.needs.slice(0, 3).map((need) => (
+                    <Badge key={need} variant="secondary" className="font-normal">
+                      {need}
+                    </Badge>
+                  ))}
+                  {job.needs.length > 3 && (
+                    <Badge variant="outline" className="font-normal text-muted-foreground">
+                      +{job.needs.length - 3} more
+                    </Badge>
+                  )}
+                </div>
+
+                {/* Footer: Metadata + CTA */}
+                <div className="flex items-center justify-between gap-4 p-4 pt-3">
+                  <span className="text-xs text-muted-foreground">
+                    {job.posted} • {job.applicants + (appliedJobIds.includes(job.id) ? 1 : 0)} applied
+                  </span>
+                  {appliedJobIds.includes(job.id) ? (
+                    <Button disabled variant="secondary" size="sm">
+                      <CheckCircle className="mr-1.5 h-3.5 w-3.5" />
+                      Applied
+                    </Button>
+                  ) : (
+                    <Button size="sm" onClick={() => handleApplyClick(job)}>
+                      View & Apply
+                    </Button>
+                  )}
                 </div>
               </CardContent>
             </Card>

@@ -5,7 +5,8 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { CaregiverCard } from "@/components/caregivers/caregiver-card";
 import { CaregiverFilters } from "@/components/caregivers/caregiver-filters";
-import { useCaregiversStore, useAuthStore } from "@/lib/store";
+import { useCaregiversStore } from "@/lib/store";
+import { useSession } from "next-auth/react";
 import { AuthPrompt } from "@/components/auth/auth-prompt";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,10 +25,12 @@ export default function CaregiversPage() {
   const [filtersOpen, setFiltersOpen] = useState(false);
 
   const { filters, setFilters, getFilteredCaregivers } = useCaregiversStore();
-  const { role, familyUser } = useAuthStore();
+  const { data: session, status } = useSession();
+  const role = session?.user?.role?.toLowerCase();
 
   const filteredCaregivers = getFilteredCaregivers();
-  const favoriteIds = familyUser?.favoriteCaregiversIds || [];
+  // Favorites will be fetched from API/database when implemented
+  const favoriteIds: string[] = [];
 
   // Show auth prompt if user is not logged in
   if (!role) {

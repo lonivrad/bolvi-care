@@ -58,6 +58,10 @@ export async function PATCH(req: NextRequest) {
       hourlyRate,
       specialties,
       languages,
+      street,
+      city,
+      state,
+      zipCode,
     } = body;
 
     // Update the caregiver profile
@@ -70,6 +74,10 @@ export async function PATCH(req: NextRequest) {
         hourlyRate: hourlyRate !== undefined ? hourlyRate : undefined,
         specialties: specialties || undefined,
         languages: languages || undefined,
+        street: street !== undefined ? street : undefined,
+        city: city !== undefined ? city : undefined,
+        state: state !== undefined ? state : undefined,
+        zipCode: zipCode !== undefined ? zipCode : undefined,
         updatedAt: new Date(),
       },
     });

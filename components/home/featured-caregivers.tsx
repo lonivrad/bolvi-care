@@ -6,7 +6,7 @@ import { ArrowRight, Star, Shield, Users, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { useAuthStore } from "@/lib/store";
+import { useSession } from "next-auth/react";
 import { CaregiverCard } from "@/components/caregivers/caregiver-card";
 import { caregivers } from "@/lib/mock-data";
 
@@ -42,8 +42,8 @@ const previewCaregivers = [
 ];
 
 export function FeaturedCaregivers() {
-  const { role, familyUser } = useAuthStore();
-  const isAuthenticated = !!role;
+  const { data: session, status } = useSession();
+  const isAuthenticated = !!session;
   const featuredCaregivers = caregivers.filter(cg => cg.isFeatured).slice(0, 3);
 
   // For authenticated users, show full caregiver cards
@@ -73,7 +73,7 @@ export function FeaturedCaregivers() {
               <CaregiverCard
                 key={caregiver.id}
                 caregiver={caregiver}
-                isFavorite={familyUser?.favoriteCaregiversIds.includes(caregiver.id)}
+                isFavorite={false}
               />
             ))}
           </div>

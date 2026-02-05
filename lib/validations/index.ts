@@ -83,8 +83,8 @@ export type SignupCaregiverInput = z.infer<typeof signupCaregiverSchema>;
 
 export const updateUserSchema = z.object({
   name: z.string().min(2).optional(),
-  phone: phoneSchema.optional(),
-  photo: z.string().url().optional(),
+  phone: z.string().optional(), // More lenient phone validation for updates
+  photo: z.string().optional(), // Allow URL or base64
 });
 
 export const updateFamilyProfileSchema = z.object({
@@ -107,6 +107,11 @@ export const updateCaregiverProfileSchema = z.object({
   serviceAreaType: z.enum(['RADIUS', 'ZIPCODES', 'CITIES']).optional(),
   serviceAreaRadius: z.number().min(5).max(100).optional(),
   serviceAreaZipcodes: z.array(z.string()).optional(),
+  // Address fields (for caregiver's location - stored in user-associated data)
+  street: z.string().optional(),
+  city: z.string().optional(),
+  state: z.string().optional(),
+  zipCode: z.string().optional(),
 });
 
 export type UpdateUserInput = z.infer<typeof updateUserSchema>;

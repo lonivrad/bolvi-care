@@ -38,18 +38,16 @@ import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { CommandPalette } from "@/components/navigation/command-palette";
 
 const publicNavItems = [
-  { label: "Find Care", href: "/caregivers" },
+  { label: "For Families", href: "/caregivers" },
+  { label: "For Caregivers", href: "/how-it-works#caregivers" },
   { label: "How It Works", href: "/how-it-works" },
-  { label: "For Caregivers", href: "/auth/signup/caregiver" },
-  { label: "Safety", href: "/safety" },
-  { label: "Community", href: "/community" },
+  { label: "About", href: "/about" },
 ];
 
 const familyNavItems = [
   { label: "Find Care", href: "/caregivers" },
-  { label: "My Bookings", href: "/dashboard/family/bookings" },
+  { label: "Bookings", href: "/dashboard/family/bookings" },
   { label: "Care Team", href: "/dashboard/family/care-team" },
-  { label: "Community", href: "/community" },
 ];
 
 const caregiverNavItems = [
@@ -98,7 +96,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo */}
         <Link href={sessionRole ? `/dashboard/${sessionRole}` : "/"} className="flex items-center gap-2">
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
@@ -108,12 +106,12 @@ export function Header() {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden items-center gap-1 md:flex">
+        <nav className="hidden items-center gap-0.5 md:flex">
           {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              className="rounded-md px-2.5 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
             >
               {item.label}
             </Link>
@@ -254,11 +252,11 @@ export function Header() {
             </DropdownMenu>
           ) : (
             <div className="hidden items-center gap-2 sm:flex">
-              <Button variant="ghost" asChild>
+              <Button variant="outline" size="sm" asChild>
                 <Link href="/auth/login">Log in</Link>
               </Button>
-              <Button asChild>
-                <Link href="/auth/signup/caregiver">Join as Caregiver</Link>
+              <Button size="sm" asChild>
+                <Link href="/auth/signup/family">Get Started</Link>
               </Button>
             </div>
           )}
@@ -296,7 +294,7 @@ export function Header() {
                   <Link href="/auth/login">Log in</Link>
                 </Button>
                 <Button asChild onClick={() => setMobileMenuOpen(false)}>
-                  <Link href="/auth/signup/caregiver">Join as Caregiver</Link>
+                  <Link href="/auth/signup/family">Get Started</Link>
                 </Button>
               </div>
             )}

@@ -39,7 +39,7 @@ import {
   LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useAuthStore } from "@/lib/store";
+import { useSession } from "next-auth/react";
 
 interface NavItem {
   name: string;
@@ -123,10 +123,14 @@ interface DashboardSidebarProps {
 
 export function DashboardSidebar({ userType }: DashboardSidebarProps) {
   const pathname = usePathname();
-  const { familyUser, caregiverUser, setRole } = useAuthStore();
+  const { data: session } = useSession();
   const [collapsed, setCollapsed] = useState(false);
 
-  const user = userType === "family" ? familyUser : caregiverUser;
+  // Use session user data
+  const user = session?.user ? {
+    name: session.user.name || 'User',
+    photo: session.user.image || null,
+  } : null;
   const navSections = userType === "family" ? familyNavSections : caregiverNavSections;
 
   const isActive = (href: string) => {

@@ -14,7 +14,7 @@ import {
   Menu,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useAuthStore } from "@/lib/store";
+import { useSession } from "next-auth/react";
 import { Badge } from "@/components/ui/badge";
 
 interface NavItem {
@@ -49,7 +49,8 @@ const publicNavItems: NavItem[] = [
 
 export function MobileBottomNav() {
   const pathname = usePathname();
-  const { role } = useAuthStore();
+  const { data: session } = useSession();
+  const role = session?.user?.role?.toLowerCase();
 
   // Don't show on auth pages
   if (pathname?.startsWith("/auth")) {

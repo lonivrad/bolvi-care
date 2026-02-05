@@ -5,7 +5,8 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { CaregiverCard } from "@/components/caregivers/caregiver-card";
 import { FilterSidebar } from "@/components/caregivers/filter-sidebar";
-import { useCaregiversStore, useAuthStore } from "@/lib/store";
+import { useCaregiversStore } from "@/lib/store";
+import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -29,7 +30,7 @@ export default function FindCarePage() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [showFilters, setShowFilters] = useState(true);
   const { filters, setFilters, getFilteredCaregivers, resetFilters } = useCaregiversStore();
-  const { familyUser } = useAuthStore();
+  const { data: session } = useSession();
   
   const filteredCaregivers = getFilteredCaregivers();
   const activeFilterCount = [
@@ -191,7 +192,7 @@ export default function FindCarePage() {
                       key={caregiver.id}
                       caregiver={caregiver}
                       variant={viewMode === "list" ? "list" : "grid"}
-                      isFavorite={familyUser?.favoriteCaregiversIds.includes(caregiver.id)}
+                      isFavorite={false}
                     />
                   ))}
                 </div>

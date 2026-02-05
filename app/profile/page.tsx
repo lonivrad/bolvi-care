@@ -159,37 +159,40 @@ export default function ProfilePage() {
 
     setIsSaving(true);
     try {
-      const role = session?.user?.role?.toLowerCase();
-      const endpoint = role === "caregiver"
-        ? "/api/profile/caregiver"
-        : "/api/profile/family";
-
-      const res = await fetch(endpoint, {
+      // Update user data (name, phone, photo) and profile address via /api/users/me
+      const userUpdateRes = await fetch("/api/users/me", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          address: editedProfile.address.street,
-          city: editedProfile.address.city,
-          state: editedProfile.address.state,
-          zipCode: editedProfile.address.zip,
+          name: editedProfile.name,
+          phone: editedProfile.phone,
+          photo: editedProfile.photo,
+          profile: {
+            street: editedProfile.address.street,
+            city: editedProfile.address.city,
+            state: editedProfile.address.state,
+            zipCode: editedProfile.address.zip,
+          },
         }),
       });
 
-      if (res.ok) {
-        setProfile(editedProfile);
-        setIsEditing(false);
-        toast({
-          title: "Profile updated",
-          description: "Your changes have been saved successfully.",
-          variant: "success",
-        });
-      } else {
-        throw new Error("Failed to update profile");
+      if (!userUpdateRes.ok) {
+        const errorData = await userUpdateRes.json();
+        throw new Error(errorData.message || "Failed to update profile");
       }
+
+      setProfile(editedProfile);
+      setIsEditing(false);
+      toast({
+        title: "Profile updated",
+        description: "Your changes have been saved successfully.",
+        variant: "success",
+      });
     } catch (error) {
+      console.error("Error saving profile:", error);
       toast({
         title: "Error",
-        description: "Failed to save changes. Please try again.",
+        description: error instanceof Error ? error.message : "Failed to save changes. Please try again.",
         variant: "error",
       });
     } finally {

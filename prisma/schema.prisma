@@ -184,6 +184,13 @@ model CaregiverProfile {
   isFeatured       Boolean  @default(false)
   isNew            Boolean  @default(true)
 
+  // Address
+  street           String?
+  city             String?
+  state            String?
+  zipCode          String?
+  country          String   @default("US")
+
   // Service area
   serviceAreaType  ServiceAreaType @default(RADIUS)
   serviceAreaRadius Int      @default(25) // miles

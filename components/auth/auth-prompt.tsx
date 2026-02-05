@@ -3,7 +3,6 @@
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { useAuthStore } from "@/lib/store";
 import { LogIn, UserPlus, Shield, Heart, Calendar, MessageSquare } from "lucide-react";
 
 interface AuthPromptProps {
@@ -20,12 +19,6 @@ export function AuthPrompt({
   showBenefits = true,
 }: AuthPromptProps) {
   const router = useRouter();
-  const { setRole } = useAuthStore();
-
-  const handleLogin = (role: 'family' | 'caregiver') => {
-    setRole(role);
-    // Stay on current page after login
-  };
 
   const benefits = [
     { icon: Calendar, text: "Book trusted caregivers" },
@@ -68,19 +61,10 @@ export function AuthPrompt({
             <Button
               className="w-full"
               size="lg"
-              onClick={() => handleLogin('family')}
+              onClick={() => router.push('/auth/login')}
             >
               <LogIn className="mr-2 h-4 w-4" />
-              Sign in as Family
-            </Button>
-            <Button
-              variant="outline"
-              className="w-full"
-              size="lg"
-              onClick={() => handleLogin('caregiver')}
-            >
-              <Heart className="mr-2 h-4 w-4" />
-              Sign in as Caregiver
+              Sign In
             </Button>
           </div>
 

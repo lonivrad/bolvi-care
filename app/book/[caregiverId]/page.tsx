@@ -27,7 +27,8 @@ import {
   Heart,
 } from "lucide-react";
 import { caregivers, mockCareRecipients } from "@/lib/mock-data";
-import { useStore, useAuthStore } from "@/lib/store";
+import { useStore } from "@/lib/store";
+import { useSession } from "next-auth/react";
 import { BackButton } from "@/components/ui/back-button";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { AuthPrompt } from "@/components/auth/auth-prompt";
@@ -68,7 +69,8 @@ export default function BookingPage({ params }: { params: Promise<{ caregiverId:
   const { caregiverId } = use(params);
   const router = useRouter();
   useStore();
-  const { role } = useAuthStore();
+  const { data: session, status } = useSession();
+  const role = session?.user?.role?.toLowerCase();
   const caregiver = caregivers.find((c) => c.id === caregiverId) || caregivers[0];
 
   // All hooks must be called before any conditional returns (Rules of Hooks)

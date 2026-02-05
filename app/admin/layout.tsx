@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
-import { useAuthStore } from "@/lib/store";
+import { useSession, signOut } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -160,7 +160,8 @@ export default function AdminLayout({
 }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { role, setRole } = useAuthStore();
+  const { data: session, status } = useSession();
+  const role = session?.user?.role?.toLowerCase();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -340,15 +341,7 @@ export default function AdminLayout({
                     <Link href="/admin/audit"><Database className="mr-2 h-4 w-4" />Audit Logs</Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">Switch View</DropdownMenuLabel>
-                  <DropdownMenuItem onClick={() => setRole("family")}>
-                    <User className="mr-2 h-4 w-4" />View as Family
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setRole("caregiver")}>
-                    <Heart className="mr-2 h-4 w-4" />View as Caregiver
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => setRole(null)} className="text-destructive">
+                  <DropdownMenuItem onClick={() => signOut({ callbackUrl: "/" })} className="text-destructive">
                     <LogOut className="mr-2 h-4 w-4" />Log out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
