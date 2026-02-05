@@ -26,17 +26,37 @@ export async function POST(req: NextRequest) {
   }
 }
 
-async function handleFamilySignup(body: unknown) {
-  const validatedFields = signupFamilySchema.safeParse(body);
+async function handleFamilySignup(body: Record<string, unknown>) {
+  // Extract fields directly from body - more flexible than strict Zod validation
+  const email = body.email as string;
+  const password = body.password as string;
+  const name = body.name as string;
+  const phone = body.phone as string | undefined;
+  const zipCode = body.zipCode as string | undefined;
 
-  if (!validatedFields.success) {
+  // Basic validation
+  if (!email || !password || !name) {
     return NextResponse.json(
-      { error: 'Invalid input', details: validatedFields.error.flatten() },
+      { error: 'Email, password, and name are required' },
       { status: 400 }
     );
   }
 
-  const { email, password, name, phone, address } = validatedFields.data;
+  if (password.length < 8) {
+    return NextResponse.json(
+      { error: 'Password must be at least 8 characters' },
+      { status: 400 }
+    );
+  }
+
+  // Validate email format
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return NextResponse.json(
+      { error: 'Please enter a valid email address' },
+      { status: 400 }
+    );
+  }
 
   // Check if user already exists
   const existingUser = await prisma.user.findUnique({
@@ -69,14 +89,7 @@ async function handleFamilySignup(body: unknown) {
     await tx.familyProfile.create({
       data: {
         userId: newUser.id,
-        ...(address && {
-          street: address.street,
-          unit: address.unit,
-          city: address.city,
-          state: address.state,
-          zipCode: address.zipCode,
-          country: address.country,
-        }),
+        ...(zipCode && { zipCode }),
       },
     });
 
