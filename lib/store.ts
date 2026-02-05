@@ -214,7 +214,7 @@ export const useBookingsStore = create<BookingsState>()((set) => ({
 }));
 
 export const useMessagesStore = create<MessagesState>()((set, get) => ({
-  threads: messageThreads,
+  threads: [], // Start empty - no mock data for new users
   markAsRead: (threadId) => set((state) => ({
     threads: state.threads.map(t => t.id === threadId ? { ...t, unreadCount: 0 } : t)
   })),
@@ -222,7 +222,7 @@ export const useMessagesStore = create<MessagesState>()((set, get) => ({
 }));
 
 export const useNotificationsStore = create<NotificationsState>()((set, get) => ({
-  notifications: notifications,
+  notifications: [], // Start empty - no mock data for new users
   markAsRead: (id) => set((state) => ({
     notifications: state.notifications.map(n => n.id === id ? { ...n, isRead: true } : n)
   })),

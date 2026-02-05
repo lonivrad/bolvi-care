@@ -204,25 +204,25 @@ export default function CaregiverDashboard() {
                   completed={!!profile?.bio}
                   title="Add your bio"
                   description="Tell families about yourself"
-                  href="/onboarding/caregiver"
+                  href="/dashboard/caregiver/profile"
                 />
                 <ChecklistItem
                   completed={!!session?.user?.image}
                   title="Upload a profile photo"
                   description="Profiles with photos get 3x more bookings"
-                  href="/settings"
+                  href="/profile"
                 />
                 <ChecklistItem
                   completed={(profile?.specialties?.length || 0) > 0}
                   title="Select your services"
                   description="What types of care do you offer?"
-                  href="/onboarding/caregiver"
+                  href="/dashboard/caregiver/profile"
                 />
                 <ChecklistItem
                   completed={!!profile?.hourlyRate}
                   title="Set your hourly rate"
                   description="Let families know your pricing"
-                  href="/onboarding/caregiver"
+                  href="/dashboard/caregiver/profile"
                 />
                 <ChecklistItem
                   completed={false}
@@ -279,7 +279,7 @@ export default function CaregiverDashboard() {
                 </div>
               </div>
               <Button variant="outline" className="mt-4 w-full" asChild>
-                <Link href="/onboarding/caregiver">Complete Profile</Link>
+                <Link href="/profile">Complete Profile</Link>
               </Button>
             </CardContent>
           </Card>
