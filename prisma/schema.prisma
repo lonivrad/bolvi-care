@@ -6,8 +6,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 // ============================================================================
@@ -32,6 +33,10 @@ model User {
   // Password reset
   resetToken        String?
   resetTokenExpiry  DateTime?
+
+  // Email verification
+  verificationToken       String?
+  verificationTokenExpiry DateTime?
 
   // Auth.js relations
   accounts      Account[]

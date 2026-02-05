@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -206,21 +205,8 @@ export default function CaregiverSignupPage() {
         return;
       }
 
-      // Auto sign in after successful signup
-      const signInResult = await signIn("credentials", {
-        email: formData.email.toLowerCase(),
-        password: formData.password,
-        redirect: false,
-      });
-
-      if (signInResult?.error) {
-        // Account created but auto-login failed, redirect to login
-        router.push("/auth/login?registered=true");
-      } else {
-        // Success - redirect to caregiver dashboard
-        router.push("/dashboard/caregiver");
-        router.refresh();
-      }
+      // Redirect to verify email page
+      router.push("/auth/verify-email");
     } catch {
       setErrors({ submit: "An unexpected error occurred. Please try again." });
       setIsLoading(false);

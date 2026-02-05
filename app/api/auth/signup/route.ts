@@ -3,6 +3,17 @@ import { prisma } from '@/lib/db';
 import { hashPassword } from '@/lib/auth';
 import { signupFamilySchema, signupCaregiverSchema } from '@/lib/validations';
 import { UserRole } from '@prisma/client';
+import { sendVerificationEmail } from '@/lib/email';
+
+// Helper function to generate verification token
+function generateVerificationToken(): string {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let token = '';
+  for (let i = 0; i < 64; i++) {
+    token += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return token;
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -19,8 +30,27 @@ export async function POST(req: NextRequest) {
     }
   } catch (error) {
     console.error('Signup error:', error);
+
+    // Provide more specific error messages
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+
+    // Check for database connection errors
+    if (errorMessage.includes('P1010') || errorMessage.includes('denied access')) {
+      return NextResponse.json(
+        { error: 'Database connection error. Please check your database configuration.' },
+        { status: 503 }
+      );
+    }
+
+    if (errorMessage.includes('P1001') || errorMessage.includes('connect')) {
+      return NextResponse.json(
+        { error: 'Unable to connect to database. Please ensure your database is running.' },
+        { status: 503 }
+      );
+    }
+
     return NextResponse.json(
-      { error: 'Something went wrong during signup' },
+      { error: 'Something went wrong during signup. Please try again.' },
       { status: 500 }
     );
   }
@@ -73,6 +103,10 @@ async function handleFamilySignup(body: Record<string, unknown>) {
   // Hash password
   const passwordHash = await hashPassword(password);
 
+  // Generate verification token
+  const verificationToken = generateVerificationToken();
+  const verificationTokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
   // Create user and family profile in a transaction
   const user = await prisma.$transaction(async (tx) => {
     const newUser = await tx.user.create({
@@ -83,6 +117,8 @@ async function handleFamilySignup(body: Record<string, unknown>) {
         phone,
         role: 'FAMILY' as UserRole,
         status: 'ACTIVE',
+        verificationToken,
+        verificationTokenExpiry,
       },
     });
 
@@ -94,6 +130,15 @@ async function handleFamilySignup(body: Record<string, unknown>) {
     });
 
     return newUser;
+  });
+
+  // Send verification email (don't block on this)
+  sendVerificationEmail({
+    email: user.email,
+    name: user.name,
+    verificationToken,
+  }).catch((err) => {
+    console.error('Failed to send verification email:', err);
   });
 
   // Create audit log
@@ -162,6 +207,10 @@ async function handleCaregiverSignup(body: Record<string, unknown>) {
   // Hash password
   const passwordHash = await hashPassword(password);
 
+  // Generate verification token
+  const verificationToken = generateVerificationToken();
+  const verificationTokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
   // Build availability based on selected days
   const buildAvailabilityHours = () => {
     const defaultHours = { start: '09:00', end: '17:00' };
@@ -194,6 +243,8 @@ async function handleCaregiverSignup(body: Record<string, unknown>) {
         phone,
         role: 'CAREGIVER' as UserRole,
         status: 'PENDING', // Caregivers start as pending until verified
+        verificationToken,
+        verificationTokenExpiry,
       },
     });
 
@@ -236,6 +287,15 @@ async function handleCaregiverSignup(body: Record<string, unknown>) {
     return newUser;
   });
 
+  // Send verification email (don't block on this)
+  sendVerificationEmail({
+    email: user.email,
+    name: user.name,
+    verificationToken,
+  }).catch((err) => {
+    console.error('Failed to send verification email:', err);
+  });
+
   // Create audit log
   await prisma.auditLog.create({
     data: {
@@ -250,7 +310,7 @@ async function handleCaregiverSignup(body: Record<string, unknown>) {
 
   return NextResponse.json(
     {
-      message: 'Account created successfully. Your profile is pending verification.',
+      message: 'Account created successfully. Please check your email to verify your account.',
       user: {
         id: user.id,
         email: user.email,
