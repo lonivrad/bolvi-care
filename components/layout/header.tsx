@@ -84,11 +84,11 @@ export function Header() {
     : sessionRole === 'admin' ? adminNavItems
     : publicNavItems;
 
-  // Use session user data
+  // Use session user data - only set photo if user actually has one
   const currentUser = isLoggedIn ? {
     name: session.user.name || 'User',
     email: session.user.email || '',
-    photo: session.user.image || '/images/default-avatar.png',
+    photo: session.user.image || null, // null means show initials instead
   } : null;
 
   // Handle logout
