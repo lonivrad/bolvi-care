@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,7 +13,6 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useAuthStore } from "@/lib/store";
 import { useToast } from "@/components/ui/toast";
 import {
   User,
@@ -22,15 +22,13 @@ import {
   Upload,
   Briefcase,
   Award,
-  Languages,
   DollarSign,
   MapPin,
   Phone,
   Mail,
   Shield,
   FileText,
-  Plus,
-  X,
+  Loader2,
 } from "lucide-react";
 
 const allServices = [
@@ -74,30 +72,83 @@ const allCertifications = [
   "Physical Therapy Assistant",
 ];
 
+interface CaregiverProfile {
+  id: string;
+  bio: string | null;
+  headline: string | null;
+  hourlyRate: number;
+  yearsExperience: number;
+  specialties: string[];
+  languages: string[];
+  user: {
+    name: string;
+    email: string;
+    phone: string | null;
+    photo: string | null;
+  };
+}
+
 export default function CaregiverProfilePage() {
-  const { caregiverUser } = useAuthStore();
+  const { data: session, status } = useSession();
   const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
 
   const [profile, setProfile] = useState({
-    firstName: caregiverUser?.name.split(" ")[0] || "",
-    lastName: caregiverUser?.name.split(" ")[1] || "",
-    email: caregiverUser?.email || "",
-    phone: caregiverUser?.phone || "",
-    bio: caregiverUser?.profile?.bio || "",
-    hourlyRate: caregiverUser?.profile?.hourlyRate || 35,
-    location: caregiverUser?.profile?.location || "Seattle, WA",
-    yearsExperience: caregiverUser?.profile?.yearsExperience || 5,
-    services: caregiverUser?.profile?.specialties || [],
-    languages: caregiverUser?.profile?.languages || ["English"],
-    certifications: caregiverUser?.profile?.certifications || [],
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    bio: "",
+    hourlyRate: 25,
+    location: "",
+    yearsExperience: 0,
+    services: [] as string[],
+    languages: ["English"],
+    certifications: [] as string[],
     hasTransportation: true,
     willingToTravel: 15,
   });
 
-  const [isSaving, setIsSaving] = useState(false);
+  // Fetch profile data from API
+  useEffect(() => {
+    async function fetchProfile() {
+      if (status !== "authenticated") return;
+
+      try {
+        const res = await fetch("/api/profile/caregiver");
+        if (res.ok) {
+          const data: CaregiverProfile = await res.json();
+          const nameParts = data.user.name?.split(" ") || ["", ""];
+
+          setProfile({
+            firstName: nameParts[0] || "",
+            lastName: nameParts.slice(1).join(" ") || "",
+            email: data.user.email || "",
+            phone: data.user.phone || "",
+            bio: data.bio || "",
+            hourlyRate: data.hourlyRate || 25,
+            location: "",
+            yearsExperience: data.yearsExperience || 0,
+            services: data.specialties || [],
+            languages: data.languages || ["English"],
+            certifications: [],
+            hasTransportation: true,
+            willingToTravel: 15,
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchProfile();
+  }, [status]);
 
   const completionSteps = [
-    { id: "photo", label: "Profile photo", completed: true },
+    { id: "photo", label: "Profile photo", completed: !!session?.user?.image },
     { id: "bio", label: "Bio (100+ words)", completed: profile.bio.length > 100 },
     { id: "services", label: "At least 3 services", completed: profile.services.length >= 3 },
     { id: "certifications", label: "Add certifications", completed: profile.certifications.length > 0 },
@@ -138,15 +189,49 @@ export default function CaregiverProfilePage() {
 
   const handleSave = async () => {
     setIsSaving(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setIsSaving(false);
-    toast({
-      title: "Profile updated",
-      description: "Your profile changes have been saved successfully.",
-      variant: "success",
-    });
+    try {
+      const res = await fetch("/api/profile/caregiver", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          bio: profile.bio,
+          hourlyRate: profile.hourlyRate,
+          yearsExperience: profile.yearsExperience,
+          specialties: profile.services,
+          languages: profile.languages,
+        }),
+      });
+
+      if (res.ok) {
+        toast({
+          title: "Profile updated",
+          description: "Your profile changes have been saved successfully.",
+          variant: "success",
+        });
+      } else {
+        throw new Error("Failed to save");
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to save profile. Please try again.",
+        variant: "error",
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
+
+  if (status === "loading" || isLoading) {
+    return (
+      <div className="flex min-h-[50vh] items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  const userPhoto = session?.user?.image;
+  const userName = session?.user?.name || "Caregiver";
 
   return (
     <div className="space-y-8">
@@ -215,13 +300,19 @@ export default function CaregiverProfilePage() {
             <CardContent>
               <div className="flex items-center gap-6">
                 <div className="relative">
-                  <Image
-                    src={caregiverUser?.photo || "/placeholder.svg"}
-                    alt={caregiverUser?.name || "Profile"}
-                    width={120}
-                    height={120}
-                    className="rounded-full object-cover"
-                  />
+                  {userPhoto ? (
+                    <Image
+                      src={userPhoto}
+                      alt={userName}
+                      width={120}
+                      height={120}
+                      className="rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-[120px] w-[120px] items-center justify-center rounded-full bg-primary text-primary-foreground text-4xl font-semibold">
+                      {userName.charAt(0).toUpperCase()}
+                    </div>
+                  )}
                   <button className="absolute bottom-0 right-0 flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg hover:bg-primary/90">
                     <Camera className="h-5 w-5" />
                   </button>
@@ -458,34 +549,26 @@ export default function CaregiverProfilePage() {
               <div className="space-y-4">
                 <div className="flex items-center justify-between rounded-lg border p-4">
                   <div className="flex items-center gap-3">
-                    <Shield className="h-5 w-5 text-green-500" />
-                    <div>
-                      <p className="font-medium">Background Check</p>
-                      <p className="text-sm text-muted-foreground">Verified on Jan 15, 2024</p>
-                    </div>
-                  </div>
-                  <Badge className="bg-green-100 text-green-700">Verified</Badge>
-                </div>
-                <div className="flex items-center justify-between rounded-lg border p-4">
-                  <div className="flex items-center gap-3">
-                    <FileText className="h-5 w-5 text-green-500" />
-                    <div>
-                      <p className="font-medium">ID Verification</p>
-                      <p className="text-sm text-muted-foreground">Government ID verified</p>
-                    </div>
-                  </div>
-                  <Badge className="bg-green-100 text-green-700">Verified</Badge>
-                </div>
-                <div className="flex items-center justify-between rounded-lg border p-4">
-                  <div className="flex items-center gap-3">
                     <Shield className="h-5 w-5 text-amber-500" />
                     <div>
-                      <p className="font-medium">Insurance Coverage</p>
-                      <p className="text-sm text-muted-foreground">Upload proof of insurance</p>
+                      <p className="font-medium">Background Check</p>
+                      <p className="text-sm text-muted-foreground">Not yet submitted</p>
+                    </div>
+                  </div>
+                  <Button variant="outline" size="sm" asChild>
+                    <Link href="/dashboard/caregiver/verification">Start</Link>
+                  </Button>
+                </div>
+                <div className="flex items-center justify-between rounded-lg border p-4">
+                  <div className="flex items-center gap-3">
+                    <FileText className="h-5 w-5 text-amber-500" />
+                    <div>
+                      <p className="font-medium">ID Verification</p>
+                      <p className="text-sm text-muted-foreground">Verify your identity</p>
                     </div>
                   </div>
                   <Button variant="outline" size="sm">
-                    Upload
+                    Verify
                   </Button>
                 </div>
               </div>
@@ -541,6 +624,7 @@ export default function CaregiverProfilePage() {
                     value={profile.location}
                     onChange={(e) => setProfile({ ...profile, location: e.target.value })}
                     className="pl-9"
+                    placeholder="City, State"
                   />
                 </div>
               </div>

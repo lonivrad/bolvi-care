@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { cn } from "@/lib/utils";
-import { useAuthStore } from "@/lib/store";
 import {
   LayoutDashboard,
   Calendar,
@@ -50,7 +50,10 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const { role } = useAuthStore();
+  const { data: session } = useSession();
+
+  // Get role from actual session, not from Zustand store
+  const role = session?.user?.role?.toLowerCase() as 'family' | 'caregiver' | undefined;
 
   const sidebarItems = role === "caregiver" ? caregiverSidebarItems : familySidebarItems;
   const dashboardTitle = role === "caregiver" ? "Caregiver Dashboard" : "Family Dashboard";
