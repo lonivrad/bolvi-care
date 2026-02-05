@@ -1,0 +1,1344 @@
+// Bolvi Care Database Schema
+// PostgreSQL database with Prisma ORM
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// AUTHENTICATION & USERS
+// ============================================================================
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  emailVerified DateTime?
+  passwordHash  String?
+  name          String
+  phone         String?
+  phoneVerified Boolean   @default(false)
+  photo         String?
+  role          UserRole  @default(FAMILY)
+  status        UserStatus @default(PENDING)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  lastLoginAt   DateTime?
+
+  // Password reset
+  resetToken        String?
+  resetTokenExpiry  DateTime?
+
+  // Auth.js relations
+  accounts      Account[]
+  sessions      Session[]
+
+  // Role-specific profiles (one-to-one)
+  familyProfile    FamilyProfile?
+  caregiverProfile CaregiverProfile?
+  adminProfile     AdminProfile?
+
+  // Common relations
+  sentMessages      Message[]       @relation("MessageSender")
+  notifications     Notification[]
+  conversationParticipants ConversationParticipant[]
+
+  // Reviews
+  reviewsWritten    Review[]        @relation("ReviewAuthor")
+  reviewsReceived   Review[]        @relation("ReviewTarget")
+
+  // Disputes
+  disputesAsFamily    Dispute[]     @relation("DisputeFamily")
+  disputesAsCaregiver Dispute[]     @relation("DisputeCaregiver")
+  disputeEvidence     DisputeEvidence[]
+
+  // Incidents
+  incidentsReported   Incident[]    @relation("IncidentReporter")
+
+  @@index([email])
+  @@index([role])
+  @@index([status])
+}
+
+enum UserRole {
+  FAMILY
+  CAREGIVER
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  PENDING
+  DEACTIVATED
+}
+
+// Auth.js models
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ============================================================================
+// FAMILY PROFILE
+// ============================================================================
+
+model FamilyProfile {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Address
+  street    String?
+  unit      String?
+  city      String?
+  state     String?
+  zipCode   String?
+  country   String   @default("US")
+
+  // Relations
+  careRecipients    CareRecipient[]
+  careTeamMembers   CareTeamMember[]
+  paymentMethods    PaymentMethod[]
+  emergencyContacts EmergencyContact[]
+  bookings          Booking[]        @relation("FamilyBookings")
+
+  // Preferences (stored as JSON for flexibility)
+  preferences       Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+// ============================================================================
+// CAREGIVER PROFILE
+// ============================================================================
+
+model CaregiverProfile {
+  id               String   @id @default(cuid())
+  userId           String   @unique
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  bio              String?  @db.Text
+  headline         String?
+  hourlyRate       Int      @default(2500) // in cents
+  yearsExperience  Int      @default(0)
+
+  // Arrays stored as JSON
+  specialties      String[] @default([])
+  languages        String[] @default(["english"])
+
+  // Statistics
+  rating           Float    @default(0)
+  reviewCount      Int      @default(0)
+  completedVisits  Int      @default(0)
+  responseRate     Float    @default(100)
+  responseTime     Int      @default(60) // in minutes
+
+  // Status flags
+  instantBook      Boolean  @default(false)
+  isFeatured       Boolean  @default(false)
+  isNew            Boolean  @default(true)
+
+  // Service area
+  serviceAreaType  ServiceAreaType @default(RADIUS)
+  serviceAreaRadius Int      @default(25) // miles
+  serviceAreaZipcodes String[] @default([])
+  latitude         Float?
+  longitude        Float?
+
+  // Relations
+  certifications   Certification[]
+  backgroundCheck  BackgroundCheck?
+  references       Reference[]
+  licenses         CaregiverLicense[]
+  availability     AvailabilitySchedule?
+  bookings         Booking[]        @relation("CaregiverBookings")
+  payoutInfo       PayoutInfo?
+  payouts          Payout[]
+  taxInfo          TaxInfo?
+  taxDocuments     TaxDocument[]
+  careTeamMembers  CareTeamMember[]
+
+  // Verification
+  verificationStatus Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([hourlyRate])
+  @@index([rating])
+  @@index([isFeatured])
+}
+
+enum ServiceAreaType {
+  RADIUS
+  ZIPCODES
+  CITIES
+}
+
+// ============================================================================
+// ADMIN PROFILE
+// ============================================================================
+
+model AdminProfile {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  department  String?
+  permissions String[] @default([])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ============================================================================
+// CARE RECIPIENT
+// ============================================================================
+
+model CareRecipient {
+  id              String   @id @default(cuid())
+  familyProfileId String
+  familyProfile   FamilyProfile @relation(fields: [familyProfileId], references: [id], onDelete: Cascade)
+
+  name            String
+  photo           String?
+  dateOfBirth     DateTime?
+  gender          Gender?
+  relationship    String?
+
+  // Address (can be different from family)
+  street          String?
+  unit            String?
+  city            String?
+  state           String?
+  zipCode         String?
+  country         String   @default("US")
+
+  // Health information
+  medicalConditions Json?  // Array of MedicalCondition
+  medications       Json?  // Array of Medication
+  allergies         String[] @default([])
+  mobilityLevel     MobilityLevel?
+  cognitiveStatus   CognitiveStatus?
+  dietaryRestrictions String[] @default([])
+  careNeeds         String[] @default([])
+
+  // Preferences
+  preferences       Json?
+  notes             String? @db.Text
+
+  // Relations
+  emergencyContacts CareRecipientEmergencyContact[]
+  bookings          Booking[]
+  visits            Visit[]
+  incidents         Incident[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([familyProfileId])
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+  PREFER_NOT_TO_SAY
+}
+
+enum MobilityLevel {
+  INDEPENDENT
+  MINIMAL_ASSISTANCE
+  MODERATE_ASSISTANCE
+  EXTENSIVE_ASSISTANCE
+  DEPENDENT
+}
+
+enum CognitiveStatus {
+  INTACT
+  MILD_IMPAIRMENT
+  MODERATE_IMPAIRMENT
+  SEVERE_IMPAIRMENT
+}
+
+model CareRecipientEmergencyContact {
+  id              String   @id @default(cuid())
+  careRecipientId String
+  careRecipient   CareRecipient @relation(fields: [careRecipientId], references: [id], onDelete: Cascade)
+
+  name            String
+  relationship    String
+  phone           String
+  email           String?
+  isPrimary       Boolean  @default(false)
+  canMakeDecisions Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([careRecipientId])
+}
+
+// ============================================================================
+// BOOKING & VISITS
+// ============================================================================
+
+model Booking {
+  id              String   @id @default(cuid())
+
+  familyProfileId String
+  familyProfile   FamilyProfile @relation("FamilyBookings", fields: [familyProfileId], references: [id])
+
+  caregiverProfileId String
+  caregiverProfile   CaregiverProfile @relation("CaregiverBookings", fields: [caregiverProfileId], references: [id])
+
+  careRecipientId String
+  careRecipient   CareRecipient @relation(fields: [careRecipientId], references: [id])
+
+  status          BookingStatus @default(PENDING)
+  type            BookingType   @default(ONE_TIME)
+
+  scheduledStart  DateTime
+  scheduledEnd    DateTime
+  actualStart     DateTime?
+  actualEnd       DateTime?
+
+  services        String[] @default([])
+  specialInstructions String? @db.Text
+
+  // Address for visit
+  street          String?
+  unit            String?
+  city            String?
+  state           String?
+  zipCode         String?
+
+  // Pricing
+  hourlyRate      Int      // in cents
+  estimatedHours  Float
+  subtotal        Int      // in cents
+  platformFee     Int      // in cents
+  discount        Int      @default(0)
+  promoCode       String?
+  total           Int      // in cents
+
+  // Relations
+  payment         Payment?
+  visit           Visit?
+  review          Review?
+  cancellation    Cancellation?
+  dispute         Dispute?
+  recurringSchedule RecurringSchedule?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([familyProfileId])
+  @@index([caregiverProfileId])
+  @@index([careRecipientId])
+  @@index([status])
+  @@index([scheduledStart])
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  DISPUTED
+}
+
+enum BookingType {
+  ONE_TIME
+  RECURRING
+}
+
+model RecurringSchedule {
+  id              String   @id @default(cuid())
+  bookingId       String   @unique
+  booking         Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  frequency       RecurringFrequency
+  daysOfWeek      Int[]    @default([]) // 0-6 for weekly
+  startDate       DateTime
+  endDate         DateTime?
+  exceptions      DateTime[] @default([])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum RecurringFrequency {
+  DAILY
+  WEEKLY
+  BIWEEKLY
+  MONTHLY
+}
+
+// ============================================================================
+// VISIT & REPORTING
+// ============================================================================
+
+model Visit {
+  id              String   @id @default(cuid())
+  bookingId       String   @unique
+  booking         Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  careRecipientId String
+  careRecipient   CareRecipient @relation(fields: [careRecipientId], references: [id])
+
+  status          VisitStatus @default(SCHEDULED)
+
+  checkInTime     DateTime?
+  checkInLat      Float?
+  checkInLng      Float?
+
+  checkOutTime    DateTime?
+  checkOutLat     Float?
+  checkOutLng     Float?
+
+  notes           String? @db.Text
+  moodRating      Int?    // 1-5
+
+  // Relations
+  activities      VisitActivity[]
+  photos          VisitPhoto[]
+  report          VisitReport?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([bookingId])
+  @@index([careRecipientId])
+  @@index([status])
+}
+
+enum VisitStatus {
+  SCHEDULED
+  CHECKED_IN
+  IN_PROGRESS
+  CHECKED_OUT
+  REPORT_PENDING
+  COMPLETED
+}
+
+model VisitActivity {
+  id        String   @id @default(cuid())
+  visitId   String
+  visit     Visit    @relation(fields: [visitId], references: [id], onDelete: Cascade)
+
+  type      String   // CareNeed type
+  completedAt DateTime
+  duration  Int?     // in minutes
+  notes     String?
+
+  createdAt DateTime @default(now())
+
+  @@index([visitId])
+}
+
+model VisitPhoto {
+  id        String   @id @default(cuid())
+  visitId   String
+  visit     Visit    @relation(fields: [visitId], references: [id], onDelete: Cascade)
+
+  url       String
+  caption   String?
+  uploadedAt DateTime @default(now())
+
+  @@index([visitId])
+}
+
+model VisitReport {
+  id          String   @id @default(cuid())
+  visitId     String   @unique
+  visit       Visit    @relation(fields: [visitId], references: [id], onDelete: Cascade)
+
+  summary     String   @db.Text
+
+  // Logs stored as JSON
+  activitiesCompleted Json? // VisitActivity[]
+  medicationsGiven    Json? // MedicationLog[]
+  mealsProvided       Json? // MealLog[]
+  vitalSigns          Json? // VitalSignsLog
+
+  mood        Int?     // 1-5
+  moodNotes   String?
+  concerns    String?  @db.Text
+  recommendations String? @db.Text
+  nextVisitNotes String? @db.Text
+
+  submittedAt DateTime @default(now())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ============================================================================
+// REVIEWS & RATINGS
+// ============================================================================
+
+model Review {
+  id          String   @id @default(cuid())
+  bookingId   String   @unique
+  booking     Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  authorId    String
+  author      User     @relation("ReviewAuthor", fields: [authorId], references: [id])
+  authorType  UserRole
+
+  targetId    String
+  target      User     @relation("ReviewTarget", fields: [targetId], references: [id])
+  targetType  UserRole
+
+  rating      Int      // 1-5
+  content     String   @db.Text
+
+  // Category ratings stored as JSON
+  categories  Json?    // ReviewCategories
+
+  // Response
+  response    String?  @db.Text
+  respondedAt DateTime?
+
+  isPublic    Boolean  @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([authorId])
+  @@index([targetId])
+  @@index([rating])
+}
+
+// ============================================================================
+// MESSAGING
+// ============================================================================
+
+model Conversation {
+  id            String   @id @default(cuid())
+  type          ConversationType @default(DIRECT)
+
+  lastMessageAt DateTime?
+
+  participants  ConversationParticipant[]
+  messages      Message[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([lastMessageAt])
+}
+
+enum ConversationType {
+  DIRECT
+  GROUP
+}
+
+model ConversationParticipant {
+  id             String   @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  joinedAt       DateTime @default(now())
+  lastReadAt     DateTime?
+
+  @@unique([conversationId, userId])
+  @@index([userId])
+}
+
+model Message {
+  id             String   @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  senderId       String
+  sender         User     @relation("MessageSender", fields: [senderId], references: [id])
+
+  content        String   @db.Text
+  type           MessageType @default(TEXT)
+
+  // Attachments stored as JSON
+  attachments    Json?    // MessageAttachment[]
+
+  readBy         String[] @default([])
+
+  editedAt       DateTime?
+  deletedAt      DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([conversationId])
+  @@index([senderId])
+  @@index([createdAt])
+}
+
+enum MessageType {
+  TEXT
+  IMAGE
+  FILE
+  SYSTEM
+  BOOKING_REQUEST
+  VISIT_UPDATE
+}
+
+// ============================================================================
+// NOTIFICATIONS
+// ============================================================================
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  type      NotificationType
+  title     String
+  message   String   @db.Text
+  data      Json?
+
+  read      Boolean  @default(false)
+  actionUrl String?
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([read])
+  @@index([createdAt])
+}
+
+enum NotificationType {
+  BOOKING_REQUEST
+  BOOKING_CONFIRMED
+  BOOKING_CANCELLED
+  BOOKING_REMINDER
+  VISIT_STARTED
+  VISIT_COMPLETED
+  NEW_MESSAGE
+  NEW_REVIEW
+  PAYMENT_RECEIVED
+  PAYMENT_SENT
+  VERIFICATION_APPROVED
+  VERIFICATION_REJECTED
+  SYSTEM_ALERT
+}
+
+// ============================================================================
+// PAYMENTS & FINANCIAL
+// ============================================================================
+
+model Payment {
+  id            String   @id @default(cuid())
+  bookingId     String   @unique
+  booking       Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  payerId       String
+  payeeId       String
+
+  amount        Int      // in cents
+  platformFee   Int      // in cents
+  payeeAmount   Int      // in cents
+  taxWithheld   Int?     // in cents
+
+  status        PaymentStatus @default(PENDING)
+  method        PaymentMethodType?
+
+  stripePaymentIntentId String?
+  stripeTransferId      String?
+
+  processedAt   DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([payerId])
+  @@index([payeeId])
+  @@index([status])
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  REFUNDED
+  DISPUTED
+}
+
+model PaymentMethod {
+  id              String   @id @default(cuid())
+  familyProfileId String
+  familyProfile   FamilyProfile @relation(fields: [familyProfileId], references: [id], onDelete: Cascade)
+
+  type            PaymentMethodType
+  stripePaymentMethodId String?
+
+  last4           String
+  expiryMonth     Int?
+  expiryYear      Int?
+  brand           String?
+
+  isDefault       Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([familyProfileId])
+}
+
+enum PaymentMethodType {
+  CARD
+  BANK_ACCOUNT
+  PAYPAL
+}
+
+model PayoutInfo {
+  id                 String   @id @default(cuid())
+  caregiverProfileId String   @unique
+  caregiverProfile   CaregiverProfile @relation(fields: [caregiverProfileId], references: [id], onDelete: Cascade)
+
+  stripeAccountId    String?
+  stripeAccountStatus String?
+
+  accountType        PayoutAccountType @default(BANK_ACCOUNT)
+  accountLast4       String?
+  routingNumber      String?
+
+  payoutSchedule     PayoutSchedule @default(WEEKLY)
+  minimumPayout      Int      @default(5000) // in cents
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum PayoutAccountType {
+  BANK_ACCOUNT
+  PAYPAL
+  VENMO
+}
+
+enum PayoutSchedule {
+  WEEKLY
+  BIWEEKLY
+  MONTHLY
+}
+
+model Payout {
+  id                 String   @id @default(cuid())
+  caregiverProfileId String
+  caregiverProfile   CaregiverProfile @relation(fields: [caregiverProfileId], references: [id])
+
+  amount             Int      // in cents
+  status             PayoutStatus @default(PENDING)
+
+  periodStart        DateTime
+  periodEnd          DateTime
+  bookingIds         String[] @default([])
+
+  stripePayoutId     String?
+  processedAt        DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([caregiverProfileId])
+  @@index([status])
+}
+
+enum PayoutStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+// ============================================================================
+// TAX & COMPLIANCE
+// ============================================================================
+
+model TaxInfo {
+  id                 String   @id @default(cuid())
+  caregiverProfileId String   @unique
+  caregiverProfile   CaregiverProfile @relation(fields: [caregiverProfileId], references: [id], onDelete: Cascade)
+
+  classification     WorkerClassification @default(INDEPENDENT_CONTRACTOR)
+  taxIdLast4         String?
+  businessName       String?
+  businessType       String?
+
+  w9Submitted        Boolean  @default(false)
+  w9SubmittedAt      DateTime?
+  w9DocumentUrl      String?
+
+  state              String?
+  withholdingElection Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum WorkerClassification {
+  INDEPENDENT_CONTRACTOR
+  EMPLOYEE
+}
+
+model TaxDocument {
+  id                 String   @id @default(cuid())
+  caregiverProfileId String
+  caregiverProfile   CaregiverProfile @relation(fields: [caregiverProfileId], references: [id], onDelete: Cascade)
+
+  type               TaxDocumentType
+  taxYear            Int
+  status             TaxDocumentStatus @default(PENDING)
+
+  totalEarnings      Int      // in cents
+  totalWithheld      Int?     // in cents
+
+  documentUrl        String?
+  generatedAt        DateTime?
+  sentAt             DateTime?
+  downloadedAt       DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([caregiverProfileId])
+  @@index([taxYear])
+}
+
+enum TaxDocumentType {
+  FORM_1099_NEC
+  FORM_1099_K
+  FORM_W2
+  ANNUAL_SUMMARY
+}
+
+enum TaxDocumentStatus {
+  PENDING
+  GENERATED
+  SENT
+  CORRECTED
+}
+
+// ============================================================================
+// VERIFICATION & COMPLIANCE
+// ============================================================================
+
+model Certification {
+  id                 String   @id @default(cuid())
+  caregiverProfileId String
+  caregiverProfile   CaregiverProfile @relation(fields: [caregiverProfileId], references: [id], onDelete: Cascade)
+
+  name               String
+  issuingOrganization String
+  issueDate          DateTime
+  expiryDate         DateTime?
+  credentialId       String?
+  documentUrl        String?
+
+  verified           Boolean  @default(false)
+  verifiedAt         DateTime?
+  verifiedBy         String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([caregiverProfileId])
+}
+
+model BackgroundCheck {
+  id                 String   @id @default(cuid())
+  caregiverProfileId String   @unique
+  caregiverProfile   CaregiverProfile @relation(fields: [caregiverProfileId], references: [id], onDelete: Cascade)
+
+  provider           String   @default("checkr")
+  checkrCandidateId  String?  @unique
+  checkrReportId     String?  @unique
+  checkrInvitationUrl String?
+
+  status             VerificationState @default(NOT_SUBMITTED)
+  result             BackgroundCheckResult?
+  rawData            Json?    // Store full Checkr response for reference
+
+  submittedAt        DateTime?
+  completedAt        DateTime?
+  expiresAt          DateTime?
+
+  notes              String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([checkrCandidateId])
+  @@index([status])
+}
+
+enum VerificationState {
+  NOT_SUBMITTED
+  PENDING
+  APPROVED
+  REJECTED
+  EXPIRED
+}
+
+enum BackgroundCheckResult {
+  CLEAR
+  REVIEW_REQUIRED
+  FAILED
+}
+
+model Reference {
+  id                 String   @id @default(cuid())
+  caregiverProfileId String
+  caregiverProfile   CaregiverProfile @relation(fields: [caregiverProfileId], references: [id], onDelete: Cascade)
+
+  name               String
+  relationship       String
+  phone              String
+  email              String?
+  yearsKnown         Int
+
+  status             ReferenceStatus @default(PENDING)
+  notes              String?
+  verifiedAt         DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([caregiverProfileId])
+}
+
+enum ReferenceStatus {
+  PENDING
+  CONTACTED
+  VERIFIED
+  FAILED
+}
+
+model CaregiverLicense {
+  id                 String   @id @default(cuid())
+  caregiverProfileId String
+  caregiverProfile   CaregiverProfile @relation(fields: [caregiverProfileId], references: [id], onDelete: Cascade)
+
+  state              String
+  licenseType        String
+  licenseNumber      String
+
+  issuedDate         DateTime
+  expiryDate         DateTime
+
+  status             LicenseStatus @default(PENDING_VERIFICATION)
+
+  verificationUrl    String?
+  documentUrl        String?
+  verifiedAt         DateTime?
+  verifiedBy         String?
+  notes              String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([caregiverProfileId])
+  @@index([state])
+}
+
+enum LicenseStatus {
+  ACTIVE
+  EXPIRED
+  SUSPENDED
+  REVOKED
+  PENDING_VERIFICATION
+}
+
+// ============================================================================
+// AVAILABILITY & SCHEDULING
+// ============================================================================
+
+model AvailabilitySchedule {
+  id                 String   @id @default(cuid())
+  caregiverProfileId String   @unique
+  caregiverProfile   CaregiverProfile @relation(fields: [caregiverProfileId], references: [id], onDelete: Cascade)
+
+  timezone           String   @default("America/New_York")
+  minimumNotice      Int      @default(24) // hours
+  maximumAdvanceBooking Int   @default(30) // days
+
+  // Weekly schedule stored as JSON
+  regularHours       Json?    // WeeklySchedule
+
+  exceptions         AvailabilityException[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AvailabilityException {
+  id                   String   @id @default(cuid())
+  availabilityScheduleId String
+  availabilitySchedule AvailabilitySchedule @relation(fields: [availabilityScheduleId], references: [id], onDelete: Cascade)
+
+  date                 DateTime
+  type                 ExceptionType
+  slots                Json?    // TimeSlot[]
+  reason               String?
+
+  createdAt DateTime @default(now())
+
+  @@index([availabilityScheduleId])
+  @@index([date])
+}
+
+enum ExceptionType {
+  UNAVAILABLE
+  MODIFIED
+}
+
+// ============================================================================
+// CARE TEAM
+// ============================================================================
+
+model CareTeamMember {
+  id                 String   @id @default(cuid())
+
+  familyProfileId    String
+  familyProfile      FamilyProfile @relation(fields: [familyProfileId], references: [id], onDelete: Cascade)
+
+  caregiverProfileId String
+  caregiverProfile   CaregiverProfile @relation(fields: [caregiverProfileId], references: [id])
+
+  status             CareTeamStatus @default(ACTIVE)
+  isPrimary          Boolean  @default(false)
+  notes              String?
+
+  totalVisits        Int      @default(0)
+  totalHours         Float    @default(0)
+  lastVisitAt        DateTime?
+
+  addedAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([familyProfileId, caregiverProfileId])
+  @@index([familyProfileId])
+  @@index([caregiverProfileId])
+}
+
+enum CareTeamStatus {
+  ACTIVE
+  INACTIVE
+  BLOCKED
+}
+
+// ============================================================================
+// EMERGENCY CONTACTS (for Family)
+// ============================================================================
+
+model EmergencyContact {
+  id              String   @id @default(cuid())
+  familyProfileId String
+  familyProfile   FamilyProfile @relation(fields: [familyProfileId], references: [id], onDelete: Cascade)
+
+  name            String
+  relationship    String
+  phone           String
+  email           String?
+  isPrimary       Boolean  @default(false)
+  canMakeDecisions Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([familyProfileId])
+}
+
+// ============================================================================
+// CANCELLATION
+// ============================================================================
+
+model Cancellation {
+  id              String   @id @default(cuid())
+  bookingId       String   @unique
+  booking         Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  cancelledById   String
+  cancelledByRole UserRole
+
+  reason          CancellationReason
+  notes           String?
+
+  refundAmount    Int?     // in cents
+  refundStatus    RefundStatus?
+
+  cancelledAt DateTime @default(now())
+
+  @@index([bookingId])
+}
+
+enum CancellationReason {
+  SCHEDULE_CONFLICT
+  EMERGENCY
+  ILLNESS
+  FOUND_ALTERNATIVE
+  COST
+  NO_LONGER_NEEDED
+  OTHER
+}
+
+enum RefundStatus {
+  PENDING
+  PROCESSED
+  DENIED
+}
+
+// ============================================================================
+// INCIDENTS & DISPUTES
+// ============================================================================
+
+model Incident {
+  id              String   @id @default(cuid())
+
+  bookingId       String?
+  visitId         String?
+
+  reportedById    String
+  reportedBy      User     @relation("IncidentReporter", fields: [reportedById], references: [id])
+  reporterRole    UserRole
+
+  caregiverId     String
+  careRecipientId String
+  careRecipient   CareRecipient @relation(fields: [careRecipientId], references: [id])
+  familyId        String
+
+  type            IncidentType
+  severity        IncidentSeverity
+
+  description     String   @db.Text
+  immediateActions String?
+  witnesses       String?
+
+  injuryOccurred  Boolean  @default(false)
+  injuryDescription String?
+  medicalAttentionRequired Boolean @default(false)
+  emergencyServicesContacted Boolean @default(false)
+
+  photos          String[] @default([])
+
+  status          IncidentStatus @default(REPORTED)
+  resolution      String?
+  followUpRequired Boolean @default(false)
+  followUpNotes   String?
+
+  occurredAt      DateTime
+  resolvedAt      DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([caregiverId])
+  @@index([familyId])
+  @@index([status])
+}
+
+enum IncidentType {
+  FALL
+  MEDICATION_ERROR
+  INJURY
+  BEHAVIORAL
+  PROPERTY_DAMAGE
+  ABUSE_ALLEGATION
+  NEGLECT_ALLEGATION
+  THEFT_ALLEGATION
+  HEALTH_EMERGENCY
+  ELOPEMENT
+  OTHER
+}
+
+enum IncidentSeverity {
+  MINOR
+  MODERATE
+  MAJOR
+  CRITICAL
+}
+
+enum IncidentStatus {
+  REPORTED
+  INVESTIGATING
+  RESOLVED
+  ESCALATED
+}
+
+model Dispute {
+  id              String   @id @default(cuid())
+
+  bookingId       String   @unique
+  booking         Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  familyId        String
+  family          User     @relation("DisputeFamily", fields: [familyId], references: [id])
+
+  caregiverId     String
+  caregiver       User     @relation("DisputeCaregiver", fields: [caregiverId], references: [id])
+
+  type            DisputeType
+  status          DisputeStatus @default(OPEN)
+
+  description     String   @db.Text
+
+  evidence        DisputeEvidence[]
+  resolution      Json?    // DisputeResolution
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([familyId])
+  @@index([caregiverId])
+  @@index([status])
+}
+
+enum DisputeType {
+  BILLING
+  SERVICE_QUALITY
+  CANCELLATION
+  SAFETY
+  OTHER
+}
+
+enum DisputeStatus {
+  OPEN
+  INVESTIGATING
+  RESOLVED
+  ESCALATED
+}
+
+model DisputeEvidence {
+  id          String   @id @default(cuid())
+  disputeId   String
+  dispute     Dispute  @relation(fields: [disputeId], references: [id], onDelete: Cascade)
+
+  type        EvidenceType
+  description String
+  url         String?
+
+  submittedById String
+  submittedBy   User   @relation(fields: [submittedById], references: [id])
+
+  submittedAt DateTime @default(now())
+
+  @@index([disputeId])
+}
+
+enum EvidenceType {
+  MESSAGE
+  DOCUMENT
+  IMAGE
+}
+
+// ============================================================================
+// FILE UPLOADS
+// ============================================================================
+
+model FileUpload {
+  id          String   @id @default(cuid())
+
+  userId      String
+
+  filename    String
+  mimeType    String
+  size        Int      // in bytes
+
+  url         String
+  key         String   // S3/R2 key
+
+  type        FileUploadType
+  entityId    String?  // ID of related entity
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([type])
+  @@index([entityId])
+}
+
+enum FileUploadType {
+  PROFILE_PHOTO
+  CERTIFICATION_DOCUMENT
+  LICENSE_DOCUMENT
+  GOVERNMENT_ID
+  W9_FORM
+  VISIT_PHOTO
+  MESSAGE_ATTACHMENT
+  DISPUTE_EVIDENCE
+  OTHER
+}
+
+// ============================================================================
+// AUDIT LOG
+// ============================================================================
+
+model AuditLog {
+  id          String   @id @default(cuid())
+
+  userId      String?
+  userEmail   String?
+
+  action      String
+  entityType  String
+  entityId    String?
+
+  oldValues   Json?
+  newValues   Json?
+
+  ipAddress   String?
+  userAgent   String?
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([entityType])
+  @@index([action])
+  @@index([createdAt])
+}

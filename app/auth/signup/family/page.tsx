@@ -3,17 +3,16 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Heart, Eye, EyeOff, ArrowLeft } from "lucide-react";
-import { useAuthStore } from "@/lib/store";
+import { Heart, Eye, EyeOff, ArrowLeft, Loader2 } from "lucide-react";
 
 export default function FamilySignupPage() {
   const router = useRouter();
-  const { setRole } = useAuthStore();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -74,13 +73,50 @@ export default function FamilySignupPage() {
     if (!validate()) return;
 
     setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
 
-    // For MVP, just set the role to family (uses sample data)
-    // In production, this would create a new user in the database
-    setRole("family");
-    router.push("/dashboard/family");
-    setIsLoading(false);
+    try {
+      // Call the signup API
+      const response = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: `${formData.firstName} ${formData.lastName}`,
+          email: formData.email.toLowerCase(),
+          password: formData.password,
+          phone: formData.phone,
+          role: "FAMILY",
+          zipCode: formData.zipCode,
+          marketingConsent: formData.agreeMarketing,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setErrors({ submit: data.error || "Failed to create account. Please try again." });
+        setIsLoading(false);
+        return;
+      }
+
+      // Auto sign in after successful signup
+      const signInResult = await signIn("credentials", {
+        email: formData.email.toLowerCase(),
+        password: formData.password,
+        redirect: false,
+      });
+
+      if (signInResult?.error) {
+        // Account created but auto-login failed, redirect to login
+        router.push("/auth/login?registered=true");
+      } else {
+        // Success - redirect to family dashboard
+        router.push("/dashboard/family");
+        router.refresh();
+      }
+    } catch {
+      setErrors({ submit: "An unexpected error occurred. Please try again." });
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -99,6 +135,11 @@ export default function FamilySignupPage() {
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
+            {errors.submit && (
+              <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
+                {errors.submit}
+              </div>
+            )}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="firstName">First name</Label>
@@ -217,7 +258,14 @@ export default function FamilySignupPage() {
           </CardContent>
           <CardFooter className="flex flex-col gap-4">
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Creating account..." : "Create account"}
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Creating account...
+                </>
+              ) : (
+                "Create account"
+              )}
             </Button>
             <p className="text-center text-sm text-muted-foreground">
               Already have an account?{" "}
