@@ -36,7 +36,7 @@ export async function GET() {
         id: true,
         name: true,
         relationship: true,
-        age: true,
+        dateOfBirth: true,
       },
     });
 
@@ -64,10 +64,12 @@ export async function PATCH(req: NextRequest) {
 
     const body = await req.json();
     const {
-      address,
+      street,
+      unit,
       city,
       state,
       zipCode,
+      country,
       preferences,
     } = body;
 
@@ -94,12 +96,13 @@ export async function PATCH(req: NextRequest) {
     const updatedProfile = await prisma.familyProfile.update({
       where: { userId: session.user.id },
       data: {
-        address: address || undefined,
+        street: street || undefined,
+        unit: unit || undefined,
         city: city || undefined,
         state: state || undefined,
         zipCode: zipCode || undefined,
+        country: country || undefined,
         preferences: mergedPreferences,
-        updatedAt: new Date(),
       },
     });
 

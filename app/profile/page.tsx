@@ -80,13 +80,13 @@ export default function ProfilePage() {
             phone: data.user?.phone || data.phone || "",
             photo: session.user.image || data.user?.photo || null,
             address: {
-              street: data.address || "",
+              street: data.street || data.address || "",
               city: data.city || "",
               state: data.state || "",
               zip: data.zipCode || "",
             },
             role: role || "family",
-            memberSince: formatDate(session.user.createdAt || new Date().toISOString()),
+            memberSince: formatDate(data.profile?.createdAt || data.createdAt || new Date().toISOString()),
             verified: data.verificationStatus === "VERIFIED",
             emailVerified: !!session.user.email,
           };
