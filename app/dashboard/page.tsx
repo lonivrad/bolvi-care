@@ -1,40 +1,52 @@
-"use client";
+import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/db";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
-import { Loader2 } from "lucide-react";
+export default async function DashboardPage() {
+  const session = await auth();
 
-export default function DashboardPage() {
-  const router = useRouter();
-  const { data: session, status } = useSession();
+  if (!session?.user) {
+    redirect("/auth/login");
+  }
 
-  useEffect(() => {
-    if (status === "loading") return;
+  const role = session.user.role;
 
-    if (!session) {
-      router.push("/auth/login");
-      return;
+  // Check if user needs onboarding
+  if (role === "CAREGIVER") {
+    const profile = await prisma.caregiverProfile.findUnique({
+      where: { userId: session.user.id },
+      select: { isNew: true, bio: true, hourlyRate: true },
+    });
+
+    // Redirect to onboarding if profile is new or incomplete
+    if (profile?.isNew || !profile?.bio) {
+      redirect("/onboarding/caregiver");
     }
 
-    // Redirect based on role
-    const role = session.user?.role;
-    if (role === "CAREGIVER") {
-      router.push("/dashboard/caregiver");
-    } else if (role === "ADMIN") {
-      router.push("/admin");
-    } else {
-      // Default to family dashboard
-      router.push("/dashboard/family");
-    }
-  }, [session, status, router]);
+    redirect("/dashboard/caregiver");
+  } else if (role === "ADMIN") {
+    redirect("/admin");
+  } else {
+    // Family role
+    const profile = await prisma.familyProfile.findUnique({
+      where: { userId: session.user.id },
+      select: { id: true, preferences: true },
+    });
 
-  return (
-    <div className="flex min-h-screen items-center justify-center">
-      <div className="flex flex-col items-center gap-4">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <p className="text-muted-foreground">Redirecting to your dashboard...</p>
-      </div>
-    </div>
-  );
+    if (profile) {
+      const careRecipients = await prisma.careRecipient.count({
+        where: { familyProfileId: profile.id },
+      });
+
+      // Check if onboarding is complete
+      const preferences = profile.preferences as { onboardingComplete?: boolean } | null;
+
+      // Redirect to onboarding if no care recipients and onboarding not marked complete
+      if (careRecipients === 0 && !preferences?.onboardingComplete) {
+        redirect("/onboarding/family");
+      }
+    }
+
+    redirect("/dashboard/family");
+  }
 }
