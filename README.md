@@ -15,6 +15,8 @@ Bolvi Care revolutionizes how families find trusted support for their loved ones
 - **For Caregivers**: Flexible work opportunities with fair compensation
 - **Trust & Safety**: Background checks, credential verification, and reviews
 
+Live demo → https://bolvi-care-git-demo-lonis-projects-d0ef3ac1.vercel.app?_vercel_share=y672ypZj9JU75eKenb96l9W95H1fXWlL
+
 ## Screenshots
 
 <!-- Add your screenshots here -->
