@@ -1794,7 +1794,7 @@ Ensure your loved one has:
 - **Encryption** - All data encrypted in transit and at rest
 - **Access controls** - Limited employee access
 - **Regular audits** - Security assessments
-- **Compliance** - HIPAA-compliant for health info
+- **Compliance** - HIPAA-aligned safeguards for health information
 
 ### What Caregivers See
 
