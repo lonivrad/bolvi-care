@@ -116,7 +116,7 @@ The full rate-to-cost bridge is in [REVENUE_MODEL.md](REVENUE_MODEL.md).
 
 - **Licensing:** Washington DOH home care agency licensure.
 - **Screening:** Background checks on all Care Partners before hire.
-- **Employment compliance:** W-2 payroll with employer taxes withheld and remitted, WA Paid Family & Medical Leave, paid sick leave, and L&I workers' compensation coverage.
+- **Employment compliance:** W-2 payroll with employer taxes withheld and remitted, WA Paid Family & Medical Leave, paid sick leave, and L&I workers' compensation coverage. Payroll, tax withholding, and W-2 issuance run through an external payroll provider rather than being built in-app.
 - **Correct classification:** All caregivers employed as W-2 staff, satisfying Washington's ABC test by design.
 - **Care accountability:** Agency-set care plans, scheduling, and post-visit documentation.
 

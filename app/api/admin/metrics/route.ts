@@ -50,16 +50,17 @@ export async function GET(req: NextRequest) {
       prisma.booking.count({ where: { createdAt: { gte: startDate } } }),
     ]);
 
-    // Get payment stats
+    // Get payment stats. Bolvi bills the family directly for care, so agency
+    // revenue is the gross amount billed (no platform-fee split).
     const payments = await prisma.payment.aggregate({
       where: { status: 'COMPLETED' },
-      _sum: { amount: true, platformFee: true },
+      _sum: { amount: true },
       _count: true,
     });
 
     const paymentsThisPeriod = await prisma.payment.aggregate({
       where: { status: 'COMPLETED', processedAt: { gte: startDate } },
-      _sum: { amount: true, platformFee: true },
+      _sum: { amount: true },
       _count: true,
     });
 
@@ -112,15 +113,15 @@ export async function GET(req: NextRequest) {
 
     const previousPeriodRevenue = await prisma.payment.aggregate({
       where: { status: 'COMPLETED', processedAt: { gte: previousPeriodStart, lt: startDate } },
-      _sum: { platformFee: true },
+      _sum: { amount: true },
     });
 
     const bookingsTrend = previousPeriodBookings > 0
       ? ((bookingsThisPeriod - previousPeriodBookings) / previousPeriodBookings) * 100
       : 0;
 
-    const currentRevenue = paymentsThisPeriod._sum.platformFee || 0;
-    const previousRevenue = previousPeriodRevenue._sum.platformFee || 0;
+    const currentRevenue = paymentsThisPeriod._sum.amount || 0;
+    const previousRevenue = previousPeriodRevenue._sum.amount || 0;
     const revenueTrend = previousRevenue > 0
       ? ((currentRevenue - previousRevenue) / previousRevenue) * 100
       : 0;
@@ -142,10 +143,8 @@ export async function GET(req: NextRequest) {
       },
       revenue: {
         totalProcessed: payments._sum.amount || 0,
-        totalPlatformFees: payments._sum.platformFee || 0,
         thisPeriod: {
           processed: paymentsThisPeriod._sum.amount || 0,
-          platformFees: paymentsThisPeriod._sum.platformFee || 0,
           count: paymentsThisPeriod._count,
         },
         trend: Math.round(revenueTrend * 10) / 10,

@@ -29,7 +29,6 @@ import {
   CreditCard,
   Wallet,
   PiggyBank,
-  FileText,
   CheckCircle,
   Clock,
   AlertCircle,
@@ -46,23 +45,23 @@ const financialStats = [
     change: "+23.1%",
     trend: "up",
     icon: DollarSign,
-    description: "All time platform revenue",
+    description: "All time care revenue",
   },
   {
-    title: "Platform Fees (MTD)",
-    value: "$42,678",
+    title: "Care Revenue (MTD)",
+    value: "$426,098",
     change: "+18.4%",
     trend: "up",
     icon: PiggyBank,
-    description: "This month's earnings",
+    description: "This month's care billing",
   },
   {
-    title: "Pending Payouts",
-    value: "$28,450",
-    change: "-5.2%",
-    trend: "down",
+    title: "Payroll (MTD)",
+    value: "$302,540",
+    change: "+6.1%",
+    trend: "up",
     icon: Wallet,
-    description: "Awaiting processing",
+    description: "Processed via payroll provider",
   },
   {
     title: "Avg Transaction",
@@ -128,7 +127,7 @@ const recentTransactions: Transaction[] = [
   {
     id: "t-2",
     type: "payout",
-    description: "Caregiver Payout",
+    description: "Payroll",
     caregiver: "David Kim",
     amount: -520.0,
     fee: 0,
@@ -195,51 +194,12 @@ const recentTransactions: Transaction[] = [
   {
     id: "t-6",
     type: "payout",
-    description: "Caregiver Payout",
+    description: "Payroll",
     caregiver: "Maria Rodriguez",
     amount: -890.0,
     fee: 0,
     status: "processing",
     date: "2024-02-29T09:00:00",
-  },
-];
-
-const pendingPayouts = [
-  {
-    id: "p-1",
-    caregiver: "Maria Rodriguez",
-    email: "maria.rodriguez@email.com",
-    amount: 1250.0,
-    bookings: 8,
-    lastPayout: "Feb 22, 2024",
-    status: "ready",
-  },
-  {
-    id: "p-2",
-    caregiver: "David Kim",
-    email: "david.kim@email.com",
-    amount: 680.0,
-    bookings: 4,
-    lastPayout: "Feb 25, 2024",
-    status: "ready",
-  },
-  {
-    id: "p-3",
-    caregiver: "Sarah Thompson",
-    email: "sarah.thompson@email.com",
-    amount: 420.0,
-    bookings: 3,
-    lastPayout: "Feb 28, 2024",
-    status: "processing",
-  },
-  {
-    id: "p-4",
-    caregiver: "James Lee",
-    email: "james.lee@email.com",
-    amount: 890.0,
-    bookings: 6,
-    lastPayout: "Feb 20, 2024",
-    status: "ready",
   },
 ];
 
@@ -334,9 +294,7 @@ export default function AdminFinancialsPage() {
       <Tabs defaultValue="transactions">
         <TabsList>
           <TabsTrigger value="transactions">Transactions</TabsTrigger>
-          <TabsTrigger value="payouts">Pending Payouts</TabsTrigger>
           <TabsTrigger value="revenue">Revenue Breakdown</TabsTrigger>
-          <TabsTrigger value="taxes">Tax Documents</TabsTrigger>
         </TabsList>
 
         <TabsContent value="transactions" className="mt-6">
@@ -437,81 +395,6 @@ export default function AdminFinancialsPage() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="payouts" className="mt-6">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>Pending Payouts</CardTitle>
-              <Button>
-                <DollarSign className="mr-2 h-4 w-4" />
-                Process All Ready
-              </Button>
-            </CardHeader>
-            <CardContent>
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-border text-left text-sm text-muted-foreground">
-                      <th className="pb-3 font-medium">Caregiver</th>
-                      <th className="pb-3 font-medium">Amount</th>
-                      <th className="pb-3 font-medium">Bookings</th>
-                      <th className="pb-3 font-medium">Last Payout</th>
-                      <th className="pb-3 font-medium">Status</th>
-                      <th className="pb-3 font-medium"></th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border">
-                    {pendingPayouts.map((payout) => (
-                      <tr key={payout.id}>
-                        <td className="py-4">
-                          <div>
-                            <p className="font-medium text-foreground">
-                              {payout.caregiver}
-                            </p>
-                            <p className="text-sm text-muted-foreground">
-                              {payout.email}
-                            </p>
-                          </div>
-                        </td>
-                        <td className="py-4">
-                          <span className="text-lg font-semibold text-foreground">
-                            ${payout.amount.toFixed(2)}
-                          </span>
-                        </td>
-                        <td className="py-4 text-sm">{payout.bookings}</td>
-                        <td className="py-4 text-sm text-muted-foreground">
-                          {payout.lastPayout}
-                        </td>
-                        <td className="py-4">
-                          <Badge
-                            variant={
-                              payout.status === "ready"
-                                ? "default"
-                                : "secondary"
-                            }
-                          >
-                            {payout.status === "ready"
-                              ? "Ready"
-                              : "Processing"}
-                          </Badge>
-                        </td>
-                        <td className="py-4">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            disabled={payout.status === "processing"}
-                          >
-                            Process
-                          </Button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
         <TabsContent value="revenue" className="mt-6">
           <div className="grid gap-6 lg:grid-cols-2">
             <Card>
@@ -587,132 +470,6 @@ export default function AdminFinancialsPage() {
             </Card>
           </div>
         </TabsContent>
-
-        <TabsContent value="taxes" className="mt-6">
-          <div className="grid gap-6 lg:grid-cols-2">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <FileText className="h-5 w-5" />
-                  1099 Form Status
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between rounded-lg border p-4">
-                    <div className="flex items-center gap-3">
-                      <div className="rounded-full bg-green-100 p-2 dark:bg-green-900/30">
-                        <CheckCircle className="h-4 w-4 text-green-600" />
-                      </div>
-                      <div>
-                        <p className="font-medium">1099-NEC Forms Generated</p>
-                        <p className="text-sm text-muted-foreground">Tax Year 2023</p>
-                      </div>
-                    </div>
-                    <Badge variant="secondary">342 Forms</Badge>
-                  </div>
-                  <div className="flex items-center justify-between rounded-lg border p-4">
-                    <div className="flex items-center gap-3">
-                      <div className="rounded-full bg-amber-100 p-2 dark:bg-amber-900/30">
-                        <Clock className="h-4 w-4 text-amber-600" />
-                      </div>
-                      <div>
-                        <p className="font-medium">Pending Tax ID Verification</p>
-                        <p className="text-sm text-muted-foreground">Caregivers needing W-9</p>
-                      </div>
-                    </div>
-                    <Badge variant="outline">12 Pending</Badge>
-                  </div>
-                  <div className="flex items-center justify-between rounded-lg border p-4">
-                    <div className="flex items-center gap-3">
-                      <div className="rounded-full bg-blue-100 p-2 dark:bg-blue-900/30">
-                        <FileText className="h-4 w-4 text-blue-600" />
-                      </div>
-                      <div>
-                        <p className="font-medium">1099 Threshold Met</p>
-                        <p className="text-sm text-muted-foreground">Caregivers earning $600+</p>
-                      </div>
-                    </div>
-                    <Badge>287 Caregivers</Badge>
-                  </div>
-                </div>
-                <Button className="w-full mt-4" variant="outline">
-                  <Download className="mr-2 h-4 w-4" />
-                  Export All 1099 Forms
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Tax Reporting Summary</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {[
-                    { label: "Total Caregiver Earnings (2023)", value: "$2,847,320", icon: DollarSign },
-                    { label: "Platform Fees Collected", value: "$426,098", icon: PiggyBank },
-                    { label: "Total 1099 Reportable", value: "$2,421,222", icon: FileText },
-                    { label: "Caregivers Below $600 Threshold", value: "55", icon: AlertCircle },
-                  ].map((item) => (
-                    <div key={item.label} className="flex items-center justify-between rounded-lg border p-3">
-                      <div className="flex items-center gap-3">
-                        <item.icon className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm">{item.label}</span>
-                      </div>
-                      <span className="font-semibold">{item.value}</span>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="lg:col-span-2">
-              <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>Recent Tax Document Activity</CardTitle>
-                <Button variant="outline" size="sm">
-                  View All
-                </Button>
-              </CardHeader>
-              <CardContent>
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b text-left text-sm text-muted-foreground">
-                        <th className="pb-3 font-medium">Caregiver</th>
-                        <th className="pb-3 font-medium">Document</th>
-                        <th className="pb-3 font-medium">Amount</th>
-                        <th className="pb-3 font-medium">Status</th>
-                        <th className="pb-3 font-medium">Date</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y">
-                      {[
-                        { name: "Maria Rodriguez", doc: "1099-NEC", amount: "$18,450", status: "sent", date: "Jan 31, 2024" },
-                        { name: "David Kim", doc: "1099-NEC", amount: "$12,320", status: "sent", date: "Jan 31, 2024" },
-                        { name: "Sarah Thompson", doc: "W-9", amount: "—", status: "pending", date: "Feb 15, 2024" },
-                        { name: "James Lee", doc: "1099-NEC", amount: "$8,750", status: "sent", date: "Jan 31, 2024" },
-                        { name: "Emily Watson", doc: "1099-NEC", amount: "$15,890", status: "downloaded", date: "Feb 2, 2024" },
-                      ].map((item) => (
-                        <tr key={item.name}>
-                          <td className="py-3 font-medium">{item.name}</td>
-                          <td className="py-3 text-sm">{item.doc}</td>
-                          <td className="py-3 text-sm">{item.amount}</td>
-                          <td className="py-3">
-                            <Badge variant={item.status === "sent" || item.status === "downloaded" ? "default" : "secondary"}>
-                              {item.status.charAt(0).toUpperCase() + item.status.slice(1)}
-                            </Badge>
-                          </td>
-                          <td className="py-3 text-sm text-muted-foreground">{item.date}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
       </Tabs>
 
       {/* Transaction Details Dialog */}
@@ -746,7 +503,7 @@ export default function AdminFinancialsPage() {
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Caregiver Payout</p>
+                    <p className="text-sm text-muted-foreground">Payroll</p>
                     <p className="text-xl font-bold text-foreground">
                       ${(selectedTransaction.amount - selectedTransaction.fee).toFixed(2)}
                     </p>

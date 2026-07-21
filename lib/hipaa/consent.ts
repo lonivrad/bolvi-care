@@ -4,7 +4,7 @@
 import { prisma } from '@/lib/db';
 import { createAuditLog, AUDIT_ACTIONS, ENTITY_TYPES } from './audit';
 
-// Consent types required for healthcare marketplace
+// Consent types required for the home care agency
 export const CONSENT_TYPES = {
   // Privacy & Data
   PRIVACY_POLICY: 'PRIVACY_POLICY',

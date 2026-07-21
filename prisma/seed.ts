@@ -29,8 +29,6 @@ async function main() {
     await prisma.careTeamMember.deleteMany();
     await prisma.availabilityException.deleteMany();
     await prisma.availabilitySchedule.deleteMany();
-    await prisma.payout.deleteMany();
-    await prisma.payoutInfo.deleteMany();
     await prisma.taxDocument.deleteMany();
     await prisma.taxInfo.deleteMany();
     await prisma.caregiverLicense.deleteMany();
@@ -474,8 +472,7 @@ async function main() {
       hourlyRate: 2800,
       estimatedHours: 4,
       subtotal: 11200,
-      platformFee: 1120,
-      total: 12320,
+      total: 11200,
     },
   });
 
@@ -518,10 +515,7 @@ async function main() {
     data: {
       bookingId: completedBooking.id,
       payerId: familyUser1.id,
-      payeeId: caregiverUser1.id,
-      amount: 12320,
-      platformFee: 1120,
-      payeeAmount: 11200,
+      amount: 11200,
       status: 'COMPLETED',
       method: 'CARD',
       processedAt: lastWeek,
@@ -548,8 +542,7 @@ async function main() {
       hourlyRate: 2800,
       estimatedHours: 3,
       subtotal: 8400,
-      platformFee: 840,
-      total: 9240,
+      total: 8400,
     },
   });
   console.log(`  ✓ Created upcoming booking`);
@@ -572,8 +565,7 @@ async function main() {
       hourlyRate: 3200,
       estimatedHours: 2,
       subtotal: 6400,
-      platformFee: 640,
-      total: 7040,
+      total: 6400,
     },
   });
   console.log(`  ✓ Created pending booking`);

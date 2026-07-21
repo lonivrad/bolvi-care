@@ -57,14 +57,6 @@ export async function GET() {
             certifications: true,
             backgroundCheck: true,
             availability: true,
-            payoutInfo: {
-              select: {
-                accountType: true,
-                accountLast4: true,
-                payoutSchedule: true,
-                stripeAccountStatus: true,
-              },
-            },
             licenses: true,
           },
         },

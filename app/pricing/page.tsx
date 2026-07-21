@@ -62,8 +62,8 @@ export default function PricingPage() {
               Transparent, Affordable Pricing
             </h1>
             <p className="mx-auto mt-4 max-w-2xl text-pretty text-muted-foreground">
-              Quality care shouldn't break the bank. Our caregivers set their own rates, 
-              giving you flexibility to find care that fits your budget.
+              Straightforward hourly rates for care delivered by Care Partners we
+              employ. The rate you see is what you pay—no platform fees or markups.
             </p>
           </div>
         </section>
@@ -140,18 +140,18 @@ export default function PricingPage() {
               <Card>
                 <CardContent className="p-6 text-center">
                   <Shield className="mx-auto h-10 w-10 text-primary" />
-                  <h3 className="mt-4 font-semibold">Service Fee</h3>
+                  <h3 className="mt-4 font-semibold">No Service Fee</h3>
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <p className="mt-2 flex cursor-help items-center justify-center gap-1 text-sm text-muted-foreground">
-                          15% service fee covers platform costs
+                          The hourly rate is all you pay
                           <HelpCircle className="h-3 w-3" />
                         </p>
                       </TooltipTrigger>
                       <TooltipContent>
                         <p className="max-w-xs text-sm">
-                          Covers background checks, insurance, payment processing, and 24/7 support
+                          Background checks, insurance, and 24/7 support are included—Bolvi Care is the agency, not a marketplace taking a cut
                         </p>
                       </TooltipContent>
                     </Tooltip>

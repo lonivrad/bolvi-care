@@ -63,7 +63,7 @@ const openPositions = [
     location: "Remote (US)",
     type: "Full-time",
     salary: "$100K - $140K",
-    description: "Drive growth and awareness for our caregiving marketplace.",
+    description: "Drive growth and awareness for our home care agency.",
     tags: ["Digital Marketing", "Content Strategy", "Analytics"],
   },
   {

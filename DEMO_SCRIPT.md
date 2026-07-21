@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document provides a guided walkthrough of the Bolvi Care platform for investor demonstrations. The demo showcases the complete marketplace experience from multiple perspectives: families seeking care, caregivers providing services, and platform administrators.
+This document provides a guided walkthrough of the Bolvi Care platform for investor demonstrations. The demo showcases the complete agency experience from multiple perspectives: families seeking care, Care Partners delivering care, and agency administrators.
 
 **Demo Duration:** 15-20 minutes
 **Target Audience:** Investors, potential partners, stakeholders
@@ -247,7 +247,7 @@ Navigate to **Find Care** in the header.
 
 #### User Management
 
-> "Full visibility into our marketplace participants."
+> "Full visibility into our Care Partners and families."
 
 - User search & filters
 - Verification status
@@ -362,10 +362,10 @@ Navigate to **Find Care** in the header.
 > 24/7 support line, emergency protocols in app, automatic family notifications, integration with local emergency services.
 
 **Q: What's your moat?**
-> Network effects, trust/reviews, caregiver relationships, care data/insights. As we grow, switching costs increase for both sides.
+> Employing our Care Partners as W-2 staff lets us deliver continuity and retention that gig platforms structurally can't — families see the same trusted caregivers over time. Our compliance posture (correct W-2 classification, WA DOH licensing) is a barrier gig/marketplace models carry unresolved legal exposure on, and margin discipline funds the retention that compounds care quality.
 
 **Q: Regulatory concerns?**
-> We're a marketplace, not an employer. Caregivers are independent contractors. We comply with state home care regulations and consumer protection laws.
+> We're a licensed Washington home care agency and we employ our Care Partners as W-2 employees — correctly classified under WA's ABC test. We comply with state DOH home care licensing and employment law (payroll taxes, L&I workers' comp, WA PFML, paid sick leave).
 
 ---
 
