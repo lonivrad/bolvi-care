@@ -11,6 +11,8 @@ Bolvi Care is the platform I built to run a home-care operation end to end: fami
 
 The application is a full build-out rather than a static mock: **79 pages**, **37 API routes**, and a **40-model Prisma schema** backing authentication, bookings, visits, payments, messaging, and audit logging.
 
+The product and business decisions behind it are grounded in first-hand discovery research in the Everett / South Snohomish County market — see [**User Research**](docs/USER_RESEARCH.md) for the segments, the evidence, and the decision each finding drove.
+
 Live demo temporarily offline while authentication is migrated; the screenshots below show the full product.
 
 > **Demo vs. this codebase.** The live demo is an earlier prototype build — stable and demonstrating the product end to end — currently offline during the auth migration. The current codebase in this repository is a further build-out (NextAuth authentication, Prisma data layer, Stripe payments, HIPAA-aligned audit logging); its auth integration is mid-migration and is **not currently deployed**. The demo credentials below belong to that prototype.
