@@ -362,7 +362,7 @@ Navigate to **Find Care** in the header.
 > 24/7 support line, emergency protocols in app, automatic family notifications, integration with local emergency services.
 
 **Q: What's your moat?**
-> Network effects, trust/reviews, caregiver relationships, care data/insights. As we grow, switching costs increase for both sides.
+> Employing our Care Partners as W-2 staff lets us deliver continuity and retention that gig platforms structurally can't — families see the same trusted caregivers over time. Our compliance posture (correct W-2 classification, WA DOH licensing) is a barrier gig/marketplace models carry unresolved legal exposure on, and margin discipline funds the retention that compounds care quality.
 
 **Q: Regulatory concerns?**
 > We're a licensed Washington home care agency and we employ our Care Partners as W-2 employees — correctly classified under WA's ABC test. We comply with state DOH home care licensing and employment law (payroll taxes, L&I workers' comp, WA PFML, paid sick leave).
