@@ -18,15 +18,12 @@ export const CSP_DIRECTIVES = {
     "'self'",
     'data:',
     'blob:',
-    'https://*.supabase.co',
     'https://*.stripe.com',
     'https://images.unsplash.com', // If using placeholder images
   ],
   'font-src': ["'self'", 'data:'],
   'connect-src': [
     "'self'",
-    'https://*.supabase.co',
-    'wss://*.supabase.co',
     'https://api.stripe.com',
     'https://*.sentry.io',
     'https://api.checkr.com',
