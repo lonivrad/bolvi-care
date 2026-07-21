@@ -174,7 +174,7 @@ export function MetricsDashboard() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-xl font-semibold text-foreground">Performance Metrics</h2>
-          <p className="text-sm text-muted-foreground">Track your marketplace health</p>
+          <p className="text-sm text-muted-foreground">Track your agency health</p>
         </div>
         <div className="flex gap-1 rounded-lg bg-muted p-1">
           {timeRanges.map((range) => (
