@@ -3,7 +3,6 @@
 import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   DollarSign,
   Clock,
@@ -12,58 +11,31 @@ import {
   Info,
   CheckCircle,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 interface EarningsBreakdown {
-  grossEarnings: number;
-  platformFee: number;
-  paymentProcessing: number;
-  netEarnings: number;
-  hourlyEquivalent: number;
+  hourlyWage: number;
   weeklyEstimate: number;
   monthlyEstimate: number;
   yearlyEstimate: number;
-  selfEmploymentTax: number;
-  estimatedTakeHome: number;
 }
 
-const PLATFORM_FEE_PERCENT = 15;
-const PAYMENT_PROCESSING_PERCENT = 2.9;
-const SELF_EMPLOYMENT_TAX_RATE = 15.3;
-const FEDERAL_TAX_ESTIMATE = 12; // Simplified estimate
-
 export function EarningsCalculator() {
-  const [hourlyRate, setHourlyRate] = useState(28);
+  const [hourlyRate, setHourlyRate] = useState(27);
   const [hoursPerWeek, setHoursPerWeek] = useState(25);
   const [weeksPerYear, setWeeksPerYear] = useState(48);
 
   const breakdown = useMemo((): EarningsBreakdown => {
-    const grossPerHour = hourlyRate;
-    const platformFee = grossPerHour * (PLATFORM_FEE_PERCENT / 100);
-    const afterPlatform = grossPerHour - platformFee;
-    const paymentProcessing = afterPlatform * (PAYMENT_PROCESSING_PERCENT / 100);
-    const netPerHour = afterPlatform - paymentProcessing;
-
-    const weeklyGross = grossPerHour * hoursPerWeek;
-    const weeklyNet = netPerHour * hoursPerWeek;
-    const monthlyNet = weeklyNet * 4.33;
-    const yearlyNet = weeklyNet * weeksPerYear;
-
-    const selfEmploymentTax = yearlyNet * (SELF_EMPLOYMENT_TAX_RATE / 100);
-    const federalTax = yearlyNet * (FEDERAL_TAX_ESTIMATE / 100);
-    const estimatedTakeHome = yearlyNet - selfEmploymentTax - federalTax;
+    // Care Partners are W-2 employees paid an hourly wage. Gross pay is simply
+    // wage × hours; payroll taxes are withheld by the payroll provider.
+    const weeklyGross = hourlyRate * hoursPerWeek;
+    const monthlyGross = weeklyGross * 4.33;
+    const yearlyGross = weeklyGross * weeksPerYear;
 
     return {
-      grossEarnings: grossPerHour,
-      platformFee,
-      paymentProcessing,
-      netEarnings: netPerHour,
-      hourlyEquivalent: netPerHour,
-      weeklyEstimate: weeklyNet,
-      monthlyEstimate: monthlyNet,
-      yearlyEstimate: yearlyNet,
-      selfEmploymentTax,
-      estimatedTakeHome,
+      hourlyWage: hourlyRate,
+      weeklyEstimate: weeklyGross,
+      monthlyEstimate: monthlyGross,
+      yearlyEstimate: yearlyGross,
     };
   }, [hourlyRate, hoursPerWeek, weeksPerYear]);
 
@@ -88,7 +60,7 @@ export function EarningsCalculator() {
       <div>
         <h2 className="text-xl font-semibold text-foreground">Earnings Calculator</h2>
         <p className="text-sm text-muted-foreground">
-          See how much you can earn as a Bolvi Care caregiver
+          See how much you can earn as a Bolvi Care Partner
         </p>
       </div>
 
@@ -221,11 +193,11 @@ export function EarningsCalculator() {
           <Card className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border-green-200 dark:border-green-800">
             <CardContent className="p-6">
               <div className="text-center">
-                <p className="text-sm font-medium text-muted-foreground">Estimated Annual Earnings</p>
+                <p className="text-sm font-medium text-muted-foreground">Estimated Annual Gross Pay</p>
                 <p className="text-4xl font-bold text-green-600 dark:text-green-400 mt-2">
                   {formatCurrency(breakdown.yearlyEstimate)}
                 </p>
-                <p className="text-sm text-muted-foreground mt-1">before taxes</p>
+                <p className="text-sm text-muted-foreground mt-1">gross, before payroll withholding</p>
               </div>
 
               <div className="mt-6 grid grid-cols-3 gap-4 text-center">
@@ -242,64 +214,29 @@ export function EarningsCalculator() {
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">Effective Rate</p>
+                  <p className="text-xs text-muted-foreground">Hourly Wage</p>
                   <p className="text-lg font-semibold text-foreground">
-                    {formatCurrencyDecimal(breakdown.netEarnings)}/hr
+                    {formatCurrencyDecimal(breakdown.hourlyWage)}/hr
                   </p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* Fee Breakdown */}
+          {/* W-2 employment note */}
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-base">Per-Hour Breakdown</CardTitle>
+              <CardTitle className="text-base">You&apos;re a W-2 employee</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <div className="flex justify-between items-center">
-                <span className="text-sm">Your Hourly Rate</span>
-                <span className="font-semibold">{formatCurrencyDecimal(breakdown.grossEarnings)}</span>
-              </div>
-              <div className="flex justify-between items-center text-sm">
-                <span className="text-muted-foreground">Platform Fee ({PLATFORM_FEE_PERCENT}%)</span>
-                <span className="text-red-500">-{formatCurrencyDecimal(breakdown.platformFee)}</span>
-              </div>
-              <div className="flex justify-between items-center text-sm">
-                <span className="text-muted-foreground">Payment Processing ({PAYMENT_PROCESSING_PERCENT}%)</span>
-                <span className="text-red-500">-{formatCurrencyDecimal(breakdown.paymentProcessing)}</span>
-              </div>
-              <div className="border-t pt-3 flex justify-between items-center">
-                <span className="font-medium">You Keep</span>
-                <span className="text-lg font-bold text-green-600">{formatCurrencyDecimal(breakdown.netEarnings)}/hr</span>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Tax Estimate */}
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2 text-base">
-                Estimated Tax Impact
-                <Badge variant="secondary" className="text-xs">Estimate Only</Badge>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex justify-between items-center text-sm">
-                <span className="text-muted-foreground">Self-Employment Tax (15.3%)</span>
-                <span className="text-amber-600">~{formatCurrency(breakdown.selfEmploymentTax)}</span>
-              </div>
-              <div className="flex justify-between items-center text-sm">
-                <span className="text-muted-foreground">Est. Federal Tax (~12%)</span>
-                <span className="text-amber-600">~{formatCurrency(breakdown.yearlyEstimate * 0.12)}</span>
-              </div>
-              <div className="border-t pt-3 flex justify-between items-center">
-                <span className="font-medium">Est. Take-Home</span>
-                <span className="text-lg font-bold text-foreground">{formatCurrency(breakdown.estimatedTakeHome)}/yr</span>
-              </div>
-              <p className="text-xs text-muted-foreground flex items-start gap-1.5 mt-2">
+              <p className="text-sm text-muted-foreground">
+                As a Care Partner you&apos;re employed by Bolvi Care, not a contractor.
+                There are no platform fees taken out of your pay. Payroll taxes are
+                withheld and remitted for you, and you receive a W-2 at year end.
+              </p>
+              <p className="text-xs text-muted-foreground flex items-start gap-1.5">
                 <Info className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
-                This is a simplified estimate. Actual taxes depend on your total income, deductions, and state. Consult a tax professional.
+                Figures are gross pay estimates. Your net paycheck depends on withholding elections, benefits, and state.
               </p>
             </CardContent>
           </Card>
@@ -309,13 +246,13 @@ export function EarningsCalculator() {
       {/* Benefits Section */}
       <Card className="bg-muted/30">
         <CardContent className="p-6">
-          <h3 className="font-semibold mb-4">Why Caregivers Choose Bolvi Care</h3>
+          <h3 className="font-semibold mb-4">Why Care Partners Choose Bolvi Care</h3>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {[
               { icon: Clock, title: "Flexible Schedule", desc: "Work when it suits you" },
-              { icon: DollarSign, title: "Competitive Rates", desc: "Set your own hourly rate" },
+              { icon: DollarSign, title: "Competitive Wages", desc: "HCA $23/hr, CNA/EMT $27/hr" },
               { icon: TrendingUp, title: "Growth Support", desc: "Free training & certifications" },
-              { icon: CheckCircle, title: "Instant Payouts", desc: "Get paid same-day" },
+              { icon: CheckCircle, title: "W-2 Employment", desc: "Benefits and taxes handled" },
             ].map((benefit) => (
               <div key={benefit.title} className="flex items-start gap-3">
                 <div className="rounded-lg bg-primary/10 p-2">

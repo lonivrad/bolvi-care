@@ -40,11 +40,7 @@ export async function POST(req: NextRequest) {
             user: true,
           },
         },
-        caregiverProfile: {
-          include: {
-            payoutInfo: true,
-          },
-        },
+        caregiverProfile: true,
         payment: true,
       },
     });
@@ -119,10 +115,7 @@ export async function POST(req: NextRequest) {
         data: {
           bookingId: booking.id,
           payerId: booking.familyProfile.userId,
-          payeeId: booking.caregiverProfile.userId,
           amount: booking.total,
-          platformFee: booking.platformFee,
-          payeeAmount: booking.subtotal - booking.platformFee,
           status: 'PENDING',
           stripePaymentIntentId: paymentIntent.id,
         },

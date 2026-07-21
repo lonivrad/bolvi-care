@@ -2,269 +2,148 @@
 
 ## Executive Summary
 
-Bolvi Care is a technology platform connecting families with verified, professional caregivers for at-home elderly and special needs care. We address the $100B+ home care market by offering an affordable, trustworthy alternative to expensive agencies while providing income opportunities for caregivers.
+Bolvi Care LLC is a licensed Washington State home care agency based in Everett, WA, serving the King–Snohomish County corridor. We deliver non-medical in-home care through **Care Partners whom we directly employ as W-2 employees** — not independent contractors, and not a gig marketplace.
 
-**Mission:** Make quality care accessible to every family while empowering caregivers to build sustainable careers.
+We are an agency. Care is our core business, and the people who deliver it are our employees. That choice shapes everything downstream: how we recruit and retain, how we price, our margin structure, and our compliance posture. We compete not by being the cheapest option, but by offering continuity, accountability, and a workforce that is paid and treated well enough to stay.
 
----
-
-## Market Opportunity
-
-### Market Size
-
-| Segment | Size (US) | Growth |
-|---------|-----------|--------|
-| Home Care Services | $113B | 7.9% CAGR |
-| Non-Medical Home Care | $26B | 8.5% CAGR |
-| Care Staffing Platforms | $2.8B | 12.3% CAGR |
-
-### Target Market
-
-**Primary:** Families caring for aging parents
-- 53M Americans provide unpaid care to adults
-- Average caregiver is 49 years old, employed, female
-- 60% report high stress from caregiving responsibilities
-
-**Secondary:** Individuals needing post-surgery or chronic condition support
-
-### Pain Points We Solve
-
-**For Families:**
-1. Agency costs ($30-50/hr) are unaffordable for many
-2. Finding reliable, vetted caregivers is difficult
-3. Scheduling flexibility is limited with agencies
-4. No transparency into caregiver qualifications
-
-**For Caregivers:**
-1. Agency employment pays $15-20/hr despite $30-50/hr client charges
-2. Limited schedule flexibility
-3. No direct relationship with families
-4. Difficulty building independent client base
+**Mission:** Deliver dependable, compassionate in-home care by building a stable, well-supported, directly employed care workforce.
 
 ---
 
-## Competitive Analysis
+## Operating Model & Legal Structure
 
-### Competitive Landscape
+Bolvi Care employs its Care Partners as W-2 employees. We set the care plans, we set the schedules, and we are the party responsible to the family for the care delivered. This is deliberate, and it is also the legally correct classification under Washington law.
 
-| Competitor | Model | Strengths | Weaknesses |
-|------------|-------|-----------|------------|
-| Care.com | Marketplace | Brand, scale | Trust issues, dating-site feel |
-| Honor | Agency-hybrid | Quality, tech | Expensive, limited markets |
-| Home Instead | Franchise | Trust, established | Very expensive, inflexible |
-| Craigslist | Classified ads | Free | No vetting, unsafe |
+### Why W-2, not independent contractors
 
-### Our Differentiation
+Washington applies the **ABC test** to worker classification. To treat a worker as an independent contractor, an employer must satisfy **all three** prongs. For caregiving delivered through Bolvi, all three fail:
 
-1. **Trust First:** Comprehensive vetting + insurance + guarantee
-2. **Fair Economics:** Caregivers keep 85%+ of rates (vs. 40-60% at agencies)
-3. **Technology:** Smart matching, scheduling, and care tracking
-4. **Community:** Support groups, training, career development
+- **(A) Free from control and direction.** Bolvi sets the care plans and the schedules. Care Partners work under our direction, not their own.
+- **(B) Work outside the usual course of business.** Caregiving *is* Bolvi's business. It is the core service, not a peripheral function.
+- **(C) Independently established trade.** Care Partners do not operate their own independent care agencies; they are employed to deliver Bolvi's care.
+
+Because none of the three prongs is met, independent-contractor classification is not available for this work in Washington. Misclassification is not a gray area here — it would expose the business to reclassification orders, back pay for wages and overtime, unpaid employer taxes and premiums, and civil penalties. Employing Care Partners as W-2 staff removes that risk by design.
 
 ---
 
-## Business Model
+## Market & Geographic Focus
 
-### Revenue Streams
+Bolvi Care is deliberately scoped to **Everett and the King–Snohomish County corridor**. This is a strategic choice, not a limitation.
 
-1. **Platform Fee (85%):** 15% service fee on bookings
-2. **Subscriptions (10%):** Premium caregiver tiers
-3. **Value-Added Services (5%):** Rush booking, enhanced checks
+Home care is governed state by state. Washington has its own Department of Health (DOH) agency licensing, its own employment law (ABC test, paid sick leave, WA Paid Family & Medical Leave, L&I workers' compensation), and its own labor market for caregivers. Operating deeply in one state and one region lets us:
 
-### Unit Economics
+- Hold and maintain WA DOH home care agency licensure without spreading compliance attention across conflicting state regimes.
+- Build genuine local density — enough Care Partners in one geography to cover schedules, absences, and same-day requests reliably.
+- Understand our specific labor market well enough to recruit and retain against local wage expectations.
 
-```
-Average Booking: $140 (4 hrs @ $35/hr)
-Platform Revenue: $21 (15% fee)
-Variable Costs: ~$5 (payment processing, support)
-Contribution Margin: $16/booking
-
-Customer Acquisition Cost (CAC):
-- Families: $150
-- Caregivers: $75
-
-Lifetime Value (LTV):
-- Families: $1,800 (18-month avg tenure, $100/month revenue)
-- LTV:CAC Ratio: 12:1
-```
+We would rather be the most reliable agency in one region than a thin presence across many. Depth over coverage.
 
 ---
 
-## Go-to-Market Strategy
+## Service Offering
 
-### Phase 1: Seattle Launch (Months 1-6)
+Bolvi provides non-medical in-home care billed by the hour, with a distinct rate structure and an optional membership.
 
-**Goals:**
-- 500 active families
-- 300 active caregivers
-- $50K monthly GMV
+### Care rates
 
-**Tactics:**
-1. Partner with 10 senior centers for caregiver recruitment
-2. Facebook/Google ads targeting sandwich generation
-3. SEO content on caregiving topics
-4. Referral program ($50 for referrer and referee)
+| Rate tier | Rate | Who it's for |
+|-----------|------|--------------|
+| Family-managed standard | $45/hr | Standard scheduled in-home care arranged and managed by family |
+| Urgent / same-day | $55/hr | Same-day and short-notice care requests |
+| Self-pay senior | $39/hr | A distinct, lower rate addressing documented senior price sensitivity |
 
-### Phase 2: Pacific Northwest Expansion (Months 7-12)
+Same-day and urgent care is offered as a **service capability** — we staff and schedule to be able to respond quickly. It is priced accordingly at the urgent rate.
 
-**Goals:**
-- 2,000 active families
-- 1,200 active caregivers
-- $200K monthly GMV
+### Premium Family Membership — $35/mo
 
-**Markets:** Portland, Bellevue, Tacoma, Spokane
+Membership is a **service-level** upgrade, not a discount program. Members pay the same hourly care rates; what they buy is a higher tier of responsiveness and coordination:
 
-**Tactics:**
-1. Paid acquisition with proven creative
-2. PR campaign on caregiver economics
-3. Employer partnerships for caregiver benefits
-4. Healthcare provider referral network
+- Priority scheduling
+- Guaranteed same-day response
+- 24-hour replacement guarantee
+- Dedicated care coordinator
+- Shared family care timeline
 
-### Phase 3: West Coast Scale (Year 2)
-
-**Goals:**
-- 10,000 active families
-- 5,000 active caregivers
-- $1.5M monthly GMV
-
-**Markets:** San Francisco Bay Area, Los Angeles, San Diego
+There is **no hourly discount** attached to membership. The value is reliability and coordination, not price.
 
 ---
 
-## Operations
+## Care Partner Employment
 
-### Trust & Safety
+Care Partners are the business. We employ them directly and pay competitively for the role:
 
-1. **Background Checks:** National criminal, sex offender, SSN verification
-2. **Identity Verification:** Government ID + selfie match
-3. **References:** Minimum 2 professional references verified
-4. **Insurance:** $1M liability coverage for all caregivers
-5. **Continuous Monitoring:** Ongoing criminal monitoring
+| Role | Base wage |
+|------|-----------|
+| Home Care Aide (HCA) | $23/hr |
+| CNA / EMT | $27/hr |
+| Blended base (approx.) | ~$25/hr |
 
-### Quality Assurance
+On top of base wages, Bolvi carries the full employer cost of a W-2 workforce — employer payroll taxes, workers' compensation, paid leave, a health-reimbursement stipend, training, screening, and the administrative cost of running payroll and scheduling. Those costs are detailed in [REVENUE_MODEL.md](REVENUE_MODEL.md).
 
-1. Post-visit surveys to families
-2. Random quality audits
-3. Caregiver performance dashboards
-4. Regular training requirements
-
-### Customer Support
-
-- 24/7 phone support for active bookings
-- <4 hour response time for all tickets
-- Dedicated account managers for high-volume families
+Employing Care Partners rather than contracting them is what makes continuity possible: the same trusted caregivers, backed by the agency, accountable to a schedule and a care plan.
 
 ---
 
-## Team
+## Economics & Margin Discipline
 
-### Current Team
+Bolvi runs at a **gross margin of roughly 29–30%** on standard care — deliberately below the **50–60% gross margin typical of franchise home-care brands** such as Home Instead and Visiting Angels.
 
-**Loni Radchishina** - Founder & CEO
-- Background in caregiving for grandmother during college
-- Previous: [Experience]
-- Passionate about making care accessible
+That gap is a choice, not a shortfall. The difference goes to the people delivering care: Care Partners are paid more, and carry full W-2 benefits and protections. We view a well-paid, stable workforce as the durable competitive asset in this business, and we price the model to fund it rather than to maximize per-hour extraction. The self-pay senior rate is intentionally the thinnest tier, trading margin for access.
 
-### Key Hires Needed
-
-| Role | Priority | Timeline |
-|------|----------|----------|
-| CTO / Lead Engineer | High | Immediate |
-| Head of Operations | High | Month 2 |
-| Head of Growth | Medium | Month 4 |
-| Head of Caregiver Success | Medium | Month 6 |
+The full rate-to-cost bridge is in [REVENUE_MODEL.md](REVENUE_MODEL.md).
 
 ---
 
-## Financial Projections
+## Revenue Streams
 
-### 3-Year Forecast
-
-| Metric | Year 1 | Year 2 | Year 3 |
-|--------|--------|--------|--------|
-| Gross Booking Value | $3.4M | $16.8M | $50.4M |
-| Net Revenue | $612K | $2.7M | $7.6M |
-| Gross Margin | 70% | 72% | 75% |
-| Operating Expenses | $720K | $2.2M | $5.3M |
-| EBITDA | -$108K | $500K | $2.3M |
-| Headcount | 8 | 25 | 60 |
-
-### Use of Funds (Seed Round)
-
-| Category | Amount | % |
-|----------|--------|---|
-| Engineering | $400K | 40% |
-| Marketing | $250K | 25% |
-| Operations | $200K | 20% |
-| G&A | $150K | 15% |
-| **Total** | **$1M** | 100% |
+1. **Care billing (primary).** Hourly billing for care delivered, across the three rate tiers.
+2. **Premium Family Membership.** Recurring $35/mo service-level subscription.
+3. **Adjacent referrals.** Referral relationships for durable medical equipment (DME), transportation, and supplies that families need alongside care.
 
 ---
 
-## Funding Requirements
+## Competitive Positioning
 
-### Current Round: Seed
+**Versus gig / marketplace platforms.** Bolvi's compliance posture is a moat. Platforms that classify caregivers as independent contractors carry unresolved misclassification exposure; Bolvi does not. Direct W-2 employment also means we can direct care plans and schedules, hold caregivers accountable, and stand behind the work — things a marketplace legally cannot do with contractors.
 
-**Raising:** $1.0M
-**Valuation:** $5M pre-money
-**Use:** Product development, Seattle market growth
+**Versus franchise agencies.** We employ our Care Partners on better terms and accept a lower gross margin to do it. That funds continuity and retention: families see the same caregivers over time, and caregivers have a reason to stay. Retention is the single biggest driver of care quality, and our model is built to support it.
 
-### Milestones for Series A
-
-1. ✅ Product-market fit validated (NPS > 50)
-2. ☐ 2,000 monthly bookings
-3. ☐ $200K MRR
-4. ☐ Unit economics proven (LTV:CAC > 3)
-5. ☐ Expansion to 2+ markets
+**Margin discipline as strategy.** Running below the franchise-standard margin is a deliberate, defensible position — it is how we out-retain and out-deliver competitors who optimize for extraction.
 
 ---
 
-## Risk Analysis
+## Trust, Safety & Compliance
 
-### Key Risks & Mitigation
-
-| Risk | Impact | Likelihood | Mitigation |
-|------|--------|------------|------------|
-| Caregiver supply shortage | High | Medium | Competitive pay, recruitment partnerships |
-| Safety incident | High | Low | Insurance, vetting, incident response plan |
-| Regulatory changes | Medium | Medium | Legal monitoring, compliance reserves |
-| Competition from agencies | Medium | High | Focus on tech, price, and caregiver experience |
-| Economic downturn | Medium | Medium | Essential service, value positioning |
-
-### Regulatory Considerations
-
-- **Labor Classification:** Caregivers are independent contractors; we follow Prop 22 model
-- **Healthcare Licensing:** Non-medical care doesn't require healthcare licenses
-- **Background Check Compliance:** Follow FCRA requirements
-- **Insurance Requirements:** Maintain adequate liability coverage
+- **Licensing:** Washington DOH home care agency licensure.
+- **Screening:** Background checks on all Care Partners before hire.
+- **Employment compliance:** W-2 payroll with employer taxes withheld and remitted, WA Paid Family & Medical Leave, paid sick leave, and L&I workers' compensation coverage. Payroll, tax withholding, and W-2 issuance run through an external payroll provider rather than being built in-app.
+- **Correct classification:** All caregivers employed as W-2 staff, satisfying Washington's ABC test by design.
+- **Care accountability:** Agency-set care plans, scheduling, and post-visit documentation.
 
 ---
 
-## Appendix
+## Risk Considerations
 
-### Customer Testimonials
+| Risk | Posture |
+|------|---------|
+| Worker misclassification | Avoided by design — all Care Partners are W-2 employees, satisfying the ABC test on all three prongs. |
+| Caregiver supply and retention | Addressed through competitive pay, full benefits, and W-2 stability. |
+| Regulatory / licensing change | Single-state focus keeps compliance attention concentrated on Washington's requirements. |
+| Safety incident | Screening, training, insurance, and agency accountability for care delivered. |
+| Margin pressure | Margin discipline is intentional; the model is structured to operate sustainably at ~29–30% gross. |
 
-> "Finding Maria through Bolvi Care changed everything for our family. Mom gets consistent, compassionate care and we have peace of mind." - Sarah J., Seattle
+---
 
-> "I was working for an agency making $18/hour while they charged families $45. With Bolvi, I set my own rate of $35 and keep almost all of it." - Jennifer M., Caregiver
+## Leadership
 
-### Press & Recognition
-
-- [Pending coverage]
-
-### Strategic Partnerships Pipeline
-
-1. **Swedish Medical Center** - Discharge planning referrals
-2. **Sound Generations** - Senior center partnership
-3. **Amazon** - Employee caregiver benefits
-4. **Premera Blue Cross** - Care coordination pilot
+**Loni Radchishina** — Founder
+Founded Bolvi Care to build a home care agency that treats its caregivers as the core of the business rather than a cost to minimize.
 
 ---
 
 ## Contact
 
-**Loni Radchishina**
-Founder & CEO, Bolvi Care
+**Bolvi Care LLC**
+Everett, WA
 [email]
 [phone]
-[LinkedIn]

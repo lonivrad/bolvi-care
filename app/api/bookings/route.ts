@@ -13,9 +13,6 @@ import {
   validationErrorResponse,
 } from '@/lib/api-response';
 
-// Platform fee percentage (10%)
-const PLATFORM_FEE_PERCENT = 0.10;
-
 // GET /api/bookings - List bookings for current user
 export async function GET(req: NextRequest) {
   try {
@@ -236,8 +233,7 @@ export async function POST(req: NextRequest) {
     const endDate = new Date(scheduledEnd);
     const hours = (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60);
     const subtotal = Math.round(caregiverProfile.hourlyRate * hours);
-    const platformFee = Math.round(subtotal * PLATFORM_FEE_PERCENT);
-    const total = subtotal + platformFee;
+    const total = subtotal;
 
     // Create booking
     const booking = await prisma.booking.create({
@@ -259,7 +255,6 @@ export async function POST(req: NextRequest) {
         hourlyRate: caregiverProfile.hourlyRate,
         estimatedHours: hours,
         subtotal,
-        platformFee,
         total,
         // Create recurring schedule if applicable
         ...(type === 'RECURRING' && recurring && {
@@ -335,7 +330,6 @@ export async function POST(req: NextRequest) {
         hourlyRate: booking.hourlyRate,
         estimatedHours: booking.estimatedHours,
         subtotal: booking.subtotal,
-        platformFee: booking.platformFee,
         total: booking.total,
       },
       caregiver: {

@@ -76,7 +76,7 @@ const notificationSettings = [
     settings: [
       { id: "payment_processed", label: "Payment confirmations", enabled: true },
       { id: "payment_failed", label: "Payment failures", enabled: true },
-      { id: "payout_sent", label: "Payout notifications", enabled: false },
+      { id: "pay_period", label: "Pay period & pay date reminders", enabled: false },
     ],
   },
   {

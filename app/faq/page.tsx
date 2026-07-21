@@ -109,7 +109,7 @@ const faqs: FAQItem[] = [
   },
   {
     question: "Are there any hidden fees?",
-    answer: "No hidden fees! Our pricing is transparent. You'll see the full cost breakdown before confirming any booking, including the caregiver's rate, platform service fee (15%), and any applicable taxes.",
+    answer: "No hidden fees! Our pricing is transparent. The hourly rate is what you pay—there's no platform or service fee added on. You'll see the full cost breakdown before confirming any booking.",
     category: "payments",
   },
   {
@@ -148,12 +148,12 @@ const faqs: FAQItem[] = [
   // For Caregivers
   {
     question: "How do I become a caregiver on Bolvi Care?",
-    answer: "Apply through our website by creating a caregiver profile, submitting your certifications and experience, and completing our verification process. Once approved, you can set your rates, availability, and start accepting bookings.",
+    answer: "Apply through our website by creating a Care Partner profile, submitting your certifications and experience, and completing our verification process. Once hired as a W-2 employee, you'll set your availability and start getting matched with families.",
     category: "caregivers",
   },
   {
     question: "How and when do I get paid?",
-    answer: "Caregivers are paid weekly via direct deposit or Stripe. Earnings from completed sessions are typically deposited within 2-3 business days of your payout request. You can also request instant payouts for a small fee.",
+    answer: "Care Partners are W-2 employees paid on a regular payroll cycle via direct deposit, with payroll taxes withheld automatically. There's no payout request to submit and no fees taken out of your pay—you're on payroll, not a contractor.",
     category: "caregivers",
   },
   {
@@ -167,8 +167,8 @@ const faqs: FAQItem[] = [
     category: "caregivers",
   },
   {
-    question: "How do taxes work for caregivers?",
-    answer: "As an independent contractor, you're responsible for your own taxes. We provide 1099 forms for your annual earnings and offer a Tax Center in your dashboard with tools and resources to help manage your tax obligations.",
+    question: "How do taxes work for Care Partners?",
+    answer: "Care Partners are W-2 employees, not independent contractors. We withhold payroll taxes each pay period and issue a W-2 at year end through our payroll provider—there are no 1099s or quarterly estimated taxes to manage. Your dashboard's Tax Center gives you access to your pay and W-2 documents.",
     category: "caregivers",
   },
 

@@ -216,7 +216,6 @@ export async function getCurrentUser() {
           certifications: true,
           backgroundCheck: true,
           availability: true,
-          payoutInfo: true,
         },
       },
       adminProfile: true,

@@ -96,7 +96,6 @@ const adminNavSections: NavSection[] = [
     title: "Finance",
     items: [
       { label: "Financials", href: "/admin/financials", icon: DollarSign },
-      { label: "Payouts", href: "/admin/payouts", icon: DollarSign },
       { label: "Promotions", href: "/admin/promotions", icon: Tag },
     ],
   },

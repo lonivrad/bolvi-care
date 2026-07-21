@@ -810,7 +810,7 @@ export const faqItems = [
   },
   {
     question: 'How does payment work?',
-    answer: 'Payment is held securely until the visit is completed. After the caregiver checks out and submits their visit summary, payment is released. We charge a 15% platform fee (10% for Premium members) which is included in the displayed rates.',
+    answer: 'Payment is processed securely after the visit is completed and the Care Partner submits their visit summary. The hourly rate shown is what you pay—Bolvi Care is the agency and bills directly, with no platform fee added on.',
   },
   {
     question: 'Can I book the same caregiver regularly?',

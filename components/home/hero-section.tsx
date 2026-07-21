@@ -69,7 +69,7 @@ export function HeroSection() {
             </h1>
 
             <p className="mt-4 text-base leading-relaxed text-muted-foreground text-pretty sm:text-lg">
-              Connect with verified, independent caregivers for flexible, compassionate support—without the agency markups.
+              Compassionate in-home care from Care Partners we employ, train, and stand behind—so your family sees the same trusted faces, visit after visit.
             </p>
 
             {/* Search box */}
