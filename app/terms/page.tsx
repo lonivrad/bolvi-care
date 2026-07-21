@@ -48,25 +48,24 @@ export default function TermsPage() {
           <section>
             <div className="flex items-center gap-3 mb-4">
               <Users className="h-6 w-6 text-primary" />
-              <h2 className="text-2xl font-semibold text-foreground">2. Platform Description</h2>
+              <h2 className="text-2xl font-semibold text-foreground">2. Service Description</h2>
             </div>
             <Card>
               <CardContent className="p-6 space-y-4">
                 <p className="text-muted-foreground leading-relaxed">
-                  Bolvi Care is a marketplace platform that connects families seeking at-home support services
-                  with independent caregivers. We provide:
+                  Bolvi Care is a licensed Washington home care agency that provides at-home support services
+                  to families, delivered by Care Partners we employ. We provide:
                 </p>
                 <ul className="list-disc list-inside text-muted-foreground space-y-2">
-                  <li>A platform to search for and connect with caregivers</li>
-                  <li>Background check facilitation for caregivers</li>
+                  <li>Care delivered by our employed, vetted Care Partners</li>
+                  <li>Background checks and credentialing of our Care Partners</li>
                   <li>Booking and scheduling tools</li>
                   <li>Secure payment processing</li>
-                  <li>Communication tools between families and caregivers</li>
+                  <li>Communication tools between families and their care team</li>
                 </ul>
                 <p className="text-muted-foreground leading-relaxed mt-4">
-                  <strong>Important:</strong> Bolvi Care is a marketplace platform only. Caregivers are
-                  independent contractors, not employees of Bolvi Care. We do not directly provide care
-                  services.
+                  <strong>Important:</strong> Bolvi Care is a home care agency and directly provides care
+                  services. Care Partners are W-2 employees of Bolvi Care, not independent contractors.
                 </p>
               </CardContent>
             </Card>

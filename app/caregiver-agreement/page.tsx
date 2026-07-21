@@ -22,19 +22,19 @@ import {
 export default function CaregiverAgreementPage() {
   const sections = [
     {
-      title: "1. Independent Contractor Relationship",
-      content: `By registering as a caregiver on Bolvi Care, you agree to operate as an independent contractor, not an employee of Bolvi Care. This means:
+      title: "1. Employment Relationship",
+      content: `As a Care Partner, you are a W-2 employee of Bolvi Care, a licensed Washington home care agency — not an independent contractor. This means:
 
-• You are responsible for your own taxes, including self-employment tax
-• You set your own rates within our platform guidelines
-• You have the freedom to accept or decline job requests
-• You control your own schedule and availability
-• You are responsible for providing your own equipment and transportation
-• You maintain your own professional liability insurance`,
+• Bolvi Care sets care plans, schedules, and the rates families are charged
+• Payroll taxes are withheld from your pay and remitted on your behalf
+• You are covered by L&I workers' compensation and WA Paid Family & Medical Leave
+• You accrue paid sick leave as required by Washington law
+• Bolvi Care provides the framework, training, and liability coverage for the care you deliver
+• You work the shifts assigned and scheduled through Bolvi Care`,
     },
     {
       title: "2. Qualification Requirements",
-      content: `To maintain your status as a caregiver on our platform, you must:
+      content: `To be hired and remain employed as a Care Partner, you must:
 
 • Be at least 18 years of age
 • Pass our comprehensive background check
@@ -58,26 +58,25 @@ export default function CaregiverAgreementPage() {
 • Never solicit clients for off-platform work`,
     },
     {
-      title: "4. Payment Terms",
-      content: `Understanding our payment structure:
+      title: "4. Pay & Payroll",
+      content: `Understanding how you're paid:
 
-• Payments are processed weekly on Fridays
-• Platform fee: 15% of each completed booking
-• You retain 85% of the service fee
-• Cancellation fees apply per our Cancellation Policy
+• You are paid an hourly wage as a W-2 employee (HCA $23/hr, CNA/EMT $27/hr)
+• Wages are paid on a regular payroll cycle via direct deposit
+• Federal and state payroll taxes are withheld automatically — there is no platform fee taken from your pay
+• Payroll, tax withholding, and your year-end W-2 run through our payroll provider
 • Tips from families go directly to you (100%)
-• Direct deposits typically arrive within 2-3 business days
-• Detailed earnings statements are available in your dashboard`,
+• Pay stubs and hours are available in your dashboard`,
     },
     {
       title: "5. Insurance & Liability",
       content: `Regarding insurance and liability:
 
 • Bolvi Care provides liability coverage up to $1,000,000 per incident
-• Coverage applies only to services booked through our platform
+• You are covered by L&I workers' compensation as a Washington employee
+• Coverage applies to care you deliver as an assigned Bolvi Care employee
 • You must immediately report any incidents or injuries
-• Coverage does not extend to off-platform services
-• You agree to maintain your own professional liability insurance
+• Coverage does not extend to work performed outside your Bolvi Care employment
 • Falsifying incident reports is grounds for immediate termination`,
     },
     {
@@ -93,7 +92,7 @@ export default function CaregiverAgreementPage() {
     },
     {
       title: "7. Termination & Suspension",
-      content: `Grounds for account termination or suspension include:
+      content: `Grounds for employment termination or suspension include:
 
 • Violation of any terms in this agreement
 • Failing to pass background check or re-verification
@@ -137,15 +136,34 @@ export default function CaregiverAgreementPage() {
               <FileText className="h-6 w-6 text-primary" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-foreground">Caregiver Agreement</h1>
-              <Badge variant="secondary">Effective January 2025</Badge>
+              <h1 className="text-3xl font-bold text-foreground">Care Partner Employment Agreement</h1>
+              <Badge variant="secondary">Draft — pending legal review</Badge>
             </div>
           </div>
           <p className="text-muted-foreground">
-            This agreement outlines the terms and conditions for caregivers providing services through the Bolvi Care platform.
-            Please read carefully before registering.
+            This agreement outlines the terms and conditions of employment for Care Partners, the W-2 employees who deliver care for Bolvi Care.
+            Please read carefully before accepting employment.
           </p>
         </div>
+
+        {/* Pre-launch legal notice */}
+        <Card className="mb-8 border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-900/20">
+          <CardContent className="p-6">
+            <div className="flex gap-4">
+              <AlertTriangle className="h-6 w-6 text-amber-600 dark:text-amber-400 flex-shrink-0" />
+              <div>
+                <h3 className="font-semibold text-amber-800 dark:text-amber-300 mb-2">
+                  Pre-launch draft
+                </h3>
+                <p className="text-sm text-amber-700 dark:text-amber-400">
+                  This is a pre-launch draft for internal review and is not a binding
+                  employment agreement. It has not yet been reviewed or approved by legal
+                  counsel. Final employment terms will be provided in writing at hire.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Quick Overview Cards */}
         <div className="grid gap-4 md:grid-cols-4 mb-8">
@@ -159,22 +177,22 @@ export default function CaregiverAgreementPage() {
           <Card>
             <CardContent className="p-6 text-center">
               <DollarSign className="h-8 w-8 text-blue-500 mx-auto mb-2" />
-              <p className="font-medium">85% Earnings</p>
-              <p className="text-xs text-muted-foreground">You keep most</p>
+              <p className="font-medium">W-2 Wages</p>
+              <p className="text-xs text-muted-foreground">Hourly, paid on payroll</p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-6 text-center">
               <Clock className="h-8 w-8 text-purple-500 mx-auto mb-2" />
-              <p className="font-medium">Weekly Payouts</p>
-              <p className="text-xs text-muted-foreground">Every Friday</p>
+              <p className="font-medium">Regular Payroll</p>
+              <p className="text-xs text-muted-foreground">Taxes withheld for you</p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-6 text-center">
               <Users className="h-8 w-8 text-orange-500 mx-auto mb-2" />
-              <p className="font-medium">Independent</p>
-              <p className="text-xs text-muted-foreground">Contractor status</p>
+              <p className="font-medium">W-2 Employee</p>
+              <p className="text-xs text-muted-foreground">Employed by Bolvi Care</p>
             </CardContent>
           </Card>
         </div>
@@ -225,13 +243,13 @@ export default function CaregiverAgreementPage() {
                   Your Acknowledgment
                 </h3>
                 <p className="text-sm text-green-700 dark:text-green-400">
-                  When you check the agreement box during registration, you confirm that:
+                  When you accept employment as a Care Partner, you confirm that:
                 </p>
                 <ul className="text-sm text-green-700 dark:text-green-400 mt-2 list-disc list-inside space-y-1">
                   <li>You meet all qualification requirements</li>
-                  <li>You understand your responsibilities as an independent contractor</li>
+                  <li>You understand your responsibilities as a W-2 employee of Bolvi Care</li>
                   <li>You agree to abide by our professional standards</li>
-                  <li>You accept the payment terms and platform fee structure</li>
+                  <li>You accept the pay and payroll terms</li>
                   <li>You consent to background checks and ongoing verification</li>
                 </ul>
               </div>
