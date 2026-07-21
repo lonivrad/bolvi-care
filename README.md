@@ -2,7 +2,7 @@
 
 A modern marketplace platform connecting families with trusted, vetted caregivers for compassionate at-home support.
 
-![Next.js](https://img.shields.io/badge/Next.js-16.1-black?style=flat-square&logo=next.js)
+![Next.js](https://img.shields.io/badge/Next.js-16.2-black?style=flat-square&logo=next.js)
 ![React](https://img.shields.io/badge/React-19.2-blue?style=flat-square&logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=flat-square&logo=typescript)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-38B2AC?style=flat-square&logo=tailwind-css)
@@ -15,7 +15,11 @@ Bolvi Care revolutionizes how families find trusted support for their loved ones
 - **For Caregivers**: Flexible work opportunities with fair compensation
 - **Trust & Safety**: Background checks, credential verification, and reviews
 
-Live demo → https://bolvi-care-git-demo-lonis-projects-d0ef3ac1.vercel.app?_vercel_share=y672ypZj9JU75eKenb96l9W95H1fXWlL
+The application is a full build-out rather than a static mock: **79 pages**, **37 API routes**, and a **40-model Prisma schema** backing authentication, bookings, visits, payments, messaging, and audit logging.
+
+Live demo → https://bolvi-care-git-demo-lonis-projects-d0ef3ac1.vercel.app
+
+> **Demo vs. this codebase.** The live demo runs an earlier prototype build — it is stable and demonstrates the product end to end. The current codebase in this repository is a further build-out (NextAuth authentication, Prisma data layer, Stripe payments, HIPAA-aligned audit logging); its auth integration is mid-migration and is **not currently deployed**. The demo credentials below belong to the deployed prototype.
 
 ## Screenshots
 
@@ -44,12 +48,17 @@ Live demo → https://bolvi-care-git-demo-lonis-projects-d0ef3ac1.vercel.app?_ve
 
 | Category | Technology |
 |----------|------------|
-| **Framework** | Next.js 16.1 (App Router) |
+| **Framework** | Next.js 16.2 (App Router) |
 | **Language** | TypeScript 5 |
 | **UI Library** | React 19.2 |
 | **Styling** | Tailwind CSS 4 |
 | **Components** | Radix UI Primitives |
 | **State Management** | Zustand 5 |
+| **Authentication** | NextAuth v5 (Credentials + Google) |
+| **Database** | PostgreSQL + Prisma (40 models) |
+| **Payments** | Stripe (Payment Intents + webhooks) |
+| **Email** | Resend |
+| **Error Monitoring** | Sentry |
 | **Icons** | Lucide React |
 | **Date Picker** | React Day Picker |
 
@@ -119,7 +128,7 @@ pnpm dev
 
 ### Demo Credentials
 
-The MVP uses mock authentication. Use these test accounts:
+These accounts belong to the **deployed prototype** (see the demo note in the Overview), which uses simplified mock authentication — any password is accepted:
 
 | Role | Email | Password |
 |------|-------|----------|
@@ -187,27 +196,26 @@ This app handles protected health information (PHI), so telemetry and dependenci
 - **Audited telemetry for PHI leakage.** Error-reporting breadcrumbs and request bodies were capturing PHI-bearing URLs from care routes (`/api/visits/**`, `/api/medications/**`, `/api/messages/**`). Scrubbing was hardened across the client, server, and edge runtimes — including the edge config, which previously had no filtering at all.
 - **Removed a dormant analytics integration.** It was configured with autocapture enabled and no input masking, which would have captured PHI from authenticated pages the moment it was wired into the layout.
 - **Removed an unused data/auth subsystem.** This eliminated a second dormant auth path and its transitive dependency vulnerabilities.
+- **HIPAA-aligned technical safeguards.** Audit logging, PHI scrubbing, and security headers are implemented at the application level. Full HIPAA compliance additionally requires organizational controls — BAAs, risk assessments, workforce training, and breach procedures — that are beyond application code.
 - **Remaining npm advisories are build-time tooling only** (bundler and inbound-mail-parsing dependencies), not in the served request path.
 - **Production also requires a BAA** with any error-reporting vendor. Standard plans do not cover PHI.
 
 ## Roadmap
 
-### MVP (Current)
+### Built
 - [x] Caregiver browsing and search
 - [x] Detailed caregiver profiles
 - [x] Multi-step booking flow
-- [x] Family dashboard
-- [x] Caregiver dashboard
-- [x] Admin dashboard
-- [x] Mock authentication
+- [x] Family, caregiver, and admin dashboards
+- [x] NextAuth authentication with email verification and password reset
+- [x] PostgreSQL + Prisma data layer (40 models)
+- [x] Stripe payments with webhooks
+- [x] Email notifications (Resend)
+- [x] HIPAA-aligned audit logging
 - [x] Responsive design
 
-### Phase 2 (Planned)
-- [ ] Real authentication (NextAuth/Firebase)
-- [ ] Database integration (PostgreSQL/Prisma)
-- [ ] Payment processing (Stripe)
+### Planned
 - [ ] Real-time messaging
-- [ ] Email notifications
 - [ ] Geolocation/mapping
 
 ### Phase 3 (Future)
