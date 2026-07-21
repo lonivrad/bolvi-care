@@ -17,7 +17,8 @@ Bolvi Care revolutionizes how families find trusted support for their loved ones
 
 The application is a full build-out rather than a static mock: **79 pages**, **37 API routes**, and a **40-model Prisma schema** backing authentication, bookings, visits, payments, messaging, and audit logging.
 
-Live demo → https://bolvi-care-git-demo-lonis-projects-d0ef3ac1.vercel.app
+<!-- TODO(demo-url): replace with the public production alias once promoted (see PR notes). -->
+Live demo → _coming soon — publicly reachable production alias being set up_
 
 > **Demo vs. this codebase.** The live demo runs an earlier prototype build — it is stable and demonstrates the product end to end. The current codebase in this repository is a further build-out (NextAuth authentication, Prisma data layer, Stripe payments, HIPAA-aligned audit logging); its auth integration is mid-migration and is **not currently deployed**. The demo credentials below belong to the deployed prototype.
 

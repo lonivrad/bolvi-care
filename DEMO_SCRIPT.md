@@ -384,7 +384,7 @@ Navigate to **Find Care** in the header.
 ### Security Talking Points:
 - "End-to-end encrypted messaging"
 - "PCI-compliant payment processing"
-- "HIPAA-ready architecture"
+- "HIPAA-aligned technical safeguards"
 
 ---
 
