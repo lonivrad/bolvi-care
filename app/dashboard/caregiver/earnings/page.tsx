@@ -19,7 +19,6 @@ import {
   Calendar,
   Clock,
   Download,
-  ArrowUpRight,
   Wallet,
   Calculator,
 } from "lucide-react";
@@ -37,7 +36,7 @@ const earningsData = {
 const transactions = [
   { id: "1", type: "payment", description: "Visit - Johnson Family", amount: 140, date: "2025-01-28", status: "completed" },
   { id: "2", type: "payment", description: "Visit - Martinez Family", amount: 120, date: "2025-01-27", status: "completed" },
-  { id: "3", type: "payout", description: "Bank Transfer", amount: -500, date: "2025-01-25", status: "completed" },
+  { id: "3", type: "payout", description: "Paycheck Deposit", amount: -500, date: "2025-01-25", status: "completed" },
   { id: "4", type: "payment", description: "Visit - Chen Family", amount: 175, date: "2025-01-24", status: "pending" },
   { id: "5", type: "payment", description: "Visit - Williams Family", amount: 95, date: "2025-01-23", status: "completed" },
 ];
@@ -63,12 +62,12 @@ export default function EarningsPage() {
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">Earnings</h1>
           <p className="mt-1 text-muted-foreground">
-            Track your income, manage payouts, and plan your earnings
+            Track your hours, gross pay, and pay periods
           </p>
         </div>
-        <Button>
+        <Button variant="outline">
           <Wallet className="mr-2 h-4 w-4" />
-          Request Payout
+          View Pay Stubs
         </Button>
       </div>
 
@@ -91,13 +90,13 @@ export default function EarningsPage() {
             <Card className="border-primary bg-primary/5">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
-                  <p className="text-sm text-muted-foreground">Available Balance</p>
+                  <p className="text-sm text-muted-foreground">Current Pay Period</p>
                   <DollarSign className="h-4 w-4 text-primary" />
                 </div>
                 <p className="mt-2 text-3xl font-bold">${earningsData.available}</p>
-                <Button variant="link" className="mt-2 h-auto p-0 text-primary">
-                  Withdraw funds <ArrowUpRight className="ml-1 h-3 w-3" />
-                </Button>
+                <p className="mt-2 text-xs text-muted-foreground">
+                  Gross pay, paid via payroll
+                </p>
               </CardContent>
             </Card>
             <Card>

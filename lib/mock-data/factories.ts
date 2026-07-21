@@ -468,12 +468,6 @@ export function createCaregiverUser(overrides?: Partial<CaregiverUser>): Caregiv
       expiresAt: generateFutureDate(randomNumber(180, 365)),
       result: 'clear',
     },
-    payoutInfo: {
-      accountType: 'bank_account',
-      accountLast4: randomNumber(1000, 9999).toString(),
-      payoutSchedule: 'weekly',
-      minimumPayout: 5000,
-    },
     ...overrides,
   };
 }
@@ -502,7 +496,6 @@ export function createBooking(
 
   const hourlyRate = randomNumber(2800, 5500);
   const subtotal = hourlyRate * hours;
-  const platformFee = Math.round(subtotal * 0.1);
 
   const id = generateShortId('b');
 
@@ -523,8 +516,7 @@ export function createBooking(
       hourlyRate,
       estimatedHours: hours,
       subtotal,
-      platformFee,
-      total: subtotal + platformFee,
+      total: subtotal,
     },
     createdAt: generatePastDate(randomNumber(isPast ? 61 : 1, isPast ? 90 : 14)),
     updatedAt: generatePastDate(randomNumber(0, 7)),
@@ -654,8 +646,8 @@ export function createNotification(
       message: 'Your payment has been processed successfully.',
     },
     payment_sent: {
-      title: 'Payout Sent',
-      message: 'Your weekly payout has been sent to your bank account.',
+      title: 'Payment Sent',
+      message: 'Your payment to Bolvi Care has been processed.',
     },
     verification_approved: {
       title: 'Verification Approved',

@@ -13,10 +13,9 @@ export const stripe = process.env.STRIPE_SECRET_KEY
     })
   : null;
 
-// Platform fee percentage (10%)
-export const PLATFORM_FEE_PERCENT = 0.10;
-
-// Helper to create a payment intent for a booking
+// Helper to create a payment intent for a booking.
+// Bolvi (the agency) bills the family directly for care; there is no platform
+// fee split or transfer to the caregiver — Care Partners are paid via payroll.
 export async function createBookingPaymentIntent({
   amount,
   customerId,
@@ -33,7 +32,6 @@ export async function createBookingPaymentIntent({
   if (!stripe) {
     throw new Error('Stripe is not configured');
   }
-  const platformFee = Math.round(amount * PLATFORM_FEE_PERCENT);
 
   const paymentIntent = await stripe.paymentIntents.create({
     amount,
@@ -42,7 +40,6 @@ export async function createBookingPaymentIntent({
     metadata: {
       bookingId,
       caregiverId,
-      platformFee: platformFee.toString(),
       ...metadata,
     },
     automatic_payment_methods: {
@@ -75,79 +72,6 @@ export async function createStripeCustomer({
   });
 
   return customer;
-}
-
-// Helper to create a connected account for caregivers (Stripe Connect)
-export async function createConnectedAccount({
-  email,
-  userId,
-}: {
-  email: string;
-  userId: string;
-}) {
-  if (!stripe) {
-    throw new Error('Stripe is not configured');
-  }
-  const account = await stripe.accounts.create({
-    type: 'express',
-    email,
-    metadata: {
-      userId,
-    },
-    capabilities: {
-      transfers: { requested: true },
-    },
-  });
-
-  return account;
-}
-
-// Helper to create an account link for onboarding
-export async function createAccountLink({
-  accountId,
-  refreshUrl,
-  returnUrl,
-}: {
-  accountId: string;
-  refreshUrl: string;
-  returnUrl: string;
-}) {
-  if (!stripe) {
-    throw new Error('Stripe is not configured');
-  }
-  const accountLink = await stripe.accountLinks.create({
-    account: accountId,
-    refresh_url: refreshUrl,
-    return_url: returnUrl,
-    type: 'account_onboarding',
-  });
-
-  return accountLink;
-}
-
-// Helper to transfer funds to a connected account
-export async function createTransfer({
-  amount,
-  destinationAccountId,
-  bookingId,
-}: {
-  amount: number;
-  destinationAccountId: string;
-  bookingId: string;
-}) {
-  if (!stripe) {
-    throw new Error('Stripe is not configured');
-  }
-  const transfer = await stripe.transfers.create({
-    amount,
-    currency: 'usd',
-    destination: destinationAccountId,
-    metadata: {
-      bookingId,
-    },
-  });
-
-  return transfer;
 }
 
 // Helper to attach a payment method to a customer

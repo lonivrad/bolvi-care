@@ -117,6 +117,8 @@ Care Partner paid as a W-2 employee
 
 Families are billed by the agency for care delivered; Care Partners are paid as employees through payroll. There is no per-transaction service fee and no caregiver payout/withdrawal mechanism — Care Partners are staff, not contractors.
 
+**Payroll is handled externally.** W-2 payroll, tax withholding, and year-end W-2 issuance run through an external payroll provider. The application does not implement in-app payouts, 1099 generation, or contractor tax filing.
+
 ---
 
 ## Positioning

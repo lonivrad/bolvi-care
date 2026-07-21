@@ -88,11 +88,11 @@ export default function SignupPage() {
               <div className="flex-1">
                 <h3 className="font-semibold">I want to provide care</h3>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  Join our network of caregivers, set your own schedule, and help families in need
+                  Join our team of employed Care Partners, work a flexible schedule, and help families in need
                 </p>
                 <ul className="mt-3 space-y-1 text-sm text-muted-foreground">
                   <li className="flex items-center gap-2">
-                    <Check className="h-3 w-3 text-primary" /> Set your own rates
+                    <Check className="h-3 w-3 text-primary" /> Competitive W-2 wages
                   </li>
                   <li className="flex items-center gap-2">
                     <Check className="h-3 w-3 text-primary" /> Flexible scheduling

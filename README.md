@@ -73,6 +73,8 @@ Live demo temporarily offline while authentication is migrated; the screenshots 
 - Hours and earnings in an employee pay-period view
 - Performance overview
 
+> Care Partners are W-2 employees. Payroll, tax withholding, and W-2 issuance run through an external payroll provider — the app deliberately has no in-app payouts, 1099 generation, or contractor tax filing.
+
 ### Admin Features
 - Platform metrics dashboard
 - User management

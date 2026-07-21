@@ -62,7 +62,6 @@ export interface CaregiverUser extends BaseUser {
   responseTime: number; // in minutes
   verificationStatus: VerificationStatus;
   backgroundCheck: BackgroundCheck;
-  payoutInfo: PayoutInfo;
 }
 
 export interface AdminUser extends BaseUser {
@@ -250,7 +249,6 @@ export interface BookingPricing {
   hourlyRate: Currency;
   estimatedHours: number;
   subtotal: Currency;
-  platformFee: Currency;
   discount?: Currency;
   promoCode?: string;
   total: Currency;
@@ -472,11 +470,7 @@ export interface Payment {
   id: UUID;
   bookingId: UUID;
   payerId: UUID;
-  payeeId: UUID;
-  amount: Currency;
-  platformFee: Currency;
-  payeeAmount: Currency;
-  taxWithheld?: Currency;
+  amount: Currency; // full amount billed to the family
   status: PaymentStatus;
   method: PaymentMethodType;
   transactionId?: string;
@@ -500,16 +494,11 @@ export interface PaymentMethod {
 
 export type PaymentMethodType = 'card' | 'bank_account' | 'paypal';
 
-export interface PayoutInfo {
-  accountType: 'bank_account' | 'paypal' | 'venmo';
-  accountLast4: string;
-  routingNumber?: string;
-  payoutSchedule: 'weekly' | 'biweekly' | 'monthly';
-  minimumPayout: Currency;
-}
-
 // ============================================================================
 // TAX & COMPLIANCE
+//
+// Care Partners are W-2 employees. Payroll, tax withholding, and W-2 issuance
+// are handled by an external payroll provider — no in-app payout or 1099 data.
 // ============================================================================
 
 export type WorkerClassification = 'independent_contractor' | 'employee';
@@ -518,15 +507,7 @@ export interface TaxInfo {
   id: UUID;
   userId: UUID;
   classification: WorkerClassification;
-  taxId?: string; // SSN or EIN (stored encrypted, only last 4 shown)
-  taxIdLast4?: string;
-  businessName?: string;
-  businessType?: BusinessType;
-  w9Submitted: boolean;
-  w9SubmittedAt?: ISODateTime;
-  w9DocumentUrl?: URL;
   state: USState;
-  withholdingElection?: WithholdingElection;
   createdAt: ISODateTime;
   updatedAt: ISODateTime;
 }
@@ -565,7 +546,7 @@ export interface TaxDocument {
   createdAt: ISODateTime;
 }
 
-export type TaxDocumentType = '1099-NEC' | '1099-K' | 'W-2' | 'annual_summary';
+export type TaxDocumentType = 'W-2' | 'annual_summary';
 export type TaxDocumentStatus = 'pending' | 'generated' | 'sent' | 'corrected';
 
 export interface QuarterlyTaxEstimate {
@@ -745,20 +726,6 @@ export type IncidentType =
 
 export type IncidentSeverity = 'minor' | 'moderate' | 'major' | 'critical';
 export type IncidentStatus = 'reported' | 'investigating' | 'resolved' | 'escalated';
-
-export interface Payout {
-  id: UUID;
-  caregiverId: UUID;
-  amount: Currency;
-  status: PayoutStatus;
-  periodStart: ISODate;
-  periodEnd: ISODate;
-  bookingIds: UUID[];
-  processedAt?: ISODateTime;
-  createdAt: ISODateTime;
-}
-
-export type PayoutStatus = 'pending' | 'processing' | 'completed' | 'failed';
 
 export interface Cancellation {
   id: UUID;
@@ -1090,7 +1057,6 @@ export interface PlatformMetrics {
   activeBookings: number;
   completedVisits: number;
   totalRevenue: Currency;
-  platformFees: Currency;
   averageBookingValue: Currency;
   caregiverRetention: number;
   familyRetention: number;

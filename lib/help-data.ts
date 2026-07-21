@@ -2218,9 +2218,9 @@ In your dashboard:
 
 ### Tax Information
 
-- You're an independent contractor
-- We provide 1099 forms
-- Track your mileage and expenses
+- You're a W-2 employee of Bolvi Care
+- Payroll taxes are withheld automatically each pay period
+- We issue your W-2 through our payroll provider by January 31
 - Consult a tax professional
     `,
     views: 4567,

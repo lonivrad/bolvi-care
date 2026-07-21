@@ -205,8 +205,6 @@ model CaregiverProfile {
   licenses         CaregiverLicense[]
   availability     AvailabilitySchedule?
   bookings         Booking[]        @relation("CaregiverBookings")
-  payoutInfo       PayoutInfo?
-  payouts          Payout[]
   taxInfo          TaxInfo?
   taxDocuments     TaxDocument[]
   careTeamMembers  CareTeamMember[]
@@ -367,11 +365,10 @@ model Booking {
   state           String?
   zipCode         String?
 
-  // Pricing
+  // Pricing (agency bills the family directly for care)
   hourlyRate      Int      // in cents
   estimatedHours  Float
   subtotal        Int      // in cents
-  platformFee     Int      // in cents
   discount        Int      @default(0)
   promoCode       String?
   total           Int      // in cents
@@ -690,18 +687,13 @@ model Payment {
   booking       Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
 
   payerId       String
-  payeeId       String
 
-  amount        Int      // in cents
-  platformFee   Int      // in cents
-  payeeAmount   Int      // in cents
-  taxWithheld   Int?     // in cents
+  amount        Int      // in cents — full amount billed to the family
 
   status        PaymentStatus @default(PENDING)
   method        PaymentMethodType?
 
   stripePaymentIntentId String?
-  stripeTransferId      String?
 
   processedAt   DateTime?
 
@@ -709,7 +701,6 @@ model Payment {
   updatedAt DateTime @updatedAt
 
   @@index([payerId])
-  @@index([payeeId])
   @@index([status])
 }
 
@@ -749,68 +740,12 @@ enum PaymentMethodType {
   PAYPAL
 }
 
-model PayoutInfo {
-  id                 String   @id @default(cuid())
-  caregiverProfileId String   @unique
-  caregiverProfile   CaregiverProfile @relation(fields: [caregiverProfileId], references: [id], onDelete: Cascade)
-
-  stripeAccountId    String?
-  stripeAccountStatus String?
-
-  accountType        PayoutAccountType @default(BANK_ACCOUNT)
-  accountLast4       String?
-  routingNumber      String?
-
-  payoutSchedule     PayoutSchedule @default(WEEKLY)
-  minimumPayout      Int      @default(5000) // in cents
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-enum PayoutAccountType {
-  BANK_ACCOUNT
-  PAYPAL
-  VENMO
-}
-
-enum PayoutSchedule {
-  WEEKLY
-  BIWEEKLY
-  MONTHLY
-}
-
-model Payout {
-  id                 String   @id @default(cuid())
-  caregiverProfileId String
-  caregiverProfile   CaregiverProfile @relation(fields: [caregiverProfileId], references: [id])
-
-  amount             Int      // in cents
-  status             PayoutStatus @default(PENDING)
-
-  periodStart        DateTime
-  periodEnd          DateTime
-  bookingIds         String[] @default([])
-
-  stripePayoutId     String?
-  processedAt        DateTime?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([caregiverProfileId])
-  @@index([status])
-}
-
-enum PayoutStatus {
-  PENDING
-  PROCESSING
-  COMPLETED
-  FAILED
-}
-
 // ============================================================================
 // TAX & COMPLIANCE
+//
+// Care Partners are W-2 employees. Payroll, tax withholding, and W-2 issuance
+// are handled by an external payroll provider — there is no in-app payout or
+// 1099 machinery. TaxInfo is a minimal employment record.
 // ============================================================================
 
 model TaxInfo {
@@ -818,17 +753,8 @@ model TaxInfo {
   caregiverProfileId String   @unique
   caregiverProfile   CaregiverProfile @relation(fields: [caregiverProfileId], references: [id], onDelete: Cascade)
 
-  classification     WorkerClassification @default(INDEPENDENT_CONTRACTOR)
-  taxIdLast4         String?
-  businessName       String?
-  businessType       String?
-
-  w9Submitted        Boolean  @default(false)
-  w9SubmittedAt      DateTime?
-  w9DocumentUrl      String?
-
+  classification     WorkerClassification @default(EMPLOYEE)
   state              String?
-  withholdingElection Json?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -864,8 +790,6 @@ model TaxDocument {
 }
 
 enum TaxDocumentType {
-  FORM_1099_NEC
-  FORM_1099_K
   FORM_W2
   ANNUAL_SUMMARY
 }
