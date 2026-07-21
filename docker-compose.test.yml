@@ -1,0 +1,18 @@
+# Postgres for the test suite only. Runs on a non-default port so it never
+# collides with a local dev Postgres. Ephemeral (tmpfs) — no data persists.
+services:
+  postgres-test:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: bolvi
+      POSTGRES_PASSWORD: bolvi
+      POSTGRES_DB: bolvi_care_test
+    ports:
+      - "5433:5432"
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bolvi -d bolvi_care_test"]
+      interval: 2s
+      timeout: 5s
+      retries: 15

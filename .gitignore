@@ -42,3 +42,6 @@ next-env.d.ts
 
 # claude code local settings
 .claude/
+
+# test env is non-secret local config (tracked)
+!.env.test
