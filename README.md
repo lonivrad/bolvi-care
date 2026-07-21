@@ -1,6 +1,6 @@
-# Bolvi Care - Home Care Marketplace
+# Bolvi Care
 
-A modern marketplace platform connecting families with trusted, vetted caregivers for compassionate at-home support.
+Bolvi Care is the platform I built to run a home-care operation end to end: family and caregiver onboarding, caregiver search and booking, scheduled visits with check-in/out and medication, vitals, task, and photo logging, payments, messaging, and role-based dashboards for families, caregivers, and admins — all backed by a Postgres/Prisma data model and HIPAA-aligned audit logging.
 
 ![Next.js](https://img.shields.io/badge/Next.js-16.2-black?style=flat-square&logo=next.js)
 ![React](https://img.shields.io/badge/React-19.2-blue?style=flat-square&logo=react)
@@ -9,22 +9,14 @@ A modern marketplace platform connecting families with trusted, vetted caregiver
 
 ## Overview
 
-Bolvi Care revolutionizes how families find trusted support for their loved ones by providing:
-
-- **For Families**: Easy search and booking of verified caregivers with transparent pricing
-- **For Caregivers**: Flexible work opportunities with fair compensation
-- **Trust & Safety**: Background checks, credential verification, and reviews
-
 The application is a full build-out rather than a static mock: **79 pages**, **37 API routes**, and a **40-model Prisma schema** backing authentication, bookings, visits, payments, messaging, and audit logging.
 
-<!-- TODO(demo-url): replace with the public production alias once promoted (see PR notes). -->
-Live demo → _coming soon — publicly reachable production alias being set up_
+Live demo temporarily offline while authentication is migrated; the screenshots below show the full product.
 
-> **Demo vs. this codebase.** The live demo runs an earlier prototype build — it is stable and demonstrates the product end to end. The current codebase in this repository is a further build-out (NextAuth authentication, Prisma data layer, Stripe payments, HIPAA-aligned audit logging); its auth integration is mid-migration and is **not currently deployed**. The demo credentials below belong to the deployed prototype.
+> **Demo vs. this codebase.** The live demo is an earlier prototype build — stable and demonstrating the product end to end — currently offline during the auth migration. The current codebase in this repository is a further build-out (NextAuth authentication, Prisma data layer, Stripe payments, HIPAA-aligned audit logging); its auth integration is mid-migration and is **not currently deployed**. The demo credentials below belong to that prototype.
 
 ## Screenshots
 
-<!-- Add your screenshots here -->
 <details>
 <summary>View Screenshots</summary>
 
@@ -73,12 +65,13 @@ Live demo → _coming soon — publicly reachable production alias being set up_
 - Track spending and care analytics
 - Build a trusted care team
 
-### Caregiver Features
+### Care Partner Features (W-2 employees)
 - Professional profile with certifications and badges
-- Availability calendar management
-- Booking request management
-- Earnings tracking and payout history
-- Performance analytics
+- Shift scheduling and availability management
+- Assigned visits with check-in / check-out
+- Visit documentation — medication, vitals, tasks, and photo logging
+- Hours and earnings in an employee pay-period view
+- Performance overview
 
 ### Admin Features
 - Platform metrics dashboard
@@ -87,45 +80,34 @@ Live demo → _coming soon — publicly reachable production alias being set up_
 - Dispute handling
 - Financial reporting
 
-## Getting Started
+## Running locally
 
-### Prerequisites
+This app needs a Postgres database and a few environment variables; most third-party integrations are optional and the code degrades gracefully when their keys are absent.
 
-- Node.js 18.17 or later
-- npm, yarn, or pnpm
-
-### Installation
-
-1. Clone the repository:
-```bash
-git clone https://github.com/yourusername/bolvi-care.git
-cd bolvi-care
-```
-
-2. Install dependencies:
+1. Install dependencies (`postinstall` runs `prisma generate` automatically):
 ```bash
 npm install
-# or
-yarn install
-# or
-pnpm install
 ```
 
-3. Copy environment variables (optional for MVP):
+2. Create a `.env` with, at minimum:
 ```bash
-cp .env.example .env.local
+DATABASE_URL=postgresql://...       # pooled connection (serverless runtime)
+DIRECT_URL=postgresql://...         # direct connection, used for schema pushes
+AUTH_SECRET=...                     # NextAuth session secret
+NEXTAUTH_URL=http://localhost:3000
+```
+Optional keys turn on their features when present: `STRIPE_SECRET_KEY` / `STRIPE_WEBHOOK_SECRET` (payments), `RESEND_API_KEY` / `EMAIL_FROM` (email), `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` (Google sign-in), `NEXT_PUBLIC_SENTRY_DSN` (error monitoring), `CHECKR_API_KEY` / `CHECKR_WEBHOOK_SECRET` (background checks), `AWS_S3_BUCKET` / `AWS_REGION` (file storage).
+
+3. Apply the schema and load demo data:
+```bash
+npm run db:push     # pushes schema.prisma to the database (no migration history is committed)
+npm run db:seed     # seeds demo users, caregivers, and bookings via prisma/seed.ts
 ```
 
-4. Run the development server:
+4. Start the dev server:
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
 ```
-
-5. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ### Demo Credentials
 
@@ -156,39 +138,24 @@ bolvi-care/
 │   ├── layout/           # Header, footer, navigation
 │   └── ui/               # Reusable UI components
 ├── lib/                   # Utilities and data
-│   ├── mock-data.ts      # Mock data for MVP
+│   ├── hipaa/            # Audit logging, consent, security headers
 │   ├── store.ts          # Zustand state stores
 │   ├── types.ts          # TypeScript interfaces
 │   └── utils.ts          # Utility functions
+├── prisma/                # schema.prisma (40 models) + seed.ts
 └── public/               # Static assets
 ```
 
-## Available Scripts
-
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start development server |
-| `npm run build` | Build for production |
-| `npm run start` | Start production server |
-| `npm run lint` | Run ESLint |
-
 ## Deployment
 
-### Deploy to Vercel (Recommended)
+I deploy Bolvi Care on **Vercel**. `vercel.json` pins the install and build commands; the build runs `prisma generate && next build` so the Prisma client is always regenerated against the current schema.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/yourusername/bolvi-care)
+- **Database:** managed **Postgres**, connected through Prisma with a split `DATABASE_URL` (pooled) and `DIRECT_URL` (direct). The pooled URL serves the serverless runtime; the direct URL handles schema operations that shouldn't run through the pooler.
+- **Schema:** applied with `prisma db push`. I'm not committing a migration history yet while the 40-model schema is still moving; `npm run db:migrate:prod` (`prisma migrate deploy`) is wired in for when I adopt migrations.
+- **Secrets:** all keys live in Vercel's per-environment variables, never in the repo. Optional integrations (Stripe, Resend, Google OAuth, Sentry, Checkr, S3) are guarded in code, so an environment missing a key loses that feature instead of crashing.
+- **Error monitoring:** Sentry releases are tagged with the deployed commit via `NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA`.
 
-1. Push your code to GitHub
-2. Import your repository on [Vercel](https://vercel.com)
-3. Vercel will auto-detect Next.js and deploy
-
-### Other Platforms
-
-The app can be deployed to any platform supporting Next.js:
-- Netlify
-- AWS Amplify
-- Railway
-- Render
+Production is not live at the moment — the deployed prototype is offline while I migrate authentication (see the note in the Overview).
 
 ## Security and PHI Handling
 
@@ -219,26 +186,12 @@ This app handles protected health information (PHI), so telemetry and dependenci
 - [ ] Real-time messaging
 - [ ] Geolocation/mapping
 
-### Phase 3 (Future)
-- [ ] Mobile apps (React Native)
-- [ ] Video consultations
-- [ ] AI-powered matching
-- [ ] Care plan recommendations
-
-## Contributing
-
-Contributions are welcome! Please read our contributing guidelines before submitting a PR.
-
 ## License
 
-This project is proprietary software. All rights reserved.
+Proprietary software of Bolvi Care LLC. All rights reserved.
 
 ## Contact
 
 - **Website**: [bolvicare.com](https://bolvicare.com)
 - **Email**: hello@bolvicare.com
 - **Support**: support@bolvicare.com
-
----
-
-Built with care for those who care.
