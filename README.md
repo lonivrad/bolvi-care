@@ -180,6 +180,16 @@ The app can be deployed to any platform supporting Next.js:
 - Railway
 - Render
 
+## Security and PHI Handling
+
+This app handles protected health information (PHI), so telemetry and dependencies are managed with that in mind.
+
+- **Audited telemetry for PHI leakage.** Error-reporting breadcrumbs and request bodies were capturing PHI-bearing URLs from care routes (`/api/visits/**`, `/api/medications/**`, `/api/messages/**`). Scrubbing was hardened across the client, server, and edge runtimes — including the edge config, which previously had no filtering at all.
+- **Removed a dormant analytics integration.** It was configured with autocapture enabled and no input masking, which would have captured PHI from authenticated pages the moment it was wired into the layout.
+- **Removed an unused data/auth subsystem.** This eliminated a second dormant auth path and its transitive dependency vulnerabilities.
+- **Remaining npm advisories are build-time tooling only** (bundler and inbound-mail-parsing dependencies), not in the served request path.
+- **Production also requires a BAA** with any error-reporting vendor. Standard plans do not cover PHI.
+
 ## Roadmap
 
 ### MVP (Current)

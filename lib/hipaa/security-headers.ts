@@ -11,7 +11,6 @@ export const CSP_DIRECTIVES = {
     "'unsafe-inline'", // Required for Next.js
     "'unsafe-eval'", // Required for development, remove in strict mode
     'https://js.stripe.com',
-    'https://us.i.posthog.com',
     'https://*.sentry.io',
   ],
   'style-src': ["'self'", "'unsafe-inline'"], // Required for Tailwind
@@ -19,17 +18,13 @@ export const CSP_DIRECTIVES = {
     "'self'",
     'data:',
     'blob:',
-    'https://*.supabase.co',
     'https://*.stripe.com',
     'https://images.unsplash.com', // If using placeholder images
   ],
   'font-src': ["'self'", 'data:'],
   'connect-src': [
     "'self'",
-    'https://*.supabase.co',
-    'wss://*.supabase.co',
     'https://api.stripe.com',
-    'https://us.i.posthog.com',
     'https://*.sentry.io',
     'https://api.checkr.com',
     'https://api.resend.com',

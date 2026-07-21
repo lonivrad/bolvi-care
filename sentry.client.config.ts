@@ -3,6 +3,7 @@
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
 import * as Sentry from '@sentry/nextjs';
+import { scrubSentryEvent, scrubSentryBreadcrumb } from '@/lib/sentry-scrub';
 
 if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
   Sentry.init({
@@ -29,14 +30,11 @@ if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
       }),
     ],
 
-    // Filter out sensitive data
-    beforeSend(event) {
-      // Remove sensitive headers
-      if (event.request?.headers) {
-        delete event.request.headers['authorization'];
-        delete event.request.headers['cookie'];
-      }
-      return event;
-    },
+    // Scrub PHI from error payloads: strip sensitive headers, drop request
+    // body/query string, redact dynamic ID segments from URLs.
+    beforeSend: scrubSentryEvent,
+
+    // Drop breadcrumbs pointing at PHI-bearing routes; redact IDs from the rest.
+    beforeBreadcrumb: scrubSentryBreadcrumb,
   });
 }

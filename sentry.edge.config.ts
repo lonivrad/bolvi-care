@@ -3,6 +3,7 @@
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
 import * as Sentry from '@sentry/nextjs';
+import { scrubSentryEvent, scrubSentryBreadcrumb } from '@/lib/sentry-scrub';
 
 if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
   Sentry.init({
@@ -13,5 +14,10 @@ if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
 
     // Setting this option to true will print useful information to the console while you're setting up Sentry.
     debug: false,
+
+    // The edge runtime (middleware, edge routes) sees PHI-bearing URLs too;
+    // apply the same scrubbing as the client/server configs.
+    beforeSend: scrubSentryEvent,
+    beforeBreadcrumb: scrubSentryBreadcrumb,
   });
 }
