@@ -61,6 +61,20 @@ export async function POST(
       return forbiddenResponse('Caregiver profile not found');
     }
 
+    // Only the caregiver assigned to this visit may record PHI against it.
+    const visit = await prisma.visit.findUnique({
+      where: { id: visitId },
+      include: { booking: { select: { caregiverProfileId: true } } },
+    });
+
+    if (!visit) {
+      return badRequestResponse('Visit not found');
+    }
+
+    if (visit.booking.caregiverProfileId !== caregiverProfile.id) {
+      return forbiddenResponse('You are not assigned to this visit');
+    }
+
     const result = await recordVitalSigns(
       visitId,
       {

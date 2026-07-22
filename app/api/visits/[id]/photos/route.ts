@@ -44,6 +44,20 @@ export async function POST(
       return forbiddenResponse('Caregiver profile not found');
     }
 
+    // Only the caregiver assigned to this visit may attach photos to it.
+    const visit = await prisma.visit.findUnique({
+      where: { id: visitId },
+      include: { booking: { select: { caregiverProfileId: true } } },
+    });
+
+    if (!visit) {
+      return badRequestResponse('Visit not found');
+    }
+
+    if (visit.booking.caregiverProfileId !== caregiverProfile.id) {
+      return forbiddenResponse('You are not assigned to this visit');
+    }
+
     // Map category to valid photo type
     const photoTypeMap: Record<string, 'ARRIVAL' | 'TASK' | 'MEAL' | 'INCIDENT' | 'DEPARTURE' | 'OTHER'> = {
       arrival: 'ARRIVAL',

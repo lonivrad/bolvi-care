@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { UserRole, UserStatus, BookingStatus } from '@prisma/client';
+import { UserRole, UserStatus, BookingStatus, CareTeamStatus } from '@prisma/client';
 import { prisma } from '@/lib/db';
 
 // Monotonic counter so factory-created records are unique within a test run
@@ -89,6 +89,17 @@ export async function createBooking(opts: {
 
 export async function createVisit(bookingId: string, careRecipientId: string) {
   return prisma.visit.create({ data: { bookingId, careRecipientId } });
+}
+
+/** Put a caregiver on a family's care team (grants scoped PHI access). */
+export async function addToCareTeam(
+  familyProfileId: string,
+  caregiverProfileId: string,
+  status: CareTeamStatus = CareTeamStatus.ACTIVE
+) {
+  return prisma.careTeamMember.create({
+    data: { familyProfileId, caregiverProfileId, status },
+  });
 }
 
 /** A DIRECT conversation between the given users, with a seed message. */
