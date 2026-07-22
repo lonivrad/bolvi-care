@@ -18,10 +18,6 @@ Live demo temporarily offline while authentication is migrated.
 
 > **Demo vs. this codebase.** The live demo is an earlier prototype build — stable and demonstrating the product end to end — currently offline during the auth migration. The current codebase in this repository is a further build-out (NextAuth authentication, Prisma data layer, Stripe payments, HIPAA-aligned audit logging); its auth integration is mid-migration and is **not currently deployed**. The demo credentials below belong to that prototype.
 
-## Screenshots
-
-_Screenshots are being refreshed against the current build and will be added here. In the meantime, "Running locally" below brings the full product up with seeded demo data._
-
 ## Tech Stack
 
 | Category | Technology |

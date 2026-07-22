@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 
@@ -47,7 +48,17 @@ async function main() {
     await prisma.user.deleteMany();
   }
 
-  const passwordHash = await bcrypt.hash('Password123!', 12);
+  // All demo accounts share one password, sourced from SEED_PASSWORD so no
+  // guessable credential is ever committed or shipped. Refuse to seed without
+  // a strong value.
+  const seedPassword = process.env.SEED_PASSWORD;
+  if (!seedPassword || seedPassword.length < 12) {
+    throw new Error(
+      'SEED_PASSWORD must be set to a strong value (at least 12 characters) ' +
+        'before seeding. Refusing to seed demo accounts with a blank or weak password.'
+    );
+  }
+  const passwordHash = await bcrypt.hash(seedPassword, 12);
 
   // Create Admin User
   console.log('Creating admin user...');
@@ -55,7 +66,7 @@ async function main() {
     data: {
       email: 'admin@bolvicare.com',
       passwordHash,
-      name: 'Admin User',
+      name: 'Demo Admin',
       phone: '+15551234567',
       role: 'ADMIN',
       status: 'ACTIVE',
@@ -83,7 +94,7 @@ async function main() {
     data: {
       email: 'sarah.johnson@email.com',
       passwordHash,
-      name: 'Sarah Johnson',
+      name: 'Demo Family One',
       phone: '+15559876543',
       photo: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200',
       role: 'FAMILY',
@@ -116,7 +127,7 @@ async function main() {
     data: {
       email: 'michael.chen@email.com',
       passwordHash,
-      name: 'Michael Chen',
+      name: 'Demo Family Two',
       phone: '+15558765432',
       photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200',
       role: 'FAMILY',
@@ -141,7 +152,7 @@ async function main() {
   const careRecipient1 = await prisma.careRecipient.create({
     data: {
       familyProfileId: familyUser1.familyProfile!.id,
-      name: 'Eleanor Johnson',
+      name: 'Eleanor D. (demo resident)',
       photo: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200',
       dateOfBirth: new Date('1942-03-15'),
       gender: 'FEMALE',
@@ -163,7 +174,7 @@ async function main() {
       cognitiveStatus: 'MILD_IMPAIRMENT',
       dietaryRestrictions: ['Low sodium'],
       careNeeds: ['medication_reminders', 'companionship', 'meal_prep', 'light_housekeeping'],
-      notes: 'Eleanor enjoys reading, gardening, and watching classic movies. She prefers a quiet environment.',
+      notes: 'This demo resident enjoys reading, gardening, and watching classic movies, and prefers a quiet environment.',
     },
   });
   console.log(`  ✓ Created care recipient: ${careRecipient1.name}`);
@@ -171,7 +182,7 @@ async function main() {
   const careRecipient2 = await prisma.careRecipient.create({
     data: {
       familyProfileId: familyUser1.familyProfile!.id,
-      name: 'Robert Johnson',
+      name: 'Robert D. (demo resident)',
       dateOfBirth: new Date('1940-08-22'),
       gender: 'MALE',
       relationship: 'parent',
@@ -195,7 +206,7 @@ async function main() {
     data: {
       email: 'maria.rodriguez@email.com',
       passwordHash,
-      name: 'Maria Rodriguez',
+      name: 'Sample Caregiver One',
       phone: '+15557654321',
       photo: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200',
       role: 'CAREGIVER',
@@ -303,7 +314,7 @@ async function main() {
     data: {
       email: 'james.wilson@email.com',
       passwordHash,
-      name: 'James Wilson',
+      name: 'Sample Caregiver Two',
       phone: '+15556543210',
       photo: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200',
       role: 'CAREGIVER',
@@ -376,7 +387,7 @@ async function main() {
     data: {
       email: 'emily.chen@email.com',
       passwordHash,
-      name: 'Emily Chen',
+      name: 'Sample Caregiver Three',
       phone: '+15555432109',
       photo: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200',
       role: 'CAREGIVER',
@@ -485,7 +496,7 @@ async function main() {
       checkInTime: lastWeek,
       checkOutTime: new Date(lastWeek.getTime() + 4 * 60 * 60 * 1000),
       moodRating: 4,
-      notes: 'Great visit! Eleanor was in good spirits today.',
+      notes: 'Great visit! The demo resident was in good spirits today.',
     },
   });
 
@@ -498,7 +509,7 @@ async function main() {
       targetId: caregiverUser1.id,
       targetType: 'CAREGIVER',
       rating: 5,
-      content: 'Maria was wonderful with my mother. She was punctual, professional, and genuinely caring. My mom really enjoyed her company!',
+      content: 'The sample caregiver was wonderful with my mother — punctual, professional, and genuinely caring. My mom really enjoyed the company!',
       categories: {
         punctuality: 5,
         communication: 5,
@@ -604,14 +615,14 @@ async function main() {
       {
         conversationId: conversation.id,
         senderId: familyUser1.id,
-        content: 'Hi Maria! I wanted to check if you\'re available for an extra session this weekend?',
+        content: 'Hi! I wanted to check if you\'re available for an extra session this weekend?',
         type: 'TEXT',
         createdAt: new Date(now.getTime() - 2 * 60 * 60 * 1000),
       },
       {
         conversationId: conversation.id,
         senderId: caregiverUser1.id,
-        content: 'Hi Sarah! Yes, I have Saturday morning available from 9 AM to 1 PM. Would that work?',
+        content: 'Hi! Yes, I have Saturday morning available from 9 AM to 1 PM. Would that work?',
         type: 'TEXT',
         createdAt: new Date(now.getTime() - 1 * 60 * 60 * 1000),
       },
@@ -633,7 +644,7 @@ async function main() {
         userId: familyUser1.id,
         type: 'BOOKING_CONFIRMED',
         title: 'Booking Confirmed',
-        message: 'Your booking with Maria Rodriguez has been confirmed for tomorrow.',
+        message: 'Your booking with Sample Caregiver One has been confirmed for tomorrow.',
         read: false,
         actionUrl: `/dashboard/family/bookings/${upcomingBooking.id}`,
         data: { bookingId: upcomingBooking.id },
@@ -642,7 +653,7 @@ async function main() {
         userId: caregiverUser1.id,
         type: 'NEW_REVIEW',
         title: 'New Review',
-        message: 'You received a 5-star review from Sarah Johnson!',
+        message: 'You received a 5-star review from Demo Family One!',
         read: false,
         actionUrl: '/dashboard/caregiver/reviews',
       },
@@ -650,7 +661,7 @@ async function main() {
         userId: caregiverUser2.id,
         type: 'BOOKING_REQUEST',
         title: 'New Booking Request',
-        message: 'You have a new booking request from Sarah Johnson.',
+        message: 'You have a new booking request from Demo Family One.',
         read: false,
         actionUrl: `/dashboard/caregiver/requests`,
         data: { bookingId: pendingBooking.id },
@@ -663,7 +674,7 @@ async function main() {
   await prisma.emergencyContact.create({
     data: {
       familyProfileId: familyUser1.familyProfile!.id,
-      name: 'John Johnson',
+      name: 'John D. (demo contact)',
       relationship: 'Spouse',
       phone: '+15551112222',
       email: 'john.johnson@email.com',
@@ -674,13 +685,13 @@ async function main() {
   console.log(`  ✓ Created emergency contacts`);
 
   console.log('\n✅ Database seeding completed successfully!');
-  console.log('\n📝 Test Accounts:');
-  console.log('  Admin:     admin@bolvicare.com / Password123!');
-  console.log('  Family:    sarah.johnson@email.com / Password123!');
-  console.log('  Family:    michael.chen@email.com / Password123!');
-  console.log('  Caregiver: maria.rodriguez@email.com / Password123!');
-  console.log('  Caregiver: james.wilson@email.com / Password123!');
-  console.log('  Caregiver: emily.chen@email.com / Password123!');
+  console.log('\n📝 Demo accounts (password = your SEED_PASSWORD, not printed):');
+  console.log('  Admin:     admin@bolvicare.com');
+  console.log('  Family:    sarah.johnson@email.com');
+  console.log('  Family:    michael.chen@email.com');
+  console.log('  Caregiver: maria.rodriguez@email.com');
+  console.log('  Caregiver: james.wilson@email.com');
+  console.log('  Caregiver: emily.chen@email.com');
 }
 
 main()
