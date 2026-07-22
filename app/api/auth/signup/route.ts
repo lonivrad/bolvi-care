@@ -4,6 +4,7 @@ import { hashPassword } from '@/lib/auth';
 import { signupFamilySchema, signupCaregiverSchema } from '@/lib/validations';
 import { UserRole } from '@prisma/client';
 import { sendVerificationEmail } from '@/lib/email';
+import { rateLimit, clientIp } from '@/lib/rate-limit';
 
 // Helper function to generate verification token
 function generateVerificationToken(): string {
@@ -16,6 +17,18 @@ function generateVerificationToken(): string {
 }
 
 export async function POST(req: NextRequest) {
+  // Throttle account creation by client IP (abuse / mass-signup).
+  const rl = await rateLimit('signup', clientIp(req));
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: 'Too many sign-up attempts. Please wait a while and try again.' },
+      {
+        status: 429,
+        headers: rl.retryAfterSeconds ? { 'Retry-After': String(rl.retryAfterSeconds) } : undefined,
+      }
+    );
+  }
+
   try {
     const body = await req.json();
     const { role } = body;
