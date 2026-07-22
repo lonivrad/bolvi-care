@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    # Throwaway Postgres for the test suite. Exposed on 5433 to match the
+    # DATABASE_URL in .env.test, so the harness runs identically to local.
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: bolvi
+          POSTGRES_PASSWORD: bolvi
+          POSTGRES_DB: bolvi_care_test
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd "pg_isready -U bolvi -d bolvi_care_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+
+    env:
+      DATABASE_URL: postgresql://bolvi:bolvi@localhost:5433/bolvi_care_test?schema=public
+      DIRECT_URL: postgresql://bolvi:bolvi@localhost:5433/bolvi_care_test?schema=public
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build
