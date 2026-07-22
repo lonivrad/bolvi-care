@@ -36,7 +36,7 @@ export function HowItWorks() {
             Finding Quality Care Made Simple
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground text-pretty">
-            From search to care in four easy steps. We've simplified the process so you can focus on what matters most.
+            From search to care in four easy steps. We&apos;ve simplified the process so you can focus on what matters most.
           </p>
         </div>
 

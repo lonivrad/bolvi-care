@@ -152,9 +152,11 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
     return () => document.removeEventListener("keydown", down);
   }, [open, onOpenChange]);
 
-  // Reset search when closing
+  // Reset search when closing. Intentionally driven by the `open` prop; this
+  // only runs on an open/close toggle, so the extra render is harmless.
   useEffect(() => {
     if (!open) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional reset on close
       setSearchQuery("");
     }
   }, [open]);

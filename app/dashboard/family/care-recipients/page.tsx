@@ -642,6 +642,7 @@ export default function CareRecipientsPage() {
               Add Care Recipient
             </Button>
           </DialogTrigger>
+          {/* eslint-disable-next-line react-hooks/static-components -- inline dialog closes over local form state; lifting it out is a separate refactor */}
           <RecipientFormDialog isEdit={false} />
         </Dialog>
       </div>
@@ -654,6 +655,7 @@ export default function CareRecipientsPage() {
           resetForm();
         }
       }}>
+        {/* eslint-disable-next-line react-hooks/static-components -- inline dialog closes over local form state; lifting it out is a separate refactor */}
         <RecipientFormDialog isEdit={true} />
       </Dialog>
 

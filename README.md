@@ -2,6 +2,7 @@
 
 Bolvi Care is the platform I built to run a home-care operation end to end: family and caregiver onboarding, caregiver search and booking, scheduled visits with check-in/out and medication, vitals, task, and photo logging, payments, messaging, and role-based dashboards for families, caregivers, and admins — all backed by a Postgres/Prisma data model and HIPAA-aligned audit logging.
 
+[![CI](https://github.com/lonivrad/bolvi-care/actions/workflows/ci.yml/badge.svg)](https://github.com/lonivrad/bolvi-care/actions/workflows/ci.yml)
 ![Next.js](https://img.shields.io/badge/Next.js-16.2-black?style=flat-square&logo=next.js)
 ![React](https://img.shields.io/badge/React-19.2-blue?style=flat-square&logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=flat-square&logo=typescript)
@@ -13,31 +14,13 @@ The application is a full build-out rather than a static mock: **79 pages**, **3
 
 The product and business decisions behind it are grounded in first-hand discovery research in the Everett / South Snohomish County market — see [**User Research**](docs/USER_RESEARCH.md) for the segments, the evidence, and the decision each finding drove.
 
-Live demo temporarily offline while authentication is migrated; the screenshots below show the full product.
+Live demo temporarily offline while authentication is migrated.
 
 > **Demo vs. this codebase.** The live demo is an earlier prototype build — stable and demonstrating the product end to end — currently offline during the auth migration. The current codebase in this repository is a further build-out (NextAuth authentication, Prisma data layer, Stripe payments, HIPAA-aligned audit logging); its auth integration is mid-migration and is **not currently deployed**. The demo credentials below belong to that prototype.
 
 ## Screenshots
 
-<details>
-<summary>View Screenshots</summary>
-
-### Homepage
-![Homepage](screenshots/homepage.png)
-
-### Caregiver Search
-![Caregiver Search](screenshots/caregiver-search.png)
-
-### Booking Flow
-![Booking Flow](screenshots/booking-flow.png)
-
-### Family Dashboard
-![Family Dashboard](screenshots/family-dashboard.png)
-
-### Caregiver Dashboard
-![Caregiver Dashboard](screenshots/caregiver-dashboard.png)
-
-</details>
+_Screenshots are being refreshed against the current build and will be added here. In the meantime, "Running locally" below brings the full product up with seeded demo data._
 
 ## Tech Stack
 

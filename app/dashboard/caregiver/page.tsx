@@ -126,7 +126,7 @@ export default function CaregiverDashboard() {
             <div className="flex-1">
               <h3 className="font-semibold text-foreground">Complete Your Profile</h3>
               <p className="text-sm text-muted-foreground">
-                Families can't find you until your profile is complete. Add your bio, photo, and rates.
+                Families can&apos;t find you until your profile is complete. Add your bio, photo, and rates.
               </p>
             </div>
             <Button asChild>

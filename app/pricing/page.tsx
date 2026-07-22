@@ -133,7 +133,7 @@ export default function PricingPage() {
                   <Clock className="mx-auto h-10 w-10 text-primary" />
                   <h3 className="mt-4 font-semibold">Hours Booked</h3>
                   <p className="mt-2 text-sm text-muted-foreground">
-                    You're charged for the actual hours of care provided
+                    You&apos;re charged for the actual hours of care provided
                   </p>
                 </CardContent>
               </Card>

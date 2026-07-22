@@ -38,7 +38,7 @@ export function Testimonials() {
               <Card key={testimonial.id} className="h-full">
                 <CardContent className="flex h-full flex-col p-6">
                   <Quote className="h-8 w-8 text-primary/20" />
-                  <p className="mt-4 flex-1 text-muted-foreground">"{testimonial.quote}"</p>
+                  <p className="mt-4 flex-1 text-muted-foreground">&ldquo;{testimonial.quote}&rdquo;</p>
                   <div className="mt-6 flex items-center gap-3">
                     <Image
                       src={testimonial.photo}
@@ -69,7 +69,7 @@ export function Testimonials() {
             <Card>
               <CardContent className="p-6">
                 <Quote className="h-8 w-8 text-primary/20" />
-                <p className="mt-4 text-muted-foreground">"{testimonials[activeIndex].quote}"</p>
+                <p className="mt-4 text-muted-foreground">&ldquo;{testimonials[activeIndex].quote}&rdquo;</p>
                 <div className="mt-6 flex items-center gap-3">
                   <Image
                     src={testimonials[activeIndex].photo}

@@ -223,7 +223,7 @@ export default function NotificationsPage() {
                   </div>
                   <h3 className="mt-4 font-semibold text-lg">No notifications yet</h3>
                   <p className="mt-2 text-sm text-muted-foreground max-w-sm">
-                    When you receive booking updates, messages, or other important alerts, they'll appear here.
+                    When you receive booking updates, messages, or other important alerts, they&apos;ll appear here.
                   </p>
                 </CardContent>
               </Card>

@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState } from "react";
+import { use, useState, type ElementType } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Header } from "@/components/layout/header";
@@ -48,7 +48,7 @@ const coursesData: Record<string, {
   enrolled: number;
   rating: number;
   certificate: boolean;
-  icon: any;
+  icon: ElementType;
   sources: string[];
   color: string;
   modules: Array<{
@@ -2919,7 +2919,7 @@ export default function CourseDetailPage({ params }: { params: Promise<{ courseI
                               <CheckCircle className="h-8 w-8 mx-auto text-green-600 dark:text-green-400" />
                               <p className="font-semibold mt-2 text-green-800 dark:text-green-300">Module Completed!</p>
                               <p className="text-sm text-green-700 dark:text-green-400">
-                                Great job! You've successfully completed this module.
+                                Great job! You&apos;ve successfully completed this module.
                               </p>
                             </div>
                           ) : (

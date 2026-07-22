@@ -620,7 +620,7 @@ export default function CommunityPage() {
               )}
               {!hasMoreStories && (
                 <div className="text-center text-muted-foreground text-sm">
-                  You've reached the end of all stories
+                  You&apos;ve reached the end of all stories
                 </div>
               )}
             </div>

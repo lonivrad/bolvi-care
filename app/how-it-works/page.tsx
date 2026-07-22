@@ -69,7 +69,7 @@ export default function HowItWorksPage() {
             </h1>
             <p className="mx-auto mt-4 max-w-2xl text-pretty text-muted-foreground">
               Our platform connects families with trusted, verified caregivers in just a few steps.
-              Here's how we make finding support accessible and stress-free.
+              Here&apos;s how we make finding support accessible and stress-free.
             </p>
             <div className="mt-6 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Button size="lg" asChild>
@@ -133,7 +133,7 @@ export default function HowItWorksPage() {
             <div className="text-center">
               <h2 className="text-2xl font-bold text-foreground sm:text-3xl">Why Choose Us</h2>
               <p className="mt-2 text-muted-foreground">
-                We're committed to making quality care accessible and reliable
+                We&apos;re committed to making quality care accessible and reliable
               </p>
             </div>
             <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

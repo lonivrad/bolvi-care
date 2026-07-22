@@ -611,7 +611,7 @@ export default function TrainingCenterPage() {
 
                       {/* Modules Preview - cleaner layout */}
                       <div className="mt-4 space-y-2">
-                        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">What you'll learn</p>
+                        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">What you&apos;ll learn</p>
                         <div className="space-y-1.5">
                           {course.modules.slice(0, 3).map((module, i) => (
                             <div key={module.id} className="flex items-center gap-2.5 text-sm">
