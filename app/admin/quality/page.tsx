@@ -1496,7 +1496,7 @@ export default function QualityAssurancePage() {
                           {getWorkflowStep(selectedWorkflow.id, idx)}
                         </p>
                         <p className="text-xs text-muted-foreground mt-1">
-                          Estimated time: {Math.floor(Math.random() * 4) + 1} hours
+                          Estimated time: {(idx % 4) + 1} hours
                         </p>
                       </div>
                       <div className="opacity-0 group-hover:opacity-100 transition-opacity">

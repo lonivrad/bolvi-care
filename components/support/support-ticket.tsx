@@ -142,6 +142,7 @@ export function SupportTicket({ variant = "create", ticketId, onSubmit }: Suppor
   const [priority, setPriority] = useState<string>("medium");
   const [attachments, setAttachments] = useState<File[]>([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [generatedTicketId, setGeneratedTicketId] = useState("");
   const [newMessage, setNewMessage] = useState("");
   const [tickets, setTickets] = useState(mockTickets);
 
@@ -157,6 +158,7 @@ export function SupportTicket({ variant = "create", ticketId, onSubmit }: Suppor
       createdAt: "Just now",
       updatedAt: "Just now",
     };
+    setGeneratedTicketId(Math.random().toString(36).substring(2, 8).toUpperCase());
     onSubmit?.(newTicket);
     setIsSubmitted(true);
   };
@@ -201,7 +203,7 @@ export function SupportTicket({ variant = "create", ticketId, onSubmit }: Suppor
             <p className="text-muted-foreground mb-4">
               Your support ticket has been created. We&apos;ll respond within 24 hours.
             </p>
-            <Badge className="text-lg px-4 py-2">Ticket #TKT-{Math.random().toString(36).substr(2, 6).toUpperCase()}</Badge>
+            <Badge className="text-lg px-4 py-2">Ticket #TKT-{generatedTicketId}</Badge>
             <div className="mt-6 p-4 rounded-lg bg-muted text-left">
               <p className="text-sm text-muted-foreground">
                 <strong>What happens next?</strong>

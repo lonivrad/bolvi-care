@@ -16,15 +16,6 @@ export function ThemeToggle() {
   const [theme, setTheme] = React.useState<Theme>("system");
   const [mounted, setMounted] = React.useState(false);
 
-  React.useEffect(() => {
-    setMounted(true);
-    const stored = localStorage.getItem("theme") as Theme | null;
-    if (stored) {
-      setTheme(stored);
-      applyTheme(stored);
-    }
-  }, []);
-
   const applyTheme = (newTheme: Theme) => {
     const root = document.documentElement;
     const isDark =
@@ -37,6 +28,15 @@ export function ThemeToggle() {
       root.classList.remove("dark");
     }
   };
+
+  React.useEffect(() => {
+    setMounted(true);
+    const stored = localStorage.getItem("theme") as Theme | null;
+    if (stored) {
+      setTheme(stored);
+      applyTheme(stored);
+    }
+  }, []);
 
   const handleThemeChange = (newTheme: Theme) => {
     setTheme(newTheme);

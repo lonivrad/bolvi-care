@@ -18,8 +18,9 @@ function VerifyEmailContent() {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
+    // `status` already initialises to "no-token" when there's no token, so
+    // there's nothing to do (and nothing to set) here.
     if (!token) {
-      setStatus("no-token");
       return;
     }
 

@@ -494,7 +494,7 @@ export default function JobsPage() {
                 <Heart className="mx-auto h-12 w-12 text-muted-foreground" />
                 <h3 className="mt-4 font-medium">No saved jobs</h3>
                 <p className="text-sm text-muted-foreground">
-                  Save jobs you're interested in to review later
+                  Save jobs you&apos;re interested in to review later
                 </p>
               </CardContent>
             </Card>

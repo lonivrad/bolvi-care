@@ -65,7 +65,7 @@ export function TestimonialsSection() {
                 </div>
                 
                 <blockquote className="text-lg lg:text-xl text-foreground leading-relaxed">
-                  "{testimonials[current].content}"
+                  &ldquo;{testimonials[current].content}&rdquo;
                 </blockquote>
                 
                 <div className="mt-6">

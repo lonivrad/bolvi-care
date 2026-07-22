@@ -1,6 +1,7 @@
 // Caregiver Visit Verification System
 // GPS verification, time tracking, task completion, and care documentation
 
+import { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/db';
 import { auditVisitAction, auditPHIAccess, ENTITY_TYPES } from '@/lib/hipaa';
 
@@ -558,7 +559,7 @@ export async function getCaregiverVisitMetrics(
   startDate?: Date,
   endDate?: Date
 ) {
-  const where: Record<string, unknown> = {
+  const where: Prisma.VisitWhereInput = {
     booking: {
       caregiverProfileId,
     },
@@ -566,13 +567,12 @@ export async function getCaregiverVisitMetrics(
 
   if (startDate || endDate) {
     where.checkInTime = {};
-    if (startDate) (where.checkInTime as Record<string, Date>).gte = startDate;
-    if (endDate) (where.checkInTime as Record<string, Date>).lte = endDate;
+    if (startDate) (where.checkInTime as Prisma.DateTimeFilter).gte = startDate;
+    if (endDate) (where.checkInTime as Prisma.DateTimeFilter).lte = endDate;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const visits = await prisma.visit.findMany({
-    where: where as any,
+    where,
     include: {
       booking: true,
     },

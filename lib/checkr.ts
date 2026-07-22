@@ -1,6 +1,8 @@
 // Checkr Background Check Integration
 // https://docs.checkr.com/
 
+import crypto from 'node:crypto';
+
 const CHECKR_API_URL = 'https://api.checkr.com/v1';
 
 if (!process.env.CHECKR_API_KEY) {
@@ -237,7 +239,6 @@ export function verifyWebhookSignature(
     return false;
   }
 
-  const crypto = require('crypto');
   const expectedSignature = crypto
     .createHmac('sha256', secret)
     .update(payload)

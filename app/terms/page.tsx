@@ -120,7 +120,7 @@ export default function TermsPage() {
               <CardContent className="p-6 space-y-4">
                 <ul className="list-disc list-inside text-muted-foreground space-y-2">
                   <li>All payments are processed through our secure payment system</li>
-                  <li>Families pay caregivers' hourly rates plus a platform service fee</li>
+                  <li>Families pay caregivers&apos; hourly rates plus a platform service fee</li>
                   <li>Caregivers receive their earnings minus a platform fee</li>
                   <li>Cancellation fees may apply per our cancellation policy</li>
                   <li>Payment is due at the time of booking or upon service completion</li>
@@ -148,7 +148,7 @@ export default function TermsPage() {
                   <li>Accuracy of information provided by users</li>
                 </ul>
                 <p className="text-muted-foreground leading-relaxed mt-4">
-                  To the maximum extent permitted by law, Bolvi Care's liability is limited to the
+                  To the maximum extent permitted by law, Bolvi Care&apos;s liability is limited to the
                   amount of fees paid to us in the twelve months preceding any claim.
                 </p>
               </CardContent>
