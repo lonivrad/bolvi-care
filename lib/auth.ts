@@ -44,7 +44,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     error: '/auth/error',
   },
   providers: [
-    Google({
+    // Register Google only when its OAuth credentials are configured, so the
+    // provider list never advertises a half-configured (broken) button.
+    ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
+      ? [
+        Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
       profile(profile) {
@@ -58,6 +62,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         };
       },
     }),
+        ]
+      : []),
     Credentials({
       name: 'credentials',
       credentials: {
