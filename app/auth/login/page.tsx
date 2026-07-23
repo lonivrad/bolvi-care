@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { signIn, getProviders } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -25,6 +25,16 @@ function LoginContent() {
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [error, setError] = useState(errorParam === "CredentialsSignin" ? "Invalid email or password" : "");
+  const [googleEnabled, setGoogleEnabled] = useState(false);
+
+  // Only surface the Google button when the provider is actually registered
+  // server-side (GOOGLE_CLIENT_ID/SECRET present). Defaults hidden so there's
+  // never a dead "Continue with Google" control on the public site.
+  useEffect(() => {
+    getProviders()
+      .then((providers) => setGoogleEnabled(Boolean(providers?.google)))
+      .catch(() => setGoogleEnabled(false));
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -109,6 +119,9 @@ function LoginContent() {
               </div>
             )}
 
+            {/* Google button + divider only render when Google OAuth is configured */}
+            {googleEnabled && (
+              <>
             {/* Google Sign In */}
             <Button
               type="button"
@@ -150,6 +163,8 @@ function LoginContent() {
                 <span className="bg-card px-2 text-muted-foreground">Or continue with email</span>
               </div>
             </div>
+              </>
+            )}
 
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
