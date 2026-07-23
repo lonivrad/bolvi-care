@@ -51,12 +51,51 @@ const publicApiRoutes = [
   '/api/caregivers', // Public caregiver search
 ];
 
+// Demo accounts that may READ everything but must never mutate anything. Emails
+// come from DEMO_READONLY_EMAILS (comma-separated). Keeps a publicly-credentialed
+// demo admin from changing real data via direct API calls.
+const readonlyEmails = (process.env.DEMO_READONLY_EMAILS ?? '')
+  .split(',')
+  .map((e) => e.trim().toLowerCase())
+  .filter(Boolean);
+
+const MUTATING_METHODS = new Set(['POST', 'PUT', 'PATCH', 'DELETE']);
+
 export default auth((req) => {
   const { pathname } = req.nextUrl;
 
   // CRITICAL: Skip all processing for NextAuth routes to avoid CSRF issues
   if (pathname.startsWith('/api/auth')) {
     return NextResponse.next();
+  }
+
+  // Read-only demo accounts: allow every safe request but block ANY mutating
+  // method on ANY route — not just /api/*. Server Actions POST to page paths,
+  // so a path-scoped guard would leave a hole; this covers them and anything
+  // added later. (Login/logout live under /api/auth and are allowed above.)
+  if (
+    MUTATING_METHODS.has(req.method) &&
+    req.auth?.user?.email &&
+    readonlyEmails.includes(req.auth.user.email.toLowerCase())
+  ) {
+    // Structured, edge-safe audit line for the blocked attempt — visible and
+    // queryable in the Vercel runtime logs. (A DB AuditLog row can't be written
+    // from Edge middleware; see the note in the PR for the Node-route option.)
+    console.warn(
+      '[readonly-guard] blocked demo-account mutation ' +
+        JSON.stringify({
+          userId: req.auth.user.id,
+          email: req.auth.user.email,
+          method: req.method,
+          path: pathname,
+          ip: req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? null,
+        })
+    );
+
+    return NextResponse.json(
+      { error: 'This demo account is read-only.' },
+      { status: 403 }
+    );
   }
 
   // Allow public API routes
